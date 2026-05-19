@@ -291,6 +291,17 @@
     .pay-block-h .nm{font-family:"IBM Plex Serif",serif;font-size:20px;font-weight:500;letter-spacing:-0.015em;color:var(--ink);display:flex;align-items:center;gap:10px}
     .pay-block-h .rec-flag{font-family:"IBM Plex Sans";font-size:10.5px;letter-spacing:.04em;text-transform:uppercase;color:#fff;background:var(--ins-coral);padding:3px 9px;border-radius:3px;font-weight:700}
 
+    /* CLIENTE — Características del producto */
+    .carac{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:26px 30px;margin-bottom:24px}
+    .carac-h{margin-bottom:18px;padding-bottom:14px;border-bottom:1px solid var(--line-2)}
+    .carac-h h3{font-family:"IBM Plex Serif",serif;font-size:22px;font-weight:500;letter-spacing:-0.015em;margin-bottom:6px}
+    .carac-h .sub{font-size:13px;color:var(--ink-3);line-height:1.55;max-width:64ch}
+    .carac-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .carac-item{display:flex;gap:14px;align-items:flex-start;padding:14px 16px;background:var(--cream);border:1px solid var(--line);border-radius:6px}
+    .carac-item .ico{width:36px;height:36px;border-radius:6px;background:var(--ins-teal);color:#fff;display:grid;place-items:center;flex-shrink:0;font-family:"IBM Plex Mono";font-size:14px;font-weight:600}
+    .carac-item .t{font-weight:600;font-size:13.5px;color:var(--ink);margin-bottom:3px}
+    .carac-item .d{font-size:12px;color:var(--ink-2);line-height:1.55}
+
     /* CLIENTE — Servicios incluidos */
     .included{background:var(--cream);border:1px solid var(--line);border-radius:8px;padding:28px 32px;margin-bottom:24px;display:grid;grid-template-columns:1fr 1.5fr;gap:36px;align-items:start}
     .included h3{font-family:"IBM Plex Serif",serif;font-size:24px;font-weight:500;letter-spacing:-0.015em;line-height:1.15;margin-bottom:8px}
@@ -1328,11 +1339,51 @@
       main.innerHTML =
         renderClienteCmp() +
         renderClientePago() +
+        renderClienteCaracteristicas() +
         renderClienteServicios() +
         renderClienteDocs() +
         renderClienteEspera() +
         renderClienteCTA() +
         renderClienteDisclaimers();
+    }
+
+    function renderClienteCaracteristicas(){
+      const p = cli.payload;
+      // Mecánica de pago según los ámbitos de los planes cotizados
+      const ambitos = new Set(p.planes.map(id => {
+        if(["esencial1","esencial2"].includes(id)) return "local";
+        if(["pro1","pro2"].includes(id)) return "regional";
+        return "internacional";
+      }));
+      let pagoTxt;
+      if(ambitos.has("internacional")) pagoTxt = "Costa Rica y Centroamérica: pago directo en red de proveedores. Fuera de la región: trámite por reembolso.";
+      else if(ambitos.has("regional"))  pagoTxt = "Costa Rica y Centroamérica: pago directo en red de proveedores INS y red afiliada.";
+      else                               pagoTxt = "Costa Rica: pago directo en la red de proveedores autorizada por INS.";
+
+      const items = [
+        { icon:"∞",  t:"Renovación vitalicia",                d:"Prórroga obligatoria para el INS. No pueden cancelar la póliza por su edad o por reclamos, solo por falta de pago." },
+        { icon:"18", t:"Asegurado titular",                   d:"Desde los 18 años, con su cónyuge o conviviente, hijos y otros dependientes aceptados por el INS." },
+        { icon:"25", t:"Hijos dependientes",                  d:"Hasta los 25 años cumplidos. Después puede continuar con póliza individual con los mismos beneficios, sin nuevo período de espera." },
+        { icon:"H",  t:"Habitación cubierta",                 d:"Hospitalización en habitación individual, normal o bipersonal según el centro médico." },
+        { icon:"$",  t:"Mecánica de pago",                    d:pagoTxt },
+        { icon:"60", t:"Vigencia y forma de pago",            d:"Póliza anual prorrogable. Puede pagar anual (sin recargo), semestral o trimestralmente." }
+      ];
+      const itemsHtml = items.map(it => `
+        <div class="carac-item">
+          <div class="ico">${escapeHtml(it.icon)}</div>
+          <div><div class="t">${escapeHtml(it.t)}</div><div class="d">${it.d}</div></div>
+        </div>
+      `).join('');
+
+      return `
+        <section class="carac">
+          <div class="carac-h">
+            <h3>Características del producto Vital 360</h3>
+            <p class="sub">Reglas que aplican a cualquiera de los planes cotizados, según las Condiciones Generales del INS para Vital 360.</p>
+          </div>
+          <div class="carac-grid">${itemsHtml}</div>
+        </section>
+      `;
     }
 
     function renderClienteServicios(){
