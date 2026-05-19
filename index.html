@@ -208,13 +208,15 @@
       return primaFamiliarAnual / numAsegurados;
     }
 
-    // Formatter: número → "₡1.234.567" o "$1,234.56" según moneda
+    // Formatter: número → "₡1.234.567" o "$1,234.56" según moneda.
+    // CRC se formatea con punto manual: Intl es-CR en Chrome moderno
+    // usa NBSP en lugar de punto y eso no es lo que el cliente CR espera ver.
     function fmtMoneda(n, moneda){
       const v = Math.round(n);
       if(moneda === "USD"){
         return "$" + v.toLocaleString("en-US");
       }
-      return "₡" + v.toLocaleString("es-CR");
+      return "₡" + String(v).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
     }
 
     // =====================================================================
