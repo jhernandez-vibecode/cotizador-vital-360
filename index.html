@@ -74,8 +74,106 @@
   </div>
 
   <script>
-    // ===== Sección 10: Init =====
-    console.log('[vital360] skeleton cargado');
+    // =====================================================================
+    // Sección 1: Datos del producto Vital 360
+    // Fuente: folletos oficiales INS — Coberturas y Planes, Primas Anuales
+    // =====================================================================
+
+    const TARIFAS_VERSION = "INS-2026-mayo";
+
+    // Los 7 planes, ordenados por ámbito
+    const PLANES = [
+      { id: "esencial1",  nombre: "Esencial 1",  ambito: "Local · Costa Rica",      sumaUSD: 15000,   sumaCRC: 8250000,    deducibleUSD: 0,    deducibleCRC: 0 },
+      { id: "esencial2",  nombre: "Esencial 2",  ambito: "Local · Costa Rica",      sumaUSD: 25000,   sumaCRC: 13750000,   deducibleUSD: 0,    deducibleCRC: 0 },
+      { id: "pro1",       nombre: "Pro 1",       ambito: "Regional · Centroamérica", sumaUSD: 50000,   sumaCRC: 27500000,   deducibleUSD: 100,  deducibleCRC: 55000 },
+      { id: "pro2",       nombre: "Pro 2",       ambito: "Regional · Centroamérica", sumaUSD: 100000,  sumaCRC: 55000000,   deducibleUSD: 200,  deducibleCRC: 110000 },
+      { id: "platinum1",  nombre: "Platinum 1",  ambito: "Internacional · Mundo",    sumaUSD: 300000,  sumaCRC: 165000000,  deducibleUSD: 250,  deducibleCRC: 137500 },
+      { id: "platinum2",  nombre: "Platinum 2",  ambito: "Internacional · Mundo",    sumaUSD: 500000,  sumaCRC: 275000000,  deducibleUSD: 500,  deducibleCRC: 275000 },
+      { id: "deluxe",     nombre: "Deluxe",      ambito: "Internacional · Mundo",    sumaUSD: 1000000, sumaCRC: 550000000,  deducibleUSD: 1000, deducibleCRC: 550000 }
+    ];
+
+    const ID_PLAN_INTERNACIONAL = ["platinum1", "platinum2", "deluxe"];
+
+    // Rangos de edad — 13 rangos definidos por INS
+    const RANGOS_EDAD = [
+      "0-25", "26-29", "30-34", "35-39", "40-44", "45-49",
+      "50-54", "55-59", "60-64", "65-69", "70-75", "76-80", "81+"
+    ];
+
+    // Tabla de primas anuales USD — primas[rango][plan_id]
+    // Fuente: Primas.pdf · folleto oficial INS dólares
+    const PRIMAS_USD = {
+      "0-25":  { esencial1: 334,   esencial2: 353,   pro1: 445,   pro2: 682,   platinum1: 855,   platinum2: 1174, deluxe: 1176 },
+      "26-29": { esencial1: 478,   esencial2: 504,   pro1: 632,   pro2: 968,   platinum1: 1035,  platinum2: 1421, deluxe: 1541 },
+      "30-34": { esencial1: 568,   esencial2: 599,   pro1: 758,   pro2: 1114,  platinum1: 1190,  platinum2: 1492, deluxe: 1618 },
+      "35-39": { esencial1: 675,   esencial2: 712,   pro1: 910,   pro2: 1270,  platinum1: 1356,  platinum2: 1521, deluxe: 1666 },
+      "40-44": { esencial1: 731,   esencial2: 771,   pro1: 1001,  pro2: 1384,  platinum1: 1492,  platinum2: 1613, deluxe: 1799 },
+      "45-49": { esencial1: 836,   esencial2: 882,   pro1: 1151,  pro2: 1508,  platinum1: 1641,  platinum2: 1726, deluxe: 1925 },
+      "50-54": { esencial1: 965,   esencial2: 1018,  pro1: 1347,  pro2: 1644,  platinum1: 1772,  platinum2: 1898, deluxe: 2060 },
+      "55-59": { esencial1: 1153,  esencial2: 1216,  pro1: 1616,  pro2: 1792,  platinum1: 1914,  platinum2: 2088, deluxe: 2349 },
+      "60-64": { esencial1: 1436,  esencial2: 1513,  pro1: 2020,  pro2: 2330,  platinum1: 2469,  platinum2: 2547, deluxe: 2818 },
+      "65-69": { esencial1: 1859,  esencial2: 1959,  pro1: 2626,  pro2: 2889,  platinum1: 3013,  platinum2: 3133, deluxe: 3664 },
+      "70-75": { esencial1: 2425,  esencial2: 2554,  pro1: 3677,  pro2: 4045,  platinum1: 4127,  platinum2: 4386, deluxe: 4946 },
+      "76-80": { esencial1: 3404,  esencial2: 3586,  pro1: 5515,  pro2: 5865,  platinum1: 5943,  platinum2: 6229, deluxe: 6430 },
+      "81+":   { esencial1: 4775,  esencial2: 5029,  pro1: 8272,  pro2: 8797,  platinum1: 8855,  platinum2: 9281, deluxe: 9645 }
+    };
+
+    // Tabla de primas anuales CRC — primas[rango][plan_id]
+    // Fuente: Primas.pdf · folleto oficial INS colones
+    const PRIMAS_CRC = {
+      "0-25":  { esencial1: 183868,  esencial2: 194304,  pro1: 244750,  pro2: 375100,   platinum1: 470250,   platinum2: 645700,   deluxe: 646800 },
+      "26-29": { esencial1: 262745,  esencial2: 277356,  pro1: 347545,  pro2: 532642,   platinum1: 569003,   platinum2: 781297,   deluxe: 847308 },
+      "30-34": { esencial1: 312438,  esencial2: 329679,  pro1: 417054,  pro2: 612538,   platinum1: 654353,   platinum2: 820362,   deluxe: 889673 },
+      "35-39": { esencial1: 371076,  esencial2: 391420,  pro1: 500465,  pro2: 698294,   platinum1: 745962,   platinum2: 836769,   deluxe: 916364 },
+      "40-44": { esencial1: 401828,  esencial2: 423800,  pro1: 550511,  pro2: 761140,   platinum1: 820559,   platinum2: 886975,   deluxe: 989673 },
+      "45-49": { esencial1: 459950,  esencial2: 484998,  pro1: 633088,  pro2: 829643,   platinum1: 902614,   platinum2: 949063,   deluxe: 1058950 },
+      "50-54": { esencial1: 530941,  esencial2: 559746,  pro1: 740713,  pro2: 904311,   platinum1: 974824,   platinum2: 1043970,  deluxe: 1133076 },
+      "55-59": { esencial1: 634352,  esencial2: 668630,  pro1: 888856,  pro2: 985698,   platinum1: 1052809,  platinum2: 1148367,  deluxe: 1291707 },
+      "60-64": { esencial1: 789794,  esencial2: 832299,  pro1: 1111069, pro2: 1281408,  platinum1: 1358124,  platinum2: 1401008,  deluxe: 1550048 },
+      "65-69": { esencial1: 1022699, esencial2: 1077530, pro1: 1444390, pro2: 1588946,  platinum1: 1656911,  platinum2: 1723239,  deluxe: 2015063 },
+      "70-75": { esencial1: 1333506, esencial2: 1404787, pro1: 2022146, pro2: 2224524,  platinum1: 2269969,  platinum2: 2412535,  deluxe: 2720335 },
+      "76-80": { esencial1: 1872239, esencial2: 1972033, pro1: 3033219, pro2: 3225560,  platinum1: 3268755,  platinum2: 3425800,  deluxe: 3536435 },
+      "81+":   { esencial1: 2626466, esencial2: 2766176, pro1: 4549829, pro2: 4838340,  platinum1: 4870445,  platinum2: 5104442,  deluxe: 5304653 }
+    };
+
+    // Recargos por fraccionamiento (decisión oficina: SIN mensual)
+    const RECARGOS = {
+      anual:      { CRC: 0,    USD: 0,    cuotas: 1 },
+      semestral:  { CRC: 0.05, USD: 0.03, cuotas: 2 },
+      trimestral: { CRC: 0.07, USD: 0.04, cuotas: 4 }
+    };
+
+    const IVA_PCT = 0.02; // 2 % — seguros de personas, Ley 9635 CR. NUNCA sumado, solo nota visual.
+
+    // Whitelist de agentes (auth Google)
+    const AGENTES = {
+      "jhernandez@segurosdelins.com": {
+        nombre:   "JC Hernández",
+        whatsapp: "8624 8757",
+        email:    "jhernandez@segurosdelins.com",
+        codigo:   "001"
+      }
+      // Agregar más agentes acá cuando se autoricen
+    };
+
+    // ID de Google OAuth Client — reemplazar con el real antes de deploy
+    const GOOGLE_CLIENT_ID = "REEMPLAZAR_ANTES_DE_DEPLOY.apps.googleusercontent.com";
+
+    // =====================================================================
+    // Sección 10: Init + smoke tests
+    // =====================================================================
+    (function smokeTests(){
+      console.assert(PLANES.length === 7, '[smoke] PLANES debe tener 7 elementos');
+      console.assert(RANGOS_EDAD.length === 13, '[smoke] RANGOS_EDAD debe tener 13 elementos');
+      console.assert(Object.keys(PRIMAS_USD).length === 13, '[smoke] PRIMAS_USD debe tener 13 rangos');
+      console.assert(Object.keys(PRIMAS_CRC).length === 13, '[smoke] PRIMAS_CRC debe tener 13 rangos');
+      console.assert(PRIMAS_USD["40-44"].pro1 === 1001, '[smoke] prima USD 40-44 Pro 1 debe ser 1001');
+      console.assert(PRIMAS_CRC["40-44"].pro1 === 550511, '[smoke] prima CRC 40-44 Pro 1 debe ser 550511');
+      console.assert(RECARGOS.semestral.CRC === 0.05, '[smoke] recargo semestral CRC = 5 %');
+      console.assert(IVA_PCT === 0.02, '[smoke] IVA = 2 %');
+      console.assert(!RECARGOS.mensual, '[smoke] NO debe existir RECARGOS.mensual');
+      console.log('[vital360] smoke tests de datos OK · tarifas ' + TARIFAS_VERSION);
+    })();
   </script>
 </body>
 </html>
