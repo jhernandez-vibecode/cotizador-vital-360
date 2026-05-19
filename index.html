@@ -517,6 +517,7 @@
     const COBERTURAS_DEFS = [
       { id: "gastos_medicos",        label: "Gastos médicos" },
       { id: "deducible",             label: "Deducible anual" },
+      { id: "coaseguro",             label: "Coaseguro" },
       { id: "stop_loss",             label: "Stop loss" },
       { id: "maternidad",            label: "Maternidad" },
       { id: "prematurez",            label: "Prematurez" },
@@ -567,6 +568,8 @@
     };
 
     function getCobertura(planId, covId, moneda){
+      // Coaseguro: uniforme para todos los planes
+      if(covId === "coaseguro") return Math.round(COASEGURO_PCT * 100) + " %";
       const tabla = moneda === "USD" ? COBERTURAS_USD : COBERTURAS_CRC;
       return tabla[planId][covId];
     }
@@ -584,12 +587,17 @@
     const AGENTES = {
       "jhernandez@segurosdelins.com": {
         nombre:   "JC Hernández",
-        whatsapp: "8624 8757",
+        whatsapp: "8822 1348",
         email:    "jhernandez@segurosdelins.com",
         codigo:   "001"
       }
       // Agregar más agentes acá cuando se autoricen
     };
+
+    // Coaseguro uniforme del producto Vital 360 (no varía por plan).
+    // Es la participación porcentual del asegurado en los gastos cubiertos,
+    // tras agotar el deducible anual y antes del tope del stop loss.
+    const COASEGURO_PCT = 0.10;
 
     // ID de Google OAuth Client — reemplazar con el real antes de deploy
     const GOOGLE_CLIENT_ID = "REEMPLAZAR_ANTES_DE_DEPLOY.apps.googleusercontent.com";
@@ -1055,7 +1063,7 @@
     }
 
     let comparativaExpandida = false;
-    const COVS_TOP = ["gastos_medicos","deducible","stop_loss","maternidad","prematurez","trasplantes","medicamentos","epidemicas","asistencia_viajero","fallecimiento"];
+    const COVS_TOP = ["gastos_medicos","deducible","coaseguro","stop_loss","maternidad","prematurez","trasplantes","medicamentos","epidemicas","asistencia_viajero","fallecimiento"];
 
     function renderComparativaTabla(){
       const sel = state.planesSeleccionados;
@@ -1255,6 +1263,7 @@
     const COVS_CLIENTE = [
       { id:"gastos_medicos",     label:"Hospitalización" },
       { id:"deducible",          label:"Deducible anual" },
+      { id:"coaseguro",          label:"Coaseguro" },
       { id:"stop_loss",          label:"Stop loss (tope coaseguro)" },
       { id:"trasplantes",        label:"Trasplantes" },
       { id:"medicamentos",       label:"Medicamentos" },
@@ -1391,6 +1400,7 @@
         { icon:"18", t:"Asegurado titular",                   d:"Desde los 18 años, con su cónyuge o conviviente, hijos y otros dependientes aceptados por el INS." },
         { icon:"25", t:"Hijos dependientes",                  d:"Hasta los 25 años cumplidos. Después puede continuar con póliza individual con los mismos beneficios, sin nuevo período de espera." },
         { icon:"H",  t:"Habitación cubierta",                 d:"Hospitalización en habitación individual, normal o bipersonal según el centro médico." },
+        { icon:"%",  t:"Coaseguro " + Math.round(COASEGURO_PCT*100) + " %", d:"Una vez agotado el deducible anual, usted aporta el " + Math.round(COASEGURO_PCT*100) + " % del costo cubierto y el INS el resto. Su aporte por coaseguro tiene un tope anual: el stop loss del plan, indicado en la tabla detallada." },
         { icon:"$",  t:"Mecánica de pago",                    d:pagoTxt },
         { icon:"60", t:"Vigencia y forma de pago",            d:"Póliza anual prorrogable. Puede pagar anual (sin recargo), semestral o trimestralmente." }
       ];
