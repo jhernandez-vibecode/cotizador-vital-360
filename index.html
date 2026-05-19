@@ -1499,36 +1499,36 @@
             </td>
           </tr>
 
-          <!-- 5. Precios anuales de los planes — recomendado destacado -->
+          <!-- 5. Cards de planes estilo scanner agente — recomendado con estrellita coral -->
           <tr>
             <td style="padding:0 28px 8px;">
-              <p style="margin:0 0 12px;font-size:11px;font-weight:bold;color:#143F4A;letter-spacing:0.06em;text-transform:uppercase;">Prima familiar anual · ${numAseg} ${numAseg === 1 ? "asegurado" : "asegurados"}</p>
+              <p style="margin:0 0 14px;font-size:11px;font-weight:bold;color:#143F4A;letter-spacing:0.06em;text-transform:uppercase;">Primas calculadas para los ${numAseg} ${numAseg === 1 ? "asegurado" : "asegurados"}</p>
               <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:separate;border-spacing:6px 0;">
                 <tr>
                   ${planesData.map(pd => {
                     const isRec = pd.isRec;
-                    // Recomendado: fondo teal profundo + estrella grande + flag coral
-                    // No-recomendado: fondo cream con borde teal sutil
-                    const bg       = isRec ? "#1F5C6B" : "#FCE6DC";
-                    const border   = isRec ? "2px solid #E36B43" : "1px solid #E8C97A";
-                    const color    = isRec ? "#ffffff" : "#143F4A";
-                    const labelClr = isRec ? "#FCE6DC" : "#B94F2B";
-                    const subClr   = isRec ? "#C7DBE0" : "#6A7A80";
+                    const sumaPlan = payload.monedaInicial === "USD" ? pd.plan.sumaUSD : pd.plan.sumaCRC;
+                    const sumaFmt  = fmtMoneda(sumaPlan, payload.monedaInicial);
                     const starHtml = isRec
-                      ? `<div style="margin:0 0 6px;"><span style="display:inline-block;color:#FFD700;font-size:22px;line-height:1;text-shadow:0 1px 2px rgba(0,0,0,.3);">&#9733;</span></div>
-                         <p style="margin:0 0 6px;background:#E36B43;color:#ffffff;font-size:10px;font-weight:800;padding:4px 10px;border-radius:999px;display:inline-block;text-transform:uppercase;letter-spacing:0.06em;">Recomendado para usted</p>`
+                      ? `<table cellpadding="0" cellspacing="0" border="0"><tr><td bgcolor="#E36B43" style="background:#E36B43;color:#ffffff;width:22px;height:22px;border-radius:4px;text-align:center;font-size:13px;line-height:22px;font-weight:bold;">&#9733;</td></tr></table>`
                       : "";
-                    return `<td width="33%" align="center" bgcolor="${bg}" style="background:${bg};color:${color};border:${border};border-radius:10px;padding:18px 10px;vertical-align:top;">
-                      ${starHtml}
-                      <p style="margin:0;font-size:10px;text-transform:uppercase;letter-spacing:0.06em;font-weight:bold;color:${labelClr};">${_escEmail(pd.plan.ambito)}</p>
-                      <p style="margin:4px 0 10px;font-family:Georgia,serif;font-size:18px;font-weight:600;color:${color};letter-spacing:-0.01em;">${_escEmail(pd.plan.nombre)}</p>
-                      <p style="margin:0;font-family:Georgia,serif;font-size:${isRec ? '24px' : '19px'};font-weight:800;color:${color};letter-spacing:-0.02em;line-height:1.1;">${_escEmail(pd.primaFmt)}</p>
-                      <p style="margin:5px 0 0;font-size:10.5px;color:${subClr};font-style:italic;">${_escEmail(payload.monedaInicial)} anual</p>
+                    return `<td width="33%" align="left" bgcolor="#ffffff" style="background:#ffffff;border:1px solid #C7DBE0;border-radius:6px;padding:14px 14px 16px;vertical-align:top;">
+                      <table width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
+                        <td valign="top" style="font-size:10px;color:#B94F2B;text-transform:uppercase;letter-spacing:0.06em;font-weight:bold;line-height:1.3;">${_escEmail(pd.plan.ambito)}</td>
+                        <td valign="top" align="right" width="30">${starHtml}</td>
+                      </tr></table>
+                      <p style="margin:8px 0 12px;font-family:Georgia,'Times New Roman',serif;font-size:20px;font-weight:500;color:#0E2127;letter-spacing:-0.015em;line-height:1.1;">${_escEmail(pd.plan.nombre)}</p>
+                      <p style="margin:0;font-size:10.5px;color:#6A7A80;line-height:1.4;">suma anual</p>
+                      <p style="margin:2px 0 14px;font-family:Courier New,Courier,monospace;font-size:12px;color:#0E2127;font-weight:600;line-height:1.3;">${_escEmail(sumaFmt)}</p>
+                      <table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td bgcolor="#D7DCDE" style="background:#D7DCDE;height:1px;line-height:1px;font-size:0;">&nbsp;</td></tr></table>
+                      <p style="margin:10px 0 0;font-size:9.5px;color:#6A7A80;text-transform:uppercase;letter-spacing:0.06em;font-weight:bold;">Prima familiar/año</p>
+                      <p style="margin:4px 0 0;font-family:Georgia,'Times New Roman',serif;font-size:22px;font-weight:500;color:#0E2127;letter-spacing:-0.015em;line-height:1.1;">${_escEmail(pd.primaFmt)}</p>
+                      <p style="margin:5px 0 0;font-size:10.5px;color:#6A7A80;font-style:italic;">+ 2 % IVA</p>
                     </td>`;
                   }).join("")}
                 </tr>
               </table>
-              <p style="margin:10px 0 0;font-size:11px;color:#6A7A80;font-style:italic;text-align:center;">+ 2 % IVA · valores de la cuota anual. <strong style="color:#143F4A;font-style:normal;">En la cotización completa</strong> verá también las opciones <strong style="color:#143F4A;font-style:normal;">semestral y trimestral</strong> con los recargos correspondientes.</p>
+              <p style="margin:14px 0 0;font-size:11.5px;color:#6A7A80;font-style:italic;text-align:center;line-height:1.6;">La <span style="background:#E36B43;color:#ffffff;padding:1px 5px;border-radius:3px;font-style:normal;font-size:10px;">&#9733;</span> indica el plan recomendado. <strong style="color:#143F4A;font-style:normal;">En la cotización completa</strong> verá también las opciones <strong style="color:#143F4A;font-style:normal;">semestral y trimestral</strong> con los recargos correspondientes.</p>
             </td>
           </tr>
 
