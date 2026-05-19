@@ -165,6 +165,100 @@
     .send-r .btn-preview{background:rgba(255,255,255,.08);color:#fff;border:1px solid rgba(255,255,255,.18)}
     .send-r .btn-copy{background:transparent;color:rgba(255,255,255,.7);border:1px solid rgba(255,255,255,.15);font-size:12px}
     .send-r button:disabled{opacity:.4;cursor:not-allowed}
+
+    /* === VISTA CLIENTE === */
+    [data-view="cliente"]{background:#F4F0E2;min-height:100vh;font-size:14.5px}
+
+    .hero{background:var(--ins-teal-deep);color:#fff;position:relative;overflow:hidden}
+    .hero::before{content:"";position:absolute;right:-100px;top:-100px;width:400px;height:400px;background:radial-gradient(circle, rgba(227,107,67,.25), transparent 70%);pointer-events:none}
+    .hero::after{content:"";position:absolute;left:-80px;bottom:-180px;width:380px;height:380px;background:radial-gradient(circle, rgba(31,92,107,.5), transparent 70%);pointer-events:none}
+    .hero-top{padding:14px 0;border-bottom:1px solid rgba(255,255,255,.08);position:relative;z-index:1}
+    .hero-top-inner{max-width:1140px;margin:0 auto;padding:0 28px;display:flex;justify-content:space-between;align-items:center;font-size:12.5px}
+    .hero-top .l{display:flex;align-items:center;gap:10px}
+    .hero-top .l .logo{font-family:"IBM Plex Sans";font-size:24px;font-weight:300;letter-spacing:-0.02em;line-height:1}
+    .hero-top .l .logo .n{color:var(--ins-coral);font-size:13px;vertical-align:super}
+    .hero-top .l .sep{width:1px;height:22px;background:rgba(255,255,255,.18)}
+    .hero-top .l .who{color:rgba(255,255,255,.75)}
+    .hero-top .r{color:rgba(255,255,255,.55)}
+    .hero-body{max-width:1140px;margin:0 auto;padding:48px 28px 56px;position:relative;z-index:1;display:grid;grid-template-columns:1.5fr 1fr;gap:48px;align-items:end}
+    .hero-eyebrow{display:inline-flex;align-items:center;gap:8px;background:rgba(227,107,67,.18);color:var(--ins-coral);padding:5px 12px;border-radius:999px;font-size:11.5px;letter-spacing:.04em;font-weight:600;margin-bottom:18px;text-transform:uppercase}
+    .hero-eyebrow::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--ins-coral)}
+    .hero h1{font-family:"IBM Plex Serif",serif;font-weight:400;font-size:50px;letter-spacing:-0.025em;line-height:1.04}
+    .hero h1 .accent{color:var(--ins-coral);font-style:italic;font-weight:400}
+    .hero .lead{font-size:15.5px;color:rgba(255,255,255,.78);margin-top:14px;max-width:50ch;line-height:1.6}
+    .hero-card{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);border-radius:12px;padding:22px 24px}
+    .hero-card .lbl{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.55);font-weight:600;margin-bottom:6px}
+    .hero-card .nm{font-family:"IBM Plex Serif",serif;font-size:24px;letter-spacing:-0.015em;line-height:1.1;margin-bottom:14px}
+    .hero-card .row{display:flex;justify-content:space-between;padding:7px 0;border-top:1px solid rgba(255,255,255,.1);font-size:13px;color:rgba(255,255,255,.85)}
+    .hero-card .row:first-of-type{border-top:none;padding-top:0}
+    .hero-card .row .v{font-family:"IBM Plex Mono";font-weight:500}
+
+    /* TOGGLE BAR sticky */
+    .toggle-bar{background:var(--paper);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20;box-shadow:0 1px 0 rgba(0,0,0,.02)}
+    .toggle-inner{max-width:1140px;margin:0 auto;padding:14px 28px;display:flex;justify-content:space-between;align-items:center;gap:24px}
+    .toggle-meta{display:flex;align-items:center;gap:18px;font-size:12.5px;color:var(--ink-3)}
+    .toggle-meta .badge{background:var(--ins-teal-soft);color:var(--ins-teal-deep);padding:4px 10px;border-radius:4px;font-size:11.5px;font-weight:600}
+    .toggle-meta .sep{width:1px;height:14px;background:var(--line)}
+    .toggle-meta strong{color:var(--ink);font-weight:600}
+    .cur-toggle-c{display:flex;align-items:center;gap:10px}
+    .cur-toggle-c .lbl{font-size:12px;color:var(--ink-3);font-weight:500}
+    .cur-toggle-c .swap{display:flex;background:var(--cream);border:1px solid var(--line);border-radius:999px;padding:3px;gap:0}
+    .cur-toggle-c .swap button{padding:7px 18px;background:transparent;border:none;font-family:inherit;font-size:13px;font-weight:600;color:var(--ink-2);cursor:pointer;border-radius:999px;display:flex;align-items:center;gap:6px}
+    .cur-toggle-c .swap button.on{background:var(--ins-teal);color:#fff}
+
+    .wrap-cliente{max-width:1140px;margin:0 auto;padding:36px 28px 60px}
+
+    /* CLIENTE — comparativa de planes */
+    .comp{background:var(--paper);border:1px solid var(--line);border-radius:8px;overflow:hidden;margin-bottom:24px}
+    .comp-h{padding:18px 24px;background:var(--ins-teal);color:#fff;display:flex;justify-content:space-between;align-items:center}
+    .comp-h .t{font-family:"IBM Plex Serif",serif;font-size:18px;font-weight:500}
+    .comp-h .sub{font-size:12.5px;color:rgba(255,255,255,.7)}
+    .cols-c{display:grid;gap:1px;background:var(--line)}
+    .cols-c.n-1{grid-template-columns:1fr}
+    .cols-c.n-2{grid-template-columns:1fr 1fr}
+    .cols-c.n-3{grid-template-columns:repeat(3,1fr)}
+    .col-c{background:var(--paper);padding:24px 22px 0;display:flex;flex-direction:column;position:relative}
+    .col-c.rec{background:linear-gradient(180deg, var(--ins-teal-soft), var(--paper) 30%)}
+    .col-c-flag{position:absolute;top:0;left:50%;transform:translateX(-50%);background:var(--ins-coral);color:#fff;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;padding:5px 14px;border-bottom-left-radius:4px;border-bottom-right-radius:4px;font-weight:700}
+    .col-c-ambito{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ins-coral-deep);font-weight:700;margin-bottom:6px}
+    .col-c.rec .col-c-ambito{margin-top:8px}
+    .col-c-name{font-family:"IBM Plex Serif",serif;font-size:28px;font-weight:500;letter-spacing:-0.02em;line-height:1;margin-bottom:8px}
+    .col-c-suma{font-size:11.5px;color:var(--ink-3)}
+    .col-c-suma .v{font-family:"IBM Plex Mono";color:var(--ink);font-weight:500}
+    .col-c-price{padding:22px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin-top:18px}
+    .col-c-price .lbl{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);font-weight:700;margin-bottom:6px}
+    .col-c-price .amt-row{display:flex;align-items:baseline;gap:3px;color:var(--ink)}
+    .col-c-price .cur{font-family:"IBM Plex Serif",serif;font-size:20px;color:var(--ink-3);font-weight:400}
+    .col-c-price .amt{font-family:"IBM Plex Serif",serif;font-size:42px;font-weight:500;letter-spacing:-0.025em;line-height:1}
+    .col-c-price .per{font-size:12px;color:var(--ink-3);margin-top:6px;display:flex;justify-content:space-between;align-items:center}
+    .col-c-price .per .iva{font-size:10.5px;background:var(--cream);padding:2px 7px;border-radius:4px;color:var(--ink-2);font-style:italic}
+    .col-c-price .breakdown{margin-top:10px;font-size:12px;color:var(--ink-3);display:flex;justify-content:space-between}
+    .col-c-price .breakdown .v{color:var(--ink);font-family:"IBM Plex Mono"}
+    .col-c-feat{padding:20px 0;flex:1}
+    .col-c-feat .h{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);font-weight:700;margin-bottom:12px}
+    .col-c-feat ul{list-style:none}
+    .col-c-feat li{padding:7px 0;font-size:13.5px;color:var(--ink-2);display:flex;justify-content:space-between;gap:10px;align-items:baseline;border-bottom:1px solid var(--line-2)}
+    .col-c-feat li:last-child{border-bottom:none}
+    .col-c-feat li .k{display:inline-flex;align-items:center;gap:8px}
+    .col-c-feat li .k .check{color:var(--green-ok);font-size:12px}
+    .col-c-feat li .k .x{color:var(--ink-3);font-size:12px}
+    .col-c-feat li .v{font-family:"IBM Plex Mono";font-size:12.5px;color:var(--ink);font-weight:500;white-space:nowrap}
+    .col-c-feat li .v.na{font-family:"IBM Plex Sans";font-style:italic;color:var(--ink-3);font-weight:400}
+
+    /* CLIENTE — formas de pago */
+    .pay-cli{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:24px 28px;margin-bottom:24px}
+    .pay-cli-h{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:18px;padding-bottom:14px;border-bottom:1px solid var(--line)}
+    .pay-cli-h .t{font-family:"IBM Plex Serif",serif;font-size:22px;font-weight:500;letter-spacing:-0.015em}
+    .pay-cli-h .t .em{color:var(--ins-coral);font-style:italic}
+    .pay-cli-h .legend{font-size:12px;color:var(--ink-3);max-width:42ch;text-align:right;line-height:1.5}
+    .pay-options{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+    .pay-opt{padding:18px;border:1px solid var(--line);border-radius:6px;background:var(--paper);position:relative}
+    .pay-opt.best{background:var(--ins-teal-soft);border-color:var(--ins-teal)}
+    .pay-opt.best::after{content:"sin recargo";position:absolute;top:8px;right:10px;font-size:9.5px;background:var(--ins-coral);color:#fff;padding:2px 7px;border-radius:3px;letter-spacing:.04em;text-transform:uppercase;font-weight:700}
+    .pay-opt .nm{font-weight:600;font-size:14px;color:var(--ink);margin-bottom:2px}
+    .pay-opt .rec{font-size:11.5px;color:var(--ink-3);margin-bottom:14px}
+    .pay-opt .ct{font-family:"IBM Plex Serif",serif;font-size:24px;letter-spacing:-0.02em;line-height:1;color:var(--ink)}
+    .pay-opt .tot{font-size:11.5px;color:var(--ink-3);margin-top:4px}
   </style>
 </head>
 <body>
@@ -211,8 +305,9 @@
   </div>
 
   <div data-view="cliente">
-    <!-- Vista cliente — se construye en Tasks 11-15 -->
-    <div class="loading">Vista cliente (placeholder)</div>
+    <header class="hero" id="cli-hero"></header>
+    <div class="toggle-bar"><div class="toggle-inner" id="cli-toggle"></div></div>
+    <main class="wrap-cliente" id="cli-main"></main>
   </div>
 
   <div data-view="bloqueado">
@@ -982,11 +1077,180 @@
     }
 
     // =====================================================================
-    // Sección 8: Render vista cliente (stub — se completa en Tasks 11-15)
+    // Sección 8: Render vista cliente
     // =====================================================================
+
+    // Estado local del cliente: la moneda puede cambiar con el toggle
+    let cli = null;
+
+    // Coberturas que se muestran en la vista cliente como features
+    const COVS_CLIENTE = [
+      { id:"gastos_medicos",     label:"Hospitalización" },
+      { id:"deducible",          label:"Deducible anual" },
+      { id:"trasplantes",        label:"Trasplantes" },
+      { id:"medicamentos",       label:"Medicamentos" },
+      { id:"maternidad",         label:"Maternidad" },
+      { id:"asistencia_viajero", label:"Asistencia viajero" },
+      { id:"fallecimiento",      label:"Fallecimiento" }
+    ];
+
     function renderCliente(payload){
-      const el = document.querySelector('[data-view="cliente"]');
-      el.innerHTML = '<div class="loading">Vista cliente · payload recibido: ' + (payload && payload.cliente && payload.cliente.nombre || '(sin nombre)') + '</div>';
+      cli = {
+        payload,
+        moneda: payload.monedaInicial || "CRC"
+      };
+      renderClienteHero();
+      renderClienteToggle();
+      renderClienteMain();
+    }
+
+    function renderClienteHero(){
+      const p = cli.payload;
+      const filas = p.asegurados.map(a => {
+        const rel = a.parentesco === "titular" ? "Titular" :
+                    a.parentesco === "conyuge" ? "Cónyuge" :
+                    a.parentesco === "hijo"    ? "Hijo/a" : "Otro";
+        return `<div class="row"><span>${rel}</span><span class="v">${escapeHtml(a.nombre)}, ${a.edad} a.</span></div>`;
+      }).join('');
+
+      document.getElementById('cli-hero').innerHTML = `
+        <div class="hero-top">
+          <div class="hero-top-inner">
+            <div class="l">
+              <span class="logo">Vital<span class="n">360</span></span>
+              <span class="sep"></span>
+              <span class="who">Cotización preparada por ${escapeHtml(p.agente.nombre)} · Agente INS</span>
+            </div>
+            <div class="r">Cotización N.º ${escapeHtml(p.id)} · ${p.fecha} · vigencia ${p.vigenciaDias} días</div>
+          </div>
+        </div>
+        <div class="hero-body">
+          <div>
+            <span class="hero-eyebrow">Su cotización personal está lista</span>
+            <h1>${p.planes.length > 1 ? p.planes.length + " caminos" : "Una opción"} para cuidar a su familia,<br><span class="accent">${p.planRecomendado ? "uno a su medida." : "elegidos para usted."}</span></h1>
+            <p class="lead">Preparé ${p.planes.length === 1 ? "una opción" : p.planes.length + " planes"} Vital 360 del INS pensando en usted. Compare las coberturas, decida con calma y cualquier consulta me escribe directo por WhatsApp.</p>
+          </div>
+          <div class="hero-card">
+            <div class="lbl">Cotización para</div>
+            <div class="nm">${escapeHtml(p.cliente.nombre || "Cliente Vital 360")}</div>
+            ${filas}
+            <div class="row"><span>Total asegurados</span><span class="v">${p.asegurados.length} personas</span></div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderClienteToggle(){
+      const el = document.getElementById('cli-toggle');
+      el.innerHTML = `
+        <div class="toggle-meta">
+          <span class="badge">Tarifas vigentes ${TARIFAS_VERSION}</span>
+          <span class="sep"></span>
+          <span>Comparando <strong>${cli.payload.planes.length} plan${cli.payload.planes.length>1?'es':''}</strong></span>
+        </div>
+        <div class="cur-toggle-c">
+          <span class="lbl">Ver montos en</span>
+          <div class="swap">
+            <button data-cur="CRC" class="${cli.moneda==='CRC'?'on':''}">₡ Colones</button>
+            <button data-cur="USD" class="${cli.moneda==='USD'?'on':''}">$ Dólares</button>
+          </div>
+        </div>
+      `;
+      // Bind toggle moneda — solo se asigna una vez (guard)
+      if(!el.dataset.bound){
+        el.dataset.bound = "1";
+        el.addEventListener('click', e => {
+          if(e.target.dataset.cur){
+            cli.moneda = e.target.dataset.cur;
+            renderClienteToggle();
+            renderClienteMain();
+          }
+        });
+      }
+    }
+
+    function renderClienteMain(){
+      const main = document.getElementById('cli-main');
+      main.innerHTML = renderClienteCmp() + renderClientePago();
+    }
+
+    function renderClienteCmp(){
+      const p = cli.payload;
+      const cols = p.planes.map(planId => {
+        const plan = PLANES.find(pl => pl.id === planId);
+        const fam = primaFamiliar(planId, cli.moneda, p.asegurados);
+        const isRec = planId === p.planRecomendado;
+        const suma = cli.moneda === "USD" ? plan.sumaUSD : plan.sumaCRC;
+        const feats = COVS_CLIENTE.map(cov => {
+          const v = getCobertura(planId, cov.id, cli.moneda);
+          if(v === "NA") return `<li><span class="k"><span class="x">—</span>${escapeHtml(cov.label)}</span><span class="v na">no incluye</span></li>`;
+          const valTxt = typeof v === "number" ? fmtMoneda(v, cli.moneda) :
+                         cov.id === "deducible" && v === 0 ? "Sin deducible" : escapeHtml(String(v));
+          return `<li><span class="k"><span class="check">✓</span>${escapeHtml(cov.label)}</span><span class="v">${valTxt}</span></li>`;
+        }).join('');
+        return `<article class="col-c ${isRec?"rec":""}">
+          ${isRec ? '<span class="col-c-flag">★ Recomendado</span>' : ""}
+          <div class="col-c-ambito">${escapeHtml(plan.ambito)}</div>
+          <div class="col-c-name">${plan.nombre}</div>
+          <div class="col-c-suma">Suma asegurada anual <span class="v">${fmtMoneda(suma, cli.moneda)}</span></div>
+          <div class="col-c-price">
+            <div class="lbl">Prima familiar anual</div>
+            <div class="amt-row"><span class="cur">${cli.moneda==='USD'?'$':'₡'}</span><span class="amt">${fmtMoneda(fam, cli.moneda).replace(/^[₡$]/,'')}</span></div>
+            <div class="per"><span>por los ${p.asegurados.length} asegurados</span><span class="iva">+ 2 % IVA</span></div>
+            <div class="breakdown"><span>≈ por persona/año</span><span class="v">${fmtMoneda(fam / p.asegurados.length, cli.moneda)}</span></div>
+          </div>
+          <div class="col-c-feat">
+            <div class="h">Lo que cubre</div>
+            <ul>${feats}</ul>
+          </div>
+        </article>`;
+      }).join('');
+
+      const n = p.planes.length;
+      return `
+        <section class="comp">
+          <div class="comp-h">
+            <div class="t">Comparativa de ${n > 1 ? n + " planes" : "plan"}</div>
+            <div class="sub">Primas calculadas para los ${p.asegurados.length} asegurados · cuota anual</div>
+          </div>
+          <div class="cols-c n-${n}">${cols}</div>
+        </section>
+      `;
+    }
+
+    function renderClientePago(){
+      const p = cli.payload;
+      const planRec = p.planRecomendado || p.planes[0];
+      const plan = PLANES.find(pl => pl.id === planRec);
+      const fam = primaFamiliar(planRec, cli.moneda, p.asegurados);
+
+      const opts = [
+        { mod:"anual",      nm:"Anual",      rec:"recargo 0 %",      cuotas:"una sola cuota" },
+        { mod:"semestral",  nm:"Semestral",  rec:"recargo + " + (cli.moneda==='USD'?'3':'5') + " %", cuotas:"2 cuotas" },
+        { mod:"trimestral", nm:"Trimestral", rec:"recargo + " + (cli.moneda==='USD'?'4':'7') + " %", cuotas:"4 cuotas" }
+      ];
+      const items = opts.map(o => {
+        const tot   = totalConRecargo(o.mod, cli.moneda, fam);
+        const cuota = cuotaPorPeriodo(o.mod, cli.moneda, fam);
+        const isBest = o.mod === "anual";
+        const totLine = isBest ? `una sola cuota` : `${o.cuotas} · total año ${fmtMoneda(tot, cli.moneda)}`;
+        return `<div class="pay-opt ${isBest?"best":""}">
+          <div class="nm">${o.nm}</div>
+          <div class="rec">${o.rec}</div>
+          <div class="ct">${fmtMoneda(cuota, cli.moneda)}</div>
+          <div class="tot">${totLine}</div>
+        </div>`;
+      }).join('');
+
+      return `
+        <section class="pay-cli">
+          <div class="pay-cli-h">
+            <div class="t">Formas de pago <em class="em">· ${plan.nombre}${p.planRecomendado ? " (recomendado)" : ""}</em></div>
+            <div class="legend">Tarifas oficiales INS. Pagando anual no hay recargo. El fraccionamiento incrementa el total del año.</div>
+          </div>
+          <div class="pay-options">${items}</div>
+        </section>
+      `;
     }
 
     // =====================================================================
