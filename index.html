@@ -67,6 +67,46 @@
     .mh-user{display:flex;align-items:center;gap:8px;padding:6px 10px 6px 6px;border:1px solid var(--line);border-radius:24px;background:var(--paper);font-size:12.5px}
     .mh-user .av{width:26px;height:26px;border-radius:50%;background:var(--ins-teal);color:#fff;display:grid;place-items:center;font-weight:600;font-size:11px}
     .page-agente{max-width:1480px;margin:0 auto;padding:24px 32px 60px}
+    .page-agente.hidden{display:none}
+
+    /* Tabs vista agente */
+    .tabs-agente{max-width:1480px;margin:0 auto;padding:0 32px;border-bottom:1px solid var(--line);display:flex;gap:0;background:var(--paper)}
+    .tabs-agente .tab-btn{padding:13px 22px;background:transparent;border:none;border-bottom:2px solid transparent;font-family:inherit;font-size:13.5px;font-weight:600;color:var(--ink-3);cursor:pointer;display:flex;align-items:center;gap:8px;margin-bottom:-1px}
+    .tabs-agente .tab-btn:hover{color:var(--ink)}
+    .tabs-agente .tab-btn.active{color:var(--ink);border-bottom-color:var(--ins-coral)}
+    .tabs-agente .tab-count{display:inline-grid;place-items:center;min-width:22px;height:20px;padding:0 6px;background:var(--cream);color:var(--ink-2);border-radius:10px;font-family:"IBM Plex Mono";font-size:11px;font-weight:500}
+    .tabs-agente .tab-btn.active .tab-count{background:var(--ins-coral);color:#fff}
+
+    /* Historial de cotizaciones */
+    .hist-h{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:18px;flex-wrap:wrap;gap:12px}
+    .hist-h h2{font-family:"IBM Plex Serif",serif;font-size:24px;font-weight:500;letter-spacing:-0.015em}
+    .hist-h .sub{font-size:12.5px;color:var(--ink-3)}
+    .hist-filter{display:flex;gap:6px;align-items:center;font-size:12.5px;color:var(--ink-3)}
+    .hist-filter button{padding:6px 12px;background:transparent;border:1px solid var(--line);color:var(--ink-2);border-radius:4px;font-family:inherit;font-size:12.5px;cursor:pointer;font-weight:500}
+    .hist-filter button.on{background:var(--ins-teal);color:#fff;border-color:var(--ins-teal)}
+    .hist-empty{padding:80px 40px;text-align:center;color:var(--ink-3);font-family:"IBM Plex Serif";font-size:16px;font-style:italic;background:var(--paper);border:1px dashed var(--line);border-radius:8px}
+    .hist-table{width:100%;border-collapse:collapse;background:var(--paper);border:1px solid var(--line);border-radius:6px;overflow:hidden;font-size:13px}
+    .hist-table thead th{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-3);padding:11px 14px;text-align:left;background:var(--cream);border-bottom:1px solid var(--line);white-space:nowrap}
+    .hist-table tbody td{padding:13px 14px;border-bottom:1px solid var(--line-2);vertical-align:middle}
+    .hist-table tbody tr:hover{background:var(--cream)}
+    .hist-table .nm{font-weight:600;color:var(--ink)}
+    .hist-table .meta{font-size:11.5px;color:var(--ink-3);margin-top:2px}
+    .hist-table .planes{font-family:"IBM Plex Mono";font-size:11.5px;color:var(--ink-2)}
+    .hist-table .prima{font-family:"IBM Plex Mono";font-weight:500;color:var(--ink);white-space:nowrap}
+    .hist-table .fecha{font-family:"IBM Plex Mono";font-size:11.5px;color:var(--ink-3);white-space:nowrap}
+    .hist-state-pill{display:inline-flex;align-items:center;gap:6px;padding:3px 9px;border-radius:12px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+    .hist-state-pill.pendiente{background:#FFF4D6;color:#7A5B0E}
+    .hist-state-pill.aceptada{background:#DFF5E6;color:#176A3A}
+    .hist-state-pill.eliminada{background:var(--line);color:var(--ink-3)}
+    .hist-state-pill::before{content:"";width:6px;height:6px;border-radius:50%}
+    .hist-state-pill.pendiente::before{background:var(--ins-gold)}
+    .hist-state-pill.aceptada::before{background:var(--green-ok)}
+    .hist-state-pill.eliminada::before{background:var(--ink-3)}
+    .hist-actions{display:flex;gap:6px;flex-wrap:wrap}
+    .hist-actions button,.hist-actions a{padding:5px 9px;border:1px solid var(--line);background:var(--paper);color:var(--ink-2);border-radius:4px;font-family:inherit;font-size:11.5px;cursor:pointer;font-weight:500;text-decoration:none;display:inline-flex;align-items:center}
+    .hist-actions button:hover,.hist-actions a:hover{border-color:var(--ins-teal);color:var(--ins-teal-deep)}
+    .hist-actions button.danger:hover{border-color:var(--ins-coral);color:var(--ins-coral-deep)}
+    .hist-actions button.ok:hover{border-color:var(--green-ok);color:var(--green-ok)}
 
     /* PASO 1 — banda de inputs */
     .input-band{background:var(--paper);border:1px solid var(--line);border-radius:6px;overflow:hidden;margin-bottom:20px}
@@ -406,7 +446,11 @@
         </div>
       </div>
     </header>
-    <main class="page-agente">
+    <nav class="tabs-agente">
+      <button class="tab-btn active" data-tab="cotizador">Cotizador</button>
+      <button class="tab-btn"        data-tab="historial">Mis cotizaciones <span class="tab-count" id="tab-count">0</span></button>
+    </nav>
+    <main class="page-agente" data-tab-panel="cotizador">
 
       <!-- Paso 1 -->
       <section class="input-band">
@@ -423,6 +467,10 @@
       <!-- Paso 3 -->
       <section class="send-band" id="paso3-send"><!-- render dinámico (Task 10) --></section>
 
+    </main>
+
+    <main class="page-agente hidden" data-tab-panel="historial" id="historial-body">
+      <!-- render dinámico de renderHistorial() -->
     </main>
   </div>
 
@@ -1220,6 +1268,7 @@
     }
 
     function sendByWhatsApp(){
+      persistirCotizacionActual();
       const payload = buildPayloadCliente();
       const link = buildLinkCliente(payload);
       const msg = buildWhatsAppMessage(payload, link);
@@ -1230,12 +1279,14 @@
     }
 
     function previewCliente(){
+      persistirCotizacionActual();
       const payload = buildPayloadCliente();
       const link = buildLinkCliente(payload);
       window.open(link, "_blank");
     }
 
     function copyLinkCliente(){
+      persistirCotizacionActual();
       const payload = buildPayloadCliente();
       const link = buildLinkCliente(payload);
       navigator.clipboard.writeText(link).then(
@@ -1244,12 +1295,250 @@
       );
     }
 
+    // =====================================================================
+    // Sección 9b: Historial de cotizaciones
+    // =====================================================================
+    // Estructura de una cotización guardada:
+    //   { id, fecha, agenteEmail, payload (= buildPayloadCliente), link, estado, updatedAt }
+    // estado: "pendiente" | "aceptada" | "eliminada"
+
+    const LS_HIST_KEY = "vital360.historial";
+
+    let historial = [];
+    let histFiltro = "activas"; // "activas" | "todas"
+
+    function loadHistorial(){
+      try {
+        const raw = localStorage.getItem(LS_HIST_KEY);
+        if(raw){
+          const parsed = JSON.parse(raw);
+          if(Array.isArray(parsed)) historial = parsed;
+        }
+      } catch(e){ console.warn('[vital360] historial inválido', e); historial = []; }
+    }
+
+    function saveHistorial(){
+      try {
+        localStorage.setItem(LS_HIST_KEY, JSON.stringify(historial));
+      } catch(e){ console.warn('[vital360] no se pudo guardar historial', e); }
+    }
+
+    // Genera id corto único para la cotización (usado también como cotizacionId del payload)
+    function generarCotizacionId(){
+      const existentes = new Set(historial.map(h => h.id));
+      let id;
+      do {
+        id = "0" + Math.floor(Math.random() * 9000 + 1000); // "01234"
+      } while(existentes.has(id));
+      return id;
+    }
+
+    // Asegura que la cotización actual esté guardada. Si ya existe (mismo cotizacionId), actualiza.
+    function persistirCotizacionActual(){
+      if(!agenteActual || state.asegurados.length === 0 || state.planesSeleccionados.length === 0) return;
+      if(!state.cotizacionId){
+        state.cotizacionId = generarCotizacionId();
+        state.fechaCreacion = new Date().toISOString();
+        saveDraft();
+      }
+      const payload = buildPayloadCliente();
+      const link = buildLinkCliente(payload);
+      const idx = historial.findIndex(h => h.id === state.cotizacionId);
+      const registro = {
+        id: state.cotizacionId,
+        fecha: state.fechaCreacion,
+        agenteEmail: agenteActual.email,
+        payload,
+        link,
+        estado: idx === -1 ? "pendiente" : historial[idx].estado,
+        updatedAt: new Date().toISOString()
+      };
+      if(idx === -1) historial.unshift(registro);
+      else            historial[idx] = registro;
+      saveHistorial();
+      sincronizarSheet(registro);  // fire-and-forget si hay URL configurada
+      updateTabCount();
+    }
+
+    function marcarEstado(id, estado){
+      const h = historial.find(x => x.id === id);
+      if(!h) return;
+      h.estado = estado;
+      h.updatedAt = new Date().toISOString();
+      saveHistorial();
+      sincronizarSheet(h);
+      renderHistorial();
+      updateTabCount();
+    }
+
+    function reabrirCotizacion(id){
+      const h = historial.find(x => x.id === id);
+      if(!h) return;
+      // Cargar de vuelta al state
+      state.cotizacionId      = h.id;
+      state.fechaCreacion     = h.fecha;
+      state.cliente           = h.payload.cliente || { nombre:"", cedula:"", telefono:"" };
+      state.asegurados        = h.payload.asegurados.slice();
+      state.moneda            = h.payload.monedaInicial || "CRC";
+      state.planesSeleccionados = h.payload.planes.slice();
+      state.planRecomendado   = h.payload.planRecomendado;
+      saveDraft();
+      cambiarTab("cotizador");
+      renderAgente();
+    }
+
+    // ---------- Apps Script sync (configurable) ----------
+    // Para activar el respaldo en Google Sheets, JC debe:
+    // 1) Crear un Google Sheet + Apps Script (instrucciones en README)
+    // 2) Deploy del Apps Script como Web App "Cualquiera"
+    // 3) Pegar la URL acá:
+    const APPS_SCRIPT_URL = ""; // ej: "https://script.google.com/macros/s/AKfycb.../exec"
+
+    function sincronizarSheet(registro){
+      if(!APPS_SCRIPT_URL) return; // sin URL configurada → solo localStorage
+      try {
+        fetch(APPS_SCRIPT_URL, {
+          method: "POST",
+          mode: "no-cors",          // Apps Script funciona con no-cors para fire-and-forget
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify({ action: "upsert", registro })
+        }).catch(e => console.warn('[vital360] sync sheet falló', e));
+      } catch(e){ console.warn('[vital360] sync sheet error', e); }
+    }
+
+    // ---------- Render ----------
+    function cotizacionesActivas(){
+      return historial.filter(h => h.estado !== "eliminada");
+    }
+
+    function updateTabCount(){
+      const el = document.getElementById('tab-count');
+      if(el) el.textContent = cotizacionesActivas().length;
+    }
+
+    function renderHistorial(){
+      const body = document.getElementById('historial-body');
+      if(!body) return;
+      const lista = histFiltro === "todas" ? historial.slice() : cotizacionesActivas();
+      lista.sort((a,b) => (b.updatedAt || b.fecha).localeCompare(a.updatedAt || a.fecha));
+
+      const header = `
+        <div class="hist-h">
+          <div>
+            <h2>Mis cotizaciones</h2>
+            <div class="sub">${historial.length} totales · ${cotizacionesActivas().length} activas${APPS_SCRIPT_URL ? "" : " · respaldo solo en este navegador"}</div>
+          </div>
+          <div class="hist-filter">
+            <span>Ver:</span>
+            <button class="${histFiltro==='activas'?'on':''}" data-action="filter" data-filtro="activas">Activas</button>
+            <button class="${histFiltro==='todas'?'on':''}"   data-action="filter" data-filtro="todas">Todas (incluye eliminadas)</button>
+          </div>
+        </div>
+      `;
+
+      if(lista.length === 0){
+        body.innerHTML = header + `<div class="hist-empty">Todavía no hay cotizaciones guardadas. Vuelva a la pestaña <strong>Cotizador</strong>, complete una cotización y haga clic en <strong>Vista previa</strong>, <strong>Copiar link</strong> o <strong>Enviar por WhatsApp</strong>: se guarda automáticamente acá.</div>`;
+        return;
+      }
+
+      const rows = lista.map(h => {
+        const p = h.payload;
+        const planRecId = p.planRecomendado || p.planes[0];
+        const planRec = PLANES.find(pl => pl.id === planRecId);
+        const fam = primaFamiliar(planRecId, p.monedaInicial, p.asegurados);
+        const planesNm = p.planes.map(id => {
+          const pl = PLANES.find(x => x.id === id);
+          return id === p.planRecomendado ? `★${pl.nombre}` : pl.nombre;
+        }).join(" · ");
+        const wa = String(p.cliente.telefono || "").replace(/\D/g,'');
+        const waLink = wa ? `https://web.whatsapp.com/send/?phone=506${wa}&text=${encodeURIComponent("Hola " + (p.cliente.nombre || "") + ", le reenvío su cotización Vital 360 N.º " + h.id + ": " + h.link)}` : null;
+
+        const accs = h.estado === "eliminada"
+          ? `<button data-action="restaurar" data-id="${h.id}">↺ Restaurar</button>`
+          : `
+            ${h.estado !== "aceptada" ? `<button class="ok" data-action="aceptar" data-id="${h.id}">✓ Aceptar</button>` : ""}
+            ${h.estado !== "pendiente" ? `<button data-action="pendiente" data-id="${h.id}">⌛ Pendiente</button>` : ""}
+            <a href="${h.link}" target="_blank">👁 Ver</a>
+            <button data-action="copy" data-id="${h.id}">🔗 Copiar</button>
+            ${waLink ? `<a class="wa" href="${waLink}" target="_blank">📱 WA</a>` : ""}
+            <button data-action="reabrir" data-id="${h.id}">✎ Editar</button>
+            <button class="danger" data-action="eliminar" data-id="${h.id}">🗑 Eliminar</button>
+          `;
+
+        return `
+          <tr>
+            <td><span class="fecha">${(h.fecha || "").slice(0,10)}</span><div class="meta">N.º ${h.id}</div></td>
+            <td><div class="nm">${escapeHtml(p.cliente.nombre || "(sin nombre)")}</div><div class="meta">${p.asegurados.length} asegurados${p.cliente.telefono ? " · " + escapeHtml(p.cliente.telefono) : ""}</div></td>
+            <td><div class="planes">${escapeHtml(planesNm)}</div><div class="meta">Recomendado: ${planRec ? planRec.nombre : "—"}</div></td>
+            <td class="prima">${fmtMoneda(fam, p.monedaInicial)}<div class="meta">${p.monedaInicial}/año</div></td>
+            <td><span class="hist-state-pill ${h.estado}">${h.estado}</span></td>
+            <td><div class="hist-actions">${accs}</div></td>
+          </tr>
+        `;
+      }).join('');
+
+      body.innerHTML = header + `
+        <table class="hist-table">
+          <thead><tr><th>Fecha · N.º</th><th>Cliente</th><th>Planes</th><th>Prima anual</th><th>Estado</th><th>Acciones</th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+      `;
+    }
+
+    function bindHistorialEvents(){
+      const body = document.getElementById('historial-body');
+      if(body.dataset.bound) return;
+      body.dataset.bound = "1";
+      body.addEventListener('click', e => {
+        const btn = e.target.closest('[data-action]');
+        if(!btn) return;
+        const id = btn.dataset.id;
+        const action = btn.dataset.action;
+        if(action === 'filter'){ histFiltro = btn.dataset.filtro; renderHistorial(); }
+        if(action === 'aceptar') marcarEstado(id, "aceptada");
+        if(action === 'pendiente') marcarEstado(id, "pendiente");
+        if(action === 'eliminar'){
+          if(confirm("¿Eliminar esta cotización del listado? Quedará archivada como 'eliminada' y se oculta por defecto.")){
+            marcarEstado(id, "eliminada");
+          }
+        }
+        if(action === 'restaurar') marcarEstado(id, "pendiente");
+        if(action === 'reabrir')   reabrirCotizacion(id);
+        if(action === 'copy'){
+          const h = historial.find(x => x.id === id);
+          if(h) navigator.clipboard.writeText(h.link).then(
+            () => alert("Link copiado."),
+            () => prompt("Copie manualmente:", h.link)
+          );
+        }
+      });
+    }
+
+    function cambiarTab(tab){
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+      document.querySelectorAll('[data-tab-panel]').forEach(p => p.classList.toggle('hidden', p.dataset.tabPanel !== tab));
+      if(tab === "historial") renderHistorial();
+    }
+
+    function bindTabsEvents(){
+      const nav = document.querySelector('.tabs-agente');
+      if(!nav || nav.dataset.bound) return;
+      nav.dataset.bound = "1";
+      nav.addEventListener('click', e => {
+        const btn = e.target.closest('.tab-btn');
+        if(btn) cambiarTab(btn.dataset.tab);
+      });
+    }
+
     function renderAgente(){
       renderPaso1();
       renderPaso2();
       renderPaso3();
       bindPaso1Events();
       bindPaso2Events();
+      bindTabsEvents();
+      bindHistorialEvents();
+      updateTabCount();
     }
 
     // =====================================================================
@@ -1814,6 +2103,7 @@
         const suffix = oauthSinSetup ? " · MODO PRUEBA" : " (dev)";
         document.getElementById('mh-user-name').textContent = agenteActual.nombre + suffix;
         loadDraft();
+        loadHistorial();
         renderAgente();
         showView("agente");
         if(oauthSinSetup) showBannerModoPrueba();
@@ -1854,6 +2144,7 @@
       document.getElementById('mh-user-av').textContent = agenteActual.nombre.split(" ").map(w => w[0]).slice(0,2).join("").toUpperCase();
       document.getElementById('mh-user-name').textContent = agenteActual.nombre;
       loadDraft();
+      loadHistorial();
       renderAgente();
       showView("agente");
     }
