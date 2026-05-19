@@ -259,6 +259,82 @@
     .pay-opt .rec{font-size:11.5px;color:var(--ink-3);margin-bottom:14px}
     .pay-opt .ct{font-family:"IBM Plex Serif",serif;font-size:24px;letter-spacing:-0.02em;line-height:1;color:var(--ink)}
     .pay-opt .tot{font-size:11.5px;color:var(--ink-3);margin-top:4px}
+
+    /* CLIENTE — Servicios incluidos */
+    .included{background:var(--cream);border:1px solid var(--line);border-radius:8px;padding:28px 32px;margin-bottom:24px;display:grid;grid-template-columns:1fr 1.5fr;gap:36px;align-items:start}
+    .included h3{font-family:"IBM Plex Serif",serif;font-size:24px;font-weight:500;letter-spacing:-0.015em;line-height:1.15;margin-bottom:8px}
+    .included .sub{font-size:13.5px;color:var(--ink-3);line-height:1.55}
+    .included-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .inc-item{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;background:var(--paper);border:1px solid var(--line);border-radius:6px}
+    .inc-item .ico{width:32px;height:32px;border-radius:6px;background:var(--ins-teal-soft);color:var(--ins-teal-deep);display:grid;place-items:center;font-family:"IBM Plex Serif";font-size:18px;font-style:italic;flex-shrink:0}
+    .inc-item .t{font-weight:600;font-size:13.5px;color:var(--ink);margin-bottom:2px}
+    .inc-item .d{font-size:12px;color:var(--ink-3);line-height:1.5}
+
+    /* CLIENTE — documentos */
+    .docs-c{background:var(--paper);border:1px solid var(--line);border-radius:8px;margin-bottom:24px;overflow:hidden}
+    .docs-c-h{padding:22px 28px;background:linear-gradient(135deg, var(--ins-teal-soft), var(--paper) 70%);border-bottom:1px solid var(--line)}
+    .docs-c-h h3{font-family:"IBM Plex Serif",serif;font-size:24px;font-weight:500;letter-spacing:-0.015em;line-height:1.15;color:var(--ink);margin-bottom:6px}
+    .docs-c-h h3 em{font-style:italic;color:var(--ins-teal-deep)}
+    .docs-c-h .sub{font-size:13.5px;color:var(--ink-2);max-width:65ch;line-height:1.55}
+    .docs-c-h .sub strong{color:var(--ink);font-weight:600}
+    .docs-c-body{padding:18px 28px 22px}
+    .docs-section-c{margin-bottom:22px}
+    .docs-section-c:last-of-type{margin-bottom:0}
+    .docs-section-c .label-c{display:flex;align-items:center;gap:8px;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-3);font-weight:700;margin-bottom:10px;flex-wrap:wrap}
+    .docs-section-c .lpin{width:7px;height:7px;border-radius:50%}
+    .docs-section-c .lpin.base{background:var(--green-ok)}
+    .docs-section-c .lpin.extra{background:var(--ins-coral)}
+    .docs-section-c .lpin.cond{background:var(--ins-gold)}
+    .docs-section-c .trigger-chip{font-family:"IBM Plex Mono";text-transform:none;font-size:10.5px;letter-spacing:0;color:var(--ink-2);background:var(--cream);padding:2px 8px;border-radius:3px;border:1px solid var(--line);font-weight:500}
+    .docs-list-c{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .doc-c{display:flex;gap:14px;align-items:flex-start;padding:14px 16px;background:var(--cream);border:1px solid var(--line);border-radius:6px}
+    .doc-c .icon{width:42px;height:42px;border-radius:6px;background:var(--paper);display:grid;place-items:center;flex-shrink:0;border:1px solid var(--line);position:relative}
+    .doc-c .icon::before{content:"PDF";font-family:"IBM Plex Mono";font-size:9px;color:var(--ins-coral-deep);font-weight:700;position:absolute;bottom:5px;left:50%;transform:translateX(-50%);letter-spacing:.04em}
+    .doc-c .icon::after{content:"";position:absolute;top:7px;left:50%;transform:translateX(-50%);width:18px;height:14px;border:1.5px solid var(--ins-coral-deep);border-radius:2px}
+    .doc-c.aviso .icon::before{content:"!";color:var(--ink-2);font-family:"IBM Plex Serif";font-style:italic;font-size:18px;top:50%;bottom:auto;transform:translate(-50%,-50%)}
+    .doc-c.aviso .icon::after{display:none}
+    .doc-c .info{flex:1;min-width:0}
+    .doc-c .info .nm{font-weight:600;font-size:13.5px;color:var(--ink);margin-bottom:3px;line-height:1.3}
+    .doc-c .info .desc{font-size:11.5px;color:var(--ink-3);line-height:1.5}
+    .doc-c .dl{flex-shrink:0;display:flex;align-items:center;justify-content:center;width:34px;height:34px;background:var(--ins-teal);color:#fff;border-radius:6px;border:none;cursor:pointer;font-size:14px;text-decoration:none;font-weight:700;margin-top:2px}
+    .exam-list{background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:14px 18px;margin-top:8px;grid-column:span 2}
+    .exam-list .eh{font-size:12px;font-weight:600;color:var(--ink-2);margin-bottom:8px;display:flex;justify-content:space-between;align-items:center}
+    .exam-list .eh .note{font-size:11px;color:var(--ink-3);font-weight:500;font-style:italic;font-family:"IBM Plex Serif"}
+    .exam-list ul{list-style:none;display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px 18px;padding-top:6px}
+    .exam-list li{font-size:12px;color:var(--ink-2);padding:3px 0;display:flex;align-items:center;gap:6px}
+    .exam-list li::before{content:"·";color:var(--ins-coral);font-weight:700;font-size:16px}
+    .docs-note{margin-top:18px;padding:14px 16px;background:var(--paper);border-left:3px solid var(--ins-gold);border-radius:0 6px 6px 0;font-size:12.5px;color:var(--ink-2);line-height:1.6}
+    .docs-note strong{color:var(--ink);font-weight:600;display:block;margin-bottom:3px}
+    .docs-note .small{font-size:11.5px;color:var(--ink-3);margin-top:6px;display:block}
+
+    /* CLIENTE — periodos */
+    .wait{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:24px 28px;margin-bottom:24px}
+    .wait h3{font-family:"IBM Plex Serif",serif;font-size:22px;font-weight:500;letter-spacing:-0.015em;margin-bottom:8px}
+    .wait .sub{font-size:13px;color:var(--ink-3);margin-bottom:18px;max-width:62ch}
+    .wait-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border-top:1px solid var(--line)}
+    .wait-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--line-2);font-size:13px}
+    .wait-row .k{color:var(--ink-2)}
+    .wait-row .v{font-family:"IBM Plex Mono";color:var(--ink);font-weight:600;font-size:12px}
+    .wait-grid > div{padding:0 22px;border-right:1px solid var(--line-2)}
+    .wait-grid > div:last-child{border-right:none}
+
+    /* CLIENTE — CTA */
+    .cta-strip{background:var(--ins-teal-deep);color:#fff;border-radius:8px;padding:32px 36px;margin-bottom:24px;display:grid;grid-template-columns:1.4fr 1fr;gap:36px;align-items:center;position:relative;overflow:hidden}
+    .cta-strip::after{content:"";position:absolute;right:-60px;top:-60px;width:240px;height:240px;background:radial-gradient(circle, rgba(227,107,67,.3), transparent 70%);pointer-events:none}
+    .cta-strip h3{font-family:"IBM Plex Serif",serif;font-size:30px;font-weight:400;letter-spacing:-0.02em;line-height:1.1}
+    .cta-strip h3 em{font-style:italic;color:var(--ins-coral)}
+    .cta-strip p{font-size:14px;color:rgba(255,255,255,.78);margin-top:8px;max-width:48ch;line-height:1.55}
+    .cta-strip-r{position:relative;z-index:1;display:flex;flex-direction:column;gap:10px}
+    .cta-strip-r .agent{display:flex;align-items:center;gap:14px;padding:14px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);border-radius:8px}
+    .cta-strip-r .agent .av{width:46px;height:46px;border-radius:50%;background:var(--ins-coral);color:#fff;display:grid;place-items:center;font-family:"IBM Plex Serif";font-size:20px;font-weight:600}
+    .cta-strip-r .agent .n{font-size:14px;font-weight:600}
+    .cta-strip-r .agent .r{font-size:12px;color:rgba(255,255,255,.65)}
+    .cta-strip-r .btn-wa{display:flex;align-items:center;justify-content:center;gap:10px;background:var(--ins-coral);color:#fff;padding:14px 18px;border-radius:8px;font-weight:600;font-size:14.5px;text-decoration:none;border:none;cursor:pointer;font-family:inherit}
+    .cta-strip-r .btn-wa:hover{background:var(--ins-coral-deep)}
+
+    /* CLIENTE — disclaimers */
+    .fine{background:var(--cream);border:1px solid var(--line);border-radius:8px;padding:22px 28px;font-size:12px;color:var(--ink-3);line-height:1.65}
+    .fine strong{color:var(--ink-2);font-weight:600}
   </style>
 </head>
 <body>
@@ -1171,7 +1247,154 @@
 
     function renderClienteMain(){
       const main = document.getElementById('cli-main');
-      main.innerHTML = renderClienteCmp() + renderClientePago();
+      main.innerHTML =
+        renderClienteCmp() +
+        renderClientePago() +
+        renderClienteServicios() +
+        renderClienteDocs() +
+        renderClienteEspera() +
+        renderClienteCTA() +
+        renderClienteDisclaimers();
+    }
+
+    function renderClienteServicios(){
+      return `
+        <section class="included">
+          <div>
+            <h3>Servicios que vienen sin costo adicional</h3>
+            <div class="sub">Independientemente del plan que elija, su póliza Vital 360 incluye estos beneficios complementarios.</div>
+          </div>
+          <div class="included-grid">
+            <div class="inc-item"><div class="ico">+</div><div><div class="t">Medicina virtual 360</div><div class="d">Consultas médicas por video, sin costo, las 24 horas.</div></div></div>
+            <div class="inc-item"><div class="ico">a</div><div><div class="t">Asistencia al viajero 360</div><div class="d">Hasta US$10.000 por viaje en planes Regional e Internacional.</div></div></div>
+            <div class="inc-item"><div class="ico">d</div><div><div class="t">Cobertura dental</div><div class="d">Por accidente y/o emergencia en todos los planes.</div></div></div>
+            <div class="inc-item"><div class="ico">r</div><div><div class="t">Red médica INS</div><div class="d">Acceso a hospitales y especialistas en toda Costa Rica.</div></div></div>
+          </div>
+        </section>
+      `;
+    }
+
+    function renderClienteDocs(){
+      const p = cli.payload;
+      const planRec = p.planRecomendado || p.planes[0];
+      const docs = calcularDocumentos(p.asegurados, planRec);
+
+      const baseItems = docs.base.map(d => `
+        <div class="doc-c">
+          <div class="icon"></div>
+          <div class="info">
+            <div class="nm">${escapeHtml(d.nombre)}</div>
+            <div class="desc">${escapeHtml(d.desc)}</div>
+          </div>
+          <a class="dl" href="${d.archivo}" download title="Descargar PDF">↓</a>
+        </div>`).join('');
+
+      const dispSections = docs.disparadores.map(d => {
+        const items = d.items.map(it => {
+          if(it.tipo === "lista"){
+            const exs = it.examenes.map(e => `<li>${escapeHtml(e)}</li>`).join('');
+            return `<div class="exam-list">
+              <div class="eh"><span>${escapeHtml(it.nombre)}</span><span class="note">vigencia 90 días</span></div>
+              <ul>${exs}</ul>
+            </div>`;
+          }
+          if(it.tipo === "pdf"){
+            return `<div class="doc-c">
+              <div class="icon"></div>
+              <div class="info"><div class="nm">${escapeHtml(it.nombre)}</div><div class="desc">${escapeHtml(it.desc)}</div></div>
+              <a class="dl" href="${it.archivo}" download title="Descargar PDF">↓</a>
+            </div>`;
+          }
+          // aviso
+          return `<div class="doc-c aviso" style="grid-column:span 2;background:var(--ins-teal-soft);border-color:var(--ins-teal-line)">
+            <div class="icon" style="background:var(--paper)"></div>
+            <div class="info"><div class="nm">${escapeHtml(it.nombre)}</div><div class="desc">${escapeHtml(it.desc)}</div></div>
+          </div>`;
+        }).join('');
+        return `<div class="docs-section-c">
+          <div class="label-c"><span class="lpin extra"></span>${escapeHtml(d.titulo)}<span class="trigger-chip">${escapeHtml(d.chip)}</span></div>
+          <div class="docs-list-c">${items}</div>
+        </div>`;
+      }).join('');
+
+      return `
+        <section class="docs-c">
+          <div class="docs-c-h">
+            <h3>Documentos para <em>iniciar el aseguramiento</em></h3>
+            <p class="sub">Cuando decida proceder con cualquiera de los planes cotizados, estos son los formularios que necesitamos completar. <strong>Su agente le acompaña en todo el proceso.</strong></p>
+          </div>
+          <div class="docs-c-body">
+            <div class="docs-section-c">
+              <div class="label-c"><span class="lpin base"></span>Para todos los asegurados · ${docs.base.length} documentos base</div>
+              <div class="docs-list-c">${baseItems}</div>
+            </div>
+            ${dispSections}
+            <div class="docs-note">
+              <strong>Nota sobre cuestionarios médicos adicionales</strong>
+              Si al llenar la Declaración de Salud algún asegurado responde afirmativamente alguna pregunta sobre afecciones específicas (diabetes, hipertensión, problemas digestivos, depresión/ansiedad, etc.), el INS puede requerir un cuestionario adicional específico. El agente le indicará cuál corresponde según sus respuestas.
+              <span class="small">Las pruebas de salud tienen vigencia de 90 días naturales. La solicitud tiene vigencia de 60 días naturales.</span>
+            </div>
+          </div>
+        </section>
+      `;
+    }
+
+    function renderClienteEspera(){
+      return `
+        <section class="wait">
+          <h3>Periodos de espera</h3>
+          <div class="sub">El INS aplica un tiempo de espera para ciertas coberturas, desde la fecha en que inicia la póliza. Después de cumplido el plazo, la cobertura opera con normalidad.</div>
+          <div class="wait-grid">
+            <div>
+              <div class="wait-row"><span class="k">Maternidad / embarazo</span><span class="v">13 m</span></div>
+              <div class="wait-row"><span class="k">Preexistencias declaradas</span><span class="v">12 m</span></div>
+              <div class="wait-row"><span class="k">Chequeo general</span><span class="v">24 m</span></div>
+            </div>
+            <div>
+              <div class="wait-row"><span class="k">Trasplantes</span><span class="v">24 m</span></div>
+              <div class="wait-row"><span class="k">Cataratas y glaucoma</span><span class="v">10 m</span></div>
+              <div class="wait-row"><span class="k">Enfermedad de próstata</span><span class="v">10 m</span></div>
+            </div>
+            <div>
+              <div class="wait-row"><span class="k">Tiroides</span><span class="v">10 m</span></div>
+              <div class="wait-row"><span class="k">Hernias</span><span class="v">10 m</span></div>
+              <div class="wait-row"><span class="k">Litiasis (vesícula/urinaria)</span><span class="v">10 m</span></div>
+            </div>
+          </div>
+        </section>
+      `;
+    }
+
+    function renderClienteCTA(){
+      const a = cli.payload.agente;
+      const wa = String(a.whatsapp || "").replace(/\D/g,'');
+      const waLink = "https://web.whatsapp.com/send/?phone=506" + wa + "&text=" + encodeURIComponent("Hola " + a.nombre + ", quisiera consultar sobre la cotización Vital 360 N.º " + cli.payload.id);
+      return `
+        <section class="cta-strip">
+          <div>
+            <h3>¿Tiene una duda?<br><em>Hablemos directo.</em></h3>
+            <p>Le explico cualquier detalle del plan, los periodos de espera o cómo cotizar diferente. Sin compromiso.</p>
+          </div>
+          <div class="cta-strip-r">
+            <div class="agent">
+              <div class="av">${inicialDe(a.nombre)}</div>
+              <div>
+                <div class="n">${escapeHtml(a.nombre)}</div>
+                <div class="r">Agente autorizado INS · 100 Años INS</div>
+              </div>
+            </div>
+            <a class="btn-wa" href="${waLink}" target="_blank">Escribir por WhatsApp · ${escapeHtml(a.whatsapp)}</a>
+          </div>
+        </section>
+      `;
+    }
+
+    function renderClienteDisclaimers(){
+      return `
+        <section class="fine">
+          <strong>Información importante.</strong> Esta cotización es de carácter informativo y se basa en las tarifas oficiales del Instituto Nacional de Seguros vigentes a la fecha indicada. Mantiene vigencia por ${cli.payload.vigenciaDias} días naturales. Las primas mostradas <strong>no incluyen el impuesto al valor agregado (IVA 2 %, tarifa especial para seguros de personas, Ley 9635 de Costa Rica)</strong>. La aceptación final del riesgo y la emisión de la póliza corresponden al INS conforme a la Ley Reguladora del Contrato de Seguros y al producto registrado bajo norma SUGESE P20-76-A01-1097 V3.
+        </section>
+      `;
     }
 
     function renderClienteCmp(){
