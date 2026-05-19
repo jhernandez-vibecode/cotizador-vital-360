@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Vital 360 · Cotizador · Seguros Digitales</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Serif:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    /* CSS se agrega en Task 2 */
+    body { font-family: 'IBM Plex Sans', sans-serif; padding: 40px; }
+  </style>
+</head>
+<body>
+  <h1>Cotizador Vital 360</h1>
+  <p id="status">Cargando…</p>
+
+  <script>
+    // ===== Sección 10: Init =====
+    document.getElementById('status').textContent = 'Skeleton OK · ' + new Date().toISOString();
+    console.log('[vital360] skeleton cargado');
+  </script>
+</body>
+</html>
