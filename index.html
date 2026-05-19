@@ -2190,6 +2190,7 @@
         renderClienteServicios() +
         renderClienteDocs() +
         renderClienteEspera() +
+        renderClienteMaterialInformativo() +
         renderClienteCTA() +
         renderClienteDisclaimers();
       bindClienteMainEvents();
@@ -2307,7 +2308,6 @@
               <div class="docs-list-c">${baseItems}</div>
             </div>
             ${dispSections}
-            ${renderClienteMaterialInformativo()}
             <div class="docs-note">
               <strong>Nota sobre cuestionarios médicos adicionales</strong>
               Si al llenar la Declaración de Salud algún asegurado responde afirmativamente alguna pregunta sobre afecciones específicas (diabetes, hipertensión, problemas digestivos, depresión/ansiedad, etc.), el INS puede requerir un cuestionario adicional específico. El agente le indicará cuál corresponde según sus respuestas.
@@ -2318,7 +2318,9 @@
       `;
     }
 
-    // Bloque "Material informativo": PDFs descargables del producto
+    // Sección "Material informativo": PDFs descargables del producto.
+    // Va después de Periodos de espera, como sección independiente — eso
+    // primero comunica las reglas y luego entrega el material de referencia.
     function renderClienteMaterialInformativo(){
       const p = cli.payload;
       // Asistencia viajero solo aplica si hay planes Regional o Internacional cotizados
@@ -2349,10 +2351,18 @@
         </div>`).join('');
 
       return `
-        <div class="docs-section-c">
-          <div class="label-c"><span class="lpin cond"></span>Material informativo del producto · ${materiales.length} folletos</div>
-          <div class="docs-list-c">${items}</div>
-        </div>
+        <section class="docs-c">
+          <div class="docs-c-h">
+            <h3>Material informativo <em>del producto</em></h3>
+            <p class="sub">Folletos oficiales del INS para que profundice en cada beneficio cuando lo necesite. Una vez que conoce los periodos de espera de arriba, estos materiales explican cómo funcionan los servicios principales.</p>
+          </div>
+          <div class="docs-c-body">
+            <div class="docs-section-c">
+              <div class="label-c"><span class="lpin cond"></span>${materiales.length} folletos disponibles</div>
+              <div class="docs-list-c">${items}</div>
+            </div>
+          </div>
+        </section>
       `;
     }
 
