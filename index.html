@@ -53,6 +53,21 @@
     /* Loading state */
     .loading{padding:60px 40px;text-align:center;color:var(--ink-3);font-family:"IBM Plex Mono";font-size:12px}
 
+    /* Modal preview de correo */
+    .email-modal-bg{position:fixed;inset:0;background:rgba(14,33,39,.7);display:flex;align-items:center;justify-content:center;z-index:60;padding:20px}
+    .email-modal{background:var(--paper);border-radius:8px;width:780px;max-width:95vw;max-height:92vh;display:flex;flex-direction:column;overflow:hidden}
+    .email-modal-h{padding:16px 22px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:flex-start;gap:14px}
+    .email-modal-h h3{font-family:"IBM Plex Serif",serif;font-size:18px;font-weight:500;margin-bottom:4px}
+    .email-modal-h .sub{font-size:12px;color:var(--ink-3);line-height:1.5}
+    .email-modal-h .x{background:none;border:none;font-size:24px;line-height:1;color:var(--ink-3);cursor:pointer;padding:0 0 0 10px}
+    .email-modal-h .x:hover{color:var(--ink)}
+    .email-modal-actions{padding:14px 22px;display:flex;gap:8px;flex-wrap:wrap;border-bottom:1px solid var(--line-2);background:var(--cream)}
+    .email-modal-actions .btn{padding:10px 14px;font-size:13px}
+    .email-modal-hint{padding:10px 22px;font-size:11.5px;color:var(--ink-2);background:#FFF4D6;border-bottom:1px solid #E8C97A;line-height:1.55}
+    .email-modal-hint kbd{font-family:"IBM Plex Mono";font-size:10.5px;background:var(--paper);border:1px solid var(--line);border-radius:3px;padding:1px 5px}
+    .email-modal-preview{flex:1;overflow:hidden;background:#f0f1f2;padding:14px}
+    .email-modal-preview iframe{width:100%;height:100%;border:1px solid var(--line);border-radius:4px;background:#fff;min-height:400px}
+
     /* Tooltip de cobertura — funciona en hover (desktop) y tap (mobile) */
     .has-tip{position:relative;display:inline-flex;align-items:center;gap:6px;cursor:help;border-bottom:1px dotted var(--ink-3);outline:none}
     .has-tip .tip-ico{display:inline-grid;place-items:center;width:14px;height:14px;border-radius:50%;background:var(--ins-teal-soft);color:var(--ins-teal-deep);font-family:"IBM Plex Serif",serif;font-style:italic;font-size:10px;font-weight:600;flex-shrink:0;line-height:1}
@@ -264,6 +279,8 @@
     .send-r button{padding:12px 18px;border:none;border-radius:6px;font-family:inherit;font-size:13.5px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;text-align:left}
     .send-r .btn-wa{background:var(--ins-coral);color:#fff}
     .send-r .btn-wa:hover{background:var(--ins-coral-deep)}
+    .send-r .btn-mail{background:var(--ins-teal);color:#fff;border:1px solid var(--ins-teal)}
+    .send-r .btn-mail:hover{background:var(--ins-teal-deep);border-color:var(--ins-teal-deep)}
     .send-r .btn-preview{background:rgba(255,255,255,.08);color:#fff;border:1px solid rgba(255,255,255,.18)}
     .send-r .btn-copy{background:transparent;color:rgba(255,255,255,.7);border:1px solid rgba(255,255,255,.15);font-size:12px}
     .send-r button:disabled{opacity:.4;cursor:not-allowed}
@@ -277,6 +294,7 @@
     .hero-top{padding:14px 0;border-bottom:1px solid rgba(255,255,255,.08);position:relative;z-index:1}
     .hero-top-inner{max-width:1140px;margin:0 auto;padding:0 28px;display:flex;justify-content:space-between;align-items:center;font-size:12.5px}
     .hero-top .l{display:flex;align-items:center;gap:10px}
+    .hero-ins-logo{height:32px;width:auto;display:block;filter:brightness(0) invert(1);opacity:.92}
     .hero-top .l .logo{font-family:"IBM Plex Sans";font-size:24px;font-weight:300;letter-spacing:-0.02em;line-height:1}
     .hero-top .l .logo .n{color:var(--ins-coral);font-size:13px;vertical-align:super}
     .hero-top .l .sep{width:1px;height:22px;background:rgba(255,255,255,.18)}
@@ -708,6 +726,9 @@
     // tras agotar el deducible anual y antes del tope del stop loss.
     const COASEGURO_PCT = 0.10;
 
+    // Logo INS hosteado en el Portal SDI (mismo asset que usa cotizador-autos)
+    const LOGO_INS_URL = "https://cotizador.appsegurosdigitales.com/img/ins-logo.png";
+
     // ID de Google OAuth Client — reemplazar con el real antes de deploy
     const GOOGLE_CLIENT_ID = "REEMPLAZAR_ANTES_DE_DEPLOY.apps.googleusercontent.com";
 
@@ -899,7 +920,7 @@
     const ESTADO_INICIAL = {
       cotizacionId: null,        // generado al primer guardado
       fechaCreacion: null,
-      cliente: { nombre: "", cedula: "", telefono: "" },
+      cliente: { nombre: "", cedula: "", telefono: "", email: "" },
       asegurados: [
         // Por defecto vacío. El agente agrega al menos al titular.
       ],
@@ -983,7 +1004,7 @@
       const tit = state.asegurados.find(a => a.parentesco === "titular");
       const tieneTit = !!tit;
       const titBox = tieneTit
-        ? `<div class="tit-info">Cliente <strong>${escapeHtml(tit.nombre)}</strong> · cédula ${escapeHtml(state.cliente.cedula || "—")} · WhatsApp ${escapeHtml(state.cliente.telefono || "—")}</div>`
+        ? `<div class="tit-info">Cliente <strong>${escapeHtml(tit.nombre)}</strong> · cédula ${escapeHtml(state.cliente.cedula || "—")} · WhatsApp ${escapeHtml(state.cliente.telefono || "—")} · email ${escapeHtml(state.cliente.email || "—")}</div>`
         : `<div class="tit-info warn">⚠ Falta el titular. Agréguelo como asegurado con parentesco "titular" para que cuente como cliente.</div>`;
 
       body.innerHTML = `
@@ -1016,6 +1037,7 @@
       const isEdit = idx != null;
       const cedula = state.cliente.cedula || "";
       const tel    = state.cliente.telefono || "";
+      const email  = state.cliente.email || "";
       const html = `
         <div class="aseg-modal-bg open" id="aseg-modal-bg">
           <div class="aseg-modal">
@@ -1034,9 +1056,12 @@
                 ${NACIONALIDADES.map(n => `<option value="${n}" ${n===ex.nacionalidad?"selected":""}>${NACIONALIDAD_LABEL[n]}</option>`).join('')}
               </select>
             </div>
-            <div id="am-titular-extra" class="row two-col" style="${ex.parentesco==='titular' ? '' : 'display:none'}">
-              <div><label>Cédula <span style="color:var(--ink-3);font-weight:400;text-transform:none;letter-spacing:0">(titular)</span></label><input id="am-cedula" value="${escapeAttr(cedula)}"></div>
-              <div><label>WhatsApp <span style="color:var(--ink-3);font-weight:400;text-transform:none;letter-spacing:0">(titular)</span></label><input id="am-tel" value="${escapeAttr(tel)}" placeholder="8888 8888"></div>
+            <div id="am-titular-extra" style="${ex.parentesco==='titular' ? '' : 'display:none'}">
+              <div class="row two-col">
+                <div><label>Cédula <span style="color:var(--ink-3);font-weight:400;text-transform:none;letter-spacing:0">(titular)</span></label><input id="am-cedula" value="${escapeAttr(cedula)}"></div>
+                <div><label>WhatsApp <span style="color:var(--ink-3);font-weight:400;text-transform:none;letter-spacing:0">(titular)</span></label><input id="am-tel" value="${escapeAttr(tel)}" placeholder="8888 8888"></div>
+              </div>
+              <div class="row"><label>Email <span style="color:var(--ink-3);font-weight:400;text-transform:none;letter-spacing:0">(titular · para enviar por correo)</span></label><input id="am-email" type="email" value="${escapeAttr(email)}" placeholder="cliente@ejemplo.com"></div>
             </div>
             <div class="actions">
               ${isEdit ? `<button class="btn btn-secondary" data-action="del-from-modal" data-idx="${idx}">Quitar</button>` : ""}
@@ -1066,7 +1091,7 @@
         if(action === 'del'){
           const removed = state.asegurados.splice(Number(idx), 1)[0];
           if(removed && removed.parentesco === 'titular'){
-            state.cliente.nombre = ""; state.cliente.cedula = ""; state.cliente.telefono = "";
+            state.cliente.nombre = ""; state.cliente.cedula = ""; state.cliente.telefono = ""; state.cliente.email = "";
           }
           saveDraft(); renderPaso1(); renderPaso2(); renderPaso3();
         }
@@ -1089,7 +1114,7 @@
         if(action === 'del-from-modal'){
           const removed = state.asegurados.splice(Number(e.target.dataset.idx), 1)[0];
           if(removed && removed.parentesco === 'titular'){
-            state.cliente.nombre = ""; state.cliente.cedula = ""; state.cliente.telefono = "";
+            state.cliente.nombre = ""; state.cliente.cedula = ""; state.cliente.telefono = ""; state.cliente.email = "";
           }
           saveDraft(); closeAsegModal(); renderPaso1(); renderPaso2(); renderPaso3();
         }
@@ -1114,9 +1139,11 @@
             // Sincronizar cliente del titular
             const cedulaEl = document.getElementById('am-cedula');
             const telEl    = document.getElementById('am-tel');
+            const emailEl  = document.getElementById('am-email');
             state.cliente.nombre   = nombre;
             state.cliente.cedula   = cedulaEl ? cedulaEl.value.trim() : state.cliente.cedula;
             state.cliente.telefono = telEl    ? telEl.value.trim()    : state.cliente.telefono;
+            state.cliente.email    = emailEl  ? emailEl.value.trim()  : state.cliente.email;
           }
           const aseg = { nombre, parentesco, edad, nacionalidad };
           if(idx === '') state.asegurados.push(aseg);
@@ -1243,6 +1270,7 @@
           renderPaso3();
         }
         if(e.target.dataset.action === 'send-wa')  sendByWhatsApp();
+        if(e.target.dataset.action === 'send-mail')sendByEmail();
         if(e.target.dataset.action === 'preview')  previewCliente();
         if(e.target.dataset.action === 'copy')     copyLinkCliente();
       });
@@ -1260,6 +1288,7 @@
           </div>
           <div class="send-r">
             <button class="btn-wa" disabled>📱 Enviar por WhatsApp</button>
+            <button class="btn-mail" disabled>📧 Enviar por correo</button>
             <button class="btn-preview" disabled>👁 Vista previa</button>
             <button class="btn-copy" disabled>🔗 Copiar link</button>
           </div>
@@ -1286,6 +1315,7 @@
         </div>
         <div class="send-r">
           <button class="btn-wa"      data-action="send-wa">📱 Enviar por WhatsApp</button>
+          <button class="btn-mail"    data-action="send-mail">📧 Enviar por correo</button>
           <button class="btn-preview" data-action="preview">👁 Vista previa cliente</button>
           <button class="btn-copy"    data-action="copy">🔗 Copiar link</button>
         </div>
@@ -1354,6 +1384,206 @@
         () => alert("Link copiado al portapapeles."),
         () => prompt("Copie el link manualmente:", link)
       );
+    }
+
+    // =====================================================================
+    // Plantilla de correo (modelo cotizador-autos buildCoverageEmail)
+    // =====================================================================
+    // Email-friendly: tablas anidadas + inline styles. Logo INS en header navy.
+    // CTA principal lleva a la vista cliente detallada (?c=BASE64URL).
+    function buildEmailVital360(payload, link){
+      const a = payload.agente;
+      const cliNom = payload.cliente.nombre || "estimado/a cliente";
+      const planRecId = payload.planRecomendado || payload.planes[0];
+      const planRec = PLANES.find(pl => pl.id === planRecId);
+      const numAseg = payload.asegurados.length;
+      const primaRec = primaFamiliar(planRecId, payload.monedaInicial, payload.asegurados);
+      const primaFmt = fmtMoneda(primaRec, payload.monedaInicial);
+      const planesNombres = payload.planes.map(id => {
+          const pl = PLANES.find(x => x.id === id);
+          return id === payload.planRecomendado ? "★ " + pl.nombre : pl.nombre;
+        }).join(" · ");
+
+      return `<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Su cotización Vital 360 está lista</title>
+</head>
+<body style="margin:0;padding:0;background:#f5f5f5;font-family:Arial,Helvetica,sans-serif;color:#0E2127;">
+  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#f5f5f5;padding:24px 0;">
+    <tr>
+      <td align="center">
+        <table width="600" cellpadding="0" cellspacing="0" border="0" style="background:#ffffff;border-radius:8px;overflow:hidden;max-width:600px;box-shadow:0 4px 20px rgba(14,33,39,0.08);">
+
+          <!-- 1. HEADER navy con logo INS -->
+          <tr>
+            <td bgcolor="#143F4A" style="background:#143F4A;padding:26px 28px;text-align:center;">
+              <img src="${LOGO_INS_URL}" alt="INS" height="40" style="display:inline-block;height:40px;margin-bottom:10px;filter:brightness(0) invert(1);" />
+              <h1 style="margin:0;font-family:Georgia,'Times New Roman',serif;font-size:22px;font-weight:500;color:#ffffff;letter-spacing:-0.01em;">Su cotización Vital 360 está lista</h1>
+              <p style="margin:6px 0 0;font-size:12px;color:#C7DBE0;">Seguro de gastos médicos · INS Costa Rica</p>
+            </td>
+          </tr>
+
+          <!-- 2. SALUDO -->
+          <tr>
+            <td style="padding:28px 28px 4px;">
+              <p style="margin:0;font-size:16px;color:#0E2127;"><strong>Hola ${_escEmail(cliNom)},</strong></p>
+            </td>
+          </tr>
+
+          <!-- 3. INTRO -->
+          <tr>
+            <td style="padding:14px 28px 0;">
+              <p style="margin:0 0 14px;font-size:14px;line-height:1.6;color:#34464D;">
+                Le preparé una cotización Vital 360 del INS pensando en su familia: <strong>${numAseg} ${numAseg === 1 ? "asegurado" : "asegurados"}</strong> con <strong>${payload.planes.length} ${payload.planes.length === 1 ? "opción" : "opciones"}</strong> para que pueda elegir con calma.
+              </p>
+              <p style="margin:0 0 14px;font-size:14px;line-height:1.6;color:#34464D;">
+                Hace click en el botón para ver la <strong>comparativa completa</strong>: primas anuales, coberturas detalladas, formas de pago y documentos del trámite.
+              </p>
+            </td>
+          </tr>
+
+          <!-- 4. CTA principal -->
+          <tr>
+            <td align="center" style="padding:6px 28px 22px;">
+              <a href="${link}" style="display:inline-block;background:#E36B43;color:#ffffff;text-decoration:none;border-radius:6px;padding:14px 28px;font-weight:bold;font-size:15px;font-family:Arial,Helvetica,sans-serif;">VER MI COTIZACIÓN COMPLETA &rarr;</a>
+              <p style="margin:10px 0 0;font-size:11.5px;color:#6A7A80;font-style:italic;">Vigencia ${payload.vigenciaDias} días · cotización N.º ${_escEmail(payload.id)}</p>
+            </td>
+          </tr>
+
+          <!-- 5. Resumen mini (anclaje de prima recomendada) -->
+          <tr>
+            <td style="padding:0 28px 22px;">
+              <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#E3EEF1;border-left:4px solid #1F5C6B;border-radius:6px;">
+                <tr>
+                  <td style="padding:14px 16px;">
+                    <p style="margin:0 0 4px;font-size:10.5px;font-weight:bold;color:#143F4A;letter-spacing:0.06em;text-transform:uppercase;">Plan recomendado para usted</p>
+                    <p style="margin:0;font-size:17px;font-weight:bold;color:#143F4A;font-family:Georgia,'Times New Roman',serif;">${_escEmail(planRec ? planRec.nombre : "—")}${planRec ? " &middot; " + _escEmail(planRec.ambito) : ""}</p>
+                    <p style="margin:8px 0 4px;font-size:13px;color:#34464D;">Prima familiar anual para los ${numAseg} asegurados:</p>
+                    <p style="margin:0;font-size:22px;font-weight:bold;color:#0E2127;font-family:Georgia,serif;">${_escEmail(primaFmt)} <span style="font-size:11px;color:#6A7A80;font-weight:normal;font-style:italic;font-family:Arial;">+ 2 % IVA · ${_escEmail(payload.monedaInicial)}</span></p>
+                    <p style="margin:8px 0 0;font-size:11.5px;color:#6A7A80;">Comparando: ${_escEmail(planesNombres)}</p>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- 6. Qué incluye la guía (texto breve) -->
+          <tr>
+            <td style="padding:0 28px 8px;">
+              <p style="margin:0 0 8px;font-size:11px;font-weight:bold;color:#143F4A;letter-spacing:0.06em;text-transform:uppercase;">En la guía completa encontrará</p>
+              <ul style="margin:0;padding-left:18px;font-size:13px;color:#34464D;line-height:1.7;">
+                <li>Comparativa de las opciones cotizadas con primas y deducibles</li>
+                <li>Las 28 coberturas explicadas con sus sublímites por plan</li>
+                <li>3 formas de pago: anual (sin recargo), semestral y trimestral</li>
+                <li>Documentos para iniciar el aseguramiento</li>
+                <li>Renovación vitalicia, periodos de espera y mecánica de pago</li>
+              </ul>
+            </td>
+          </tr>
+
+          <!-- 7. Cierre -->
+          <tr>
+            <td style="padding:20px 28px 0;">
+              <p style="margin:0 0 6px;font-size:14px;color:#34464D;line-height:1.6;">Cualquier duda me escribe directo, sin compromiso.</p>
+              <p style="margin:0;font-size:13px;color:#34464D;font-style:italic;">— ${_escEmail(a.nombre)}</p>
+            </td>
+          </tr>
+
+          <!-- 8. FOOTER navy con datos del agente -->
+          <tr>
+            <td bgcolor="#143F4A" style="background:#143F4A;padding:20px 24px;text-align:center;color:#ffffff;margin-top:24px;">
+              <p style="margin:0;font-size:14px;font-weight:bold;color:#ffffff;">${_escEmail(a.nombre)}</p>
+              <p style="margin:4px 0 0;font-size:11px;color:#C7DBE0;">Agente autorizado INS · WhatsApp ${_escEmail(a.whatsapp)}${a.email ? " · " + _escEmail(a.email) : ""}</p>
+              <p style="margin:10px 0 0;font-size:10.5px;color:#94aab0;font-style:italic;line-height:1.5;">Cotización informativa basada en tarifas oficiales del INS vigentes a la fecha. Vigencia ${payload.vigenciaDias} días. Producto registrado SUGESE P20-76-A01-1097 V3.</p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>`;
+    }
+
+    function _escEmail(s){
+      return String(s == null ? "" : s)
+        .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+        .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+    }
+
+    function sendByEmail(){
+      const cliEmail = (state.cliente.email || "").trim();
+      if(!cliEmail){
+        alert('Falta el email del cliente. Abra el modal del titular para agregarlo.');
+        openAsegModal(state.asegurados.findIndex(a => a.parentesco === "titular"));
+        return;
+      }
+      persistirCotizacionActual();
+      const payload = buildPayloadCliente();
+      const link = buildLinkCliente(payload);
+      const html = buildEmailVital360(payload, link);
+      openEmailPreviewModal({ to: cliEmail, html, payload });
+    }
+
+    function openEmailPreviewModal({ to, html, payload }){
+      const subject = "Su cotización Vital 360 · " + (payload.cliente.nombre || "Cliente") + " · N.º " + payload.id;
+      const gmailComposeUrl = "https://mail.google.com/mail/?view=cm&fs=1"
+        + "&to=" + encodeURIComponent(to)
+        + "&su=" + encodeURIComponent(subject)
+        + "&body=" + encodeURIComponent("Ver el HTML adjunto / pegado abajo (pegue desde el portapapeles con Ctrl+V en el cuerpo del mensaje).");
+
+      const wrap = document.createElement('div');
+      wrap.className = 'email-modal-bg';
+      wrap.id = 'email-modal-bg';
+      wrap.innerHTML = `
+        <div class="email-modal">
+          <div class="email-modal-h">
+            <div>
+              <h3>Enviar cotización por correo</h3>
+              <p class="sub">Destinatario: <strong>${_escEmail(to)}</strong> · Asunto: <em>${_escEmail(subject)}</em></p>
+            </div>
+            <button class="x" data-action="cancel-email-modal" title="Cerrar">×</button>
+          </div>
+          <div class="email-modal-actions">
+            <button class="btn btn-primary" data-action="copy-html">📋 Copiar HTML al portapapeles</button>
+            <a class="btn btn-secondary" href="${gmailComposeUrl}" target="_blank">✉ Abrir Gmail con destinatario y asunto</a>
+            <button class="btn btn-secondary" data-action="download-eml">💾 Descargar como .eml</button>
+          </div>
+          <div class="email-modal-hint">
+            <strong>Flujo recomendado:</strong> 1) Click en <em>Copiar HTML</em> 2) Click <em>Abrir Gmail</em> 3) En el compose de Gmail, borrar el cuerpo de placeholder y <kbd>Ctrl+V</kbd> el HTML. 4) Enviar.
+          </div>
+          <div class="email-modal-preview">
+            <iframe srcdoc="${escapeAttr(html)}" sandbox="" loading="lazy"></iframe>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(wrap);
+      wrap.addEventListener('click', e => {
+        if(e.target === wrap || e.target.dataset.action === 'cancel-email-modal'){
+          wrap.remove();
+          return;
+        }
+        if(e.target.dataset.action === 'copy-html'){
+          navigator.clipboard.writeText(html).then(
+            () => { e.target.textContent = "✓ HTML copiado"; setTimeout(() => { e.target.textContent = "📋 Copiar HTML al portapapeles"; }, 2200); },
+            () => alert('No se pudo copiar al portapapeles. Use Ctrl+A + Ctrl+C en la vista previa.')
+          );
+        }
+        if(e.target.dataset.action === 'download-eml'){
+          const eml = `To: ${to}\r\nSubject: ${subject}\r\nMIME-Version: 1.0\r\nContent-Type: text/html; charset=UTF-8\r\n\r\n${html}`;
+          const blob = new Blob([eml], { type: 'message/rfc822' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `cotizacion-vital360-${payload.id}.eml`;
+          a.click();
+          URL.revokeObjectURL(url);
+        }
+      });
     }
 
     // =====================================================================
@@ -1646,6 +1876,8 @@
         <div class="hero-top">
           <div class="hero-top-inner">
             <div class="l">
+              <img src="${LOGO_INS_URL}" alt="INS" class="hero-ins-logo" />
+              <span class="sep"></span>
               <span class="logo">Vital<span class="n">360</span></span>
               <span class="sep"></span>
               <span class="who">Cotización preparada por ${escapeHtml(p.agente.nombre)} · Agente INS</span>
