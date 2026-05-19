@@ -511,7 +511,7 @@
     /* CLIENTE — footer SDI */
     .sdi-foot{background:var(--ins-teal-deep);border-radius:8px;padding:24px 28px;text-align:center;color:#fff}
     .sdi-mark{display:inline-flex;align-items:center;gap:10px;margin-bottom:14px}
-    .sdi-mark .sdi-word{font-family:"IBM Plex Sans";font-weight:500;font-size:32px;letter-spacing:-1px;color:#fff;line-height:1}
+    .sdi-mark .sdi-word{font-family:"IBM Plex Serif",serif;font-weight:500;font-size:22px;letter-spacing:-0.01em;color:#fff;line-height:1}
     .sdi-mark .sdi-bars{display:inline-flex;flex-direction:column;gap:3px}
     .sdi-mark .sdi-bars i{display:block;width:22px;height:4px;background:#fff;border-radius:1px}
     .sdi-foot-line{font-size:12px;color:#C7DBE0;margin:4px 0;line-height:1.55}
@@ -1507,17 +1507,23 @@
                 <tr>
                   ${planesData.map(pd => {
                     const isRec = pd.isRec;
-                    const bg     = isRec ? "#1F5C6B" : "#ffffff";
-                    const border = isRec ? "2px solid #E36B43" : "1px solid #C7DBE0";
-                    const color  = isRec ? "#ffffff" : "#143F4A";
-                    const labelClr = isRec ? "#FCE6DC" : "#6A7A80";
-                    const flag = isRec ? `<p style="margin:0 0 4px;background:#E36B43;color:#ffffff;font-size:9px;font-weight:800;padding:3px 8px;border-radius:999px;display:inline-block;text-transform:uppercase;letter-spacing:0.05em;">&#9733; Recomendado</p>` : "";
-                    return `<td width="33%" align="center" bgcolor="${bg}" style="background:${bg};color:${color};border:${border};border-radius:8px;padding:14px 8px;vertical-align:middle;">
-                      ${flag}
-                      <p style="margin:${isRec ? '4px' : '0'} 0 2px;font-size:10px;text-transform:uppercase;letter-spacing:0.06em;font-weight:bold;color:${labelClr};">${_escEmail(pd.plan.ambito)}</p>
-                      <p style="margin:2px 0 8px;font-family:Georgia,serif;font-size:16px;font-weight:600;color:${color};letter-spacing:-0.01em;">${_escEmail(pd.plan.nombre)}</p>
-                      <p style="margin:0;font-family:Georgia,serif;font-size:${isRec ? '20px' : '17px'};font-weight:800;color:${color};letter-spacing:-0.02em;">${_escEmail(pd.primaFmt)}</p>
-                      <p style="margin:3px 0 0;font-size:10px;color:${labelClr};font-style:italic;">${_escEmail(payload.monedaInicial)} anual</p>
+                    // Recomendado: fondo teal profundo + estrella grande + flag coral
+                    // No-recomendado: fondo cream con borde teal sutil
+                    const bg       = isRec ? "#1F5C6B" : "#FCE6DC";
+                    const border   = isRec ? "2px solid #E36B43" : "1px solid #E8C97A";
+                    const color    = isRec ? "#ffffff" : "#143F4A";
+                    const labelClr = isRec ? "#FCE6DC" : "#B94F2B";
+                    const subClr   = isRec ? "#C7DBE0" : "#6A7A80";
+                    const starHtml = isRec
+                      ? `<div style="margin:0 0 6px;"><span style="display:inline-block;color:#FFD700;font-size:22px;line-height:1;text-shadow:0 1px 2px rgba(0,0,0,.3);">&#9733;</span></div>
+                         <p style="margin:0 0 6px;background:#E36B43;color:#ffffff;font-size:10px;font-weight:800;padding:4px 10px;border-radius:999px;display:inline-block;text-transform:uppercase;letter-spacing:0.06em;">Recomendado para usted</p>`
+                      : "";
+                    return `<td width="33%" align="center" bgcolor="${bg}" style="background:${bg};color:${color};border:${border};border-radius:10px;padding:18px 10px;vertical-align:top;">
+                      ${starHtml}
+                      <p style="margin:0;font-size:10px;text-transform:uppercase;letter-spacing:0.06em;font-weight:bold;color:${labelClr};">${_escEmail(pd.plan.ambito)}</p>
+                      <p style="margin:4px 0 10px;font-family:Georgia,serif;font-size:18px;font-weight:600;color:${color};letter-spacing:-0.01em;">${_escEmail(pd.plan.nombre)}</p>
+                      <p style="margin:0;font-family:Georgia,serif;font-size:${isRec ? '24px' : '19px'};font-weight:800;color:${color};letter-spacing:-0.02em;line-height:1.1;">${_escEmail(pd.primaFmt)}</p>
+                      <p style="margin:5px 0 0;font-size:10.5px;color:${subClr};font-style:italic;">${_escEmail(payload.monedaInicial)} anual</p>
                     </td>`;
                   }).join("")}
                 </tr>
@@ -1526,44 +1532,42 @@
             </td>
           </tr>
 
-          <!-- 6. Qué incluye la guía (texto breve) -->
+          <!-- 6. Qué incluye la guía (texto breve, con aire) -->
           <tr>
-            <td style="padding:0 28px 8px;">
-              <p style="margin:0 0 8px;font-size:11px;font-weight:bold;color:#143F4A;letter-spacing:0.06em;text-transform:uppercase;">En la guía completa encontrará</p>
-              <ul style="margin:0;padding-left:18px;font-size:13px;color:#34464D;line-height:1.7;">
-                <li>Comparativa de las opciones cotizadas con primas y deducibles</li>
-                <li>Las 28 coberturas explicadas con sus sublímites por plan</li>
-                <li>3 formas de pago: anual (sin recargo), semestral y trimestral</li>
-                <li>Documentos para iniciar el aseguramiento</li>
-                <li>Renovación vitalicia, periodos de espera y mecánica de pago</li>
+            <td style="padding:22px 28px 12px;">
+              <p style="margin:0 0 14px;font-size:11px;font-weight:bold;color:#143F4A;letter-spacing:0.06em;text-transform:uppercase;">En la guía completa encontrará</p>
+              <ul style="margin:0;padding:0 0 0 22px;font-size:13.5px;color:#34464D;line-height:2;">
+                <li style="padding:3px 0;">Comparativa de las opciones cotizadas con primas y deducibles</li>
+                <li style="padding:3px 0;">Las 28 coberturas explicadas con sus sublímites por plan</li>
+                <li style="padding:3px 0;">3 formas de pago: anual (sin recargo), semestral y trimestral</li>
+                <li style="padding:3px 0;">Documentos para iniciar el aseguramiento</li>
+                <li style="padding:3px 0;">Renovación vitalicia, periodos de espera y mecánica de pago</li>
               </ul>
             </td>
           </tr>
 
           <!-- 7. Cierre -->
           <tr>
-            <td style="padding:20px 28px 0;">
-              <p style="margin:0 0 6px;font-size:14px;color:#34464D;line-height:1.6;">Cualquier duda me escribe directo, sin compromiso.</p>
-              <p style="margin:0;font-size:13px;color:#34464D;font-style:italic;">— ${_escEmail(a.nombre)}</p>
+            <td style="padding:32px 28px 24px;">
+              <p style="margin:0 0 14px;font-size:14.5px;color:#34464D;line-height:1.7;">Cualquier duda me escribe directo, sin compromiso.</p>
+              <p style="margin:0;font-size:14px;color:#0E2127;font-style:italic;font-weight:500;">— ${_escEmail(a.nombre)}</p>
             </td>
           </tr>
 
           <!-- 8. FOOTER navy con logo SDI + datos del agente + propiedad intelectual -->
           <tr>
             <td bgcolor="#143F4A" style="background:#143F4A;padding:24px 24px 20px;text-align:center;color:#ffffff;">
-              <!-- Logo SDI recreado con tablas para compatibilidad email -->
-              <table cellpadding="0" cellspacing="0" border="0" align="center" style="margin:0 auto 14px;">
+              <!-- Logo Seguros Digitales recreado con tablas para compatibilidad email -->
+              <table cellpadding="0" cellspacing="0" border="0" align="center" style="margin:0 auto 16px;">
                 <tr>
-                  <td valign="middle" style="font-family:Arial,Helvetica,sans-serif;font-weight:500;font-size:30px;letter-spacing:-1px;color:#ffffff;line-height:1;">SDI</td>
-                  <td valign="middle" style="padding-left:10px;">
+                  <td valign="middle" style="font-family:Georgia,'Times New Roman',serif;font-weight:500;font-size:22px;letter-spacing:-0.01em;color:#ffffff;line-height:1;">Seguros&nbsp;Digitales</td>
+                  <td valign="middle" style="padding-left:12px;">
                     <table cellpadding="0" cellspacing="0" border="0">
-                      <tr><td bgcolor="#ffffff" style="background:#ffffff;height:4px;width:22px;line-height:4px;font-size:0;">&nbsp;</td></tr>
+                      <tr><td bgcolor="#ffffff" style="background:#ffffff;height:3px;width:20px;line-height:3px;font-size:0;">&nbsp;</td></tr>
                       <tr><td style="height:3px;line-height:3px;font-size:0;">&nbsp;</td></tr>
-                      <tr><td bgcolor="#ffffff" style="background:#ffffff;height:4px;width:22px;line-height:4px;font-size:0;">&nbsp;</td></tr>
+                      <tr><td bgcolor="#ffffff" style="background:#ffffff;height:3px;width:20px;line-height:3px;font-size:0;">&nbsp;</td></tr>
                       <tr><td style="height:3px;line-height:3px;font-size:0;">&nbsp;</td></tr>
-                      <tr><td bgcolor="#ffffff" style="background:#ffffff;height:4px;width:22px;line-height:4px;font-size:0;">&nbsp;</td></tr>
-                      <tr><td style="height:3px;line-height:3px;font-size:0;">&nbsp;</td></tr>
-                      <tr><td bgcolor="#ffffff" style="background:#ffffff;height:4px;width:22px;line-height:4px;font-size:0;">&nbsp;</td></tr>
+                      <tr><td bgcolor="#ffffff" style="background:#ffffff;height:3px;width:20px;line-height:3px;font-size:0;">&nbsp;</td></tr>
                     </table>
                   </td>
                 </tr>
@@ -2410,8 +2414,8 @@
         </section>
         <footer class="sdi-foot">
           <div class="sdi-mark">
-            <span class="sdi-word">SDI</span>
-            <span class="sdi-bars"><i></i><i></i><i></i><i></i></span>
+            <span class="sdi-word">Seguros Digitales</span>
+            <span class="sdi-bars"><i></i><i></i><i></i></span>
           </div>
           <p class="sdi-foot-line">Esta cotización pertenece a <strong>Seguros Digitales SDI<sup>®</sup></strong></p>
           <p class="sdi-foot-line sub">Agente ${escapeHtml(a.nombre)} · Lic. SUGESE ${escapeHtml(a.licencia || '08-1318')} · ${escapeHtml(a.whatsapp || '')}</p>
