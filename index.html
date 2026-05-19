@@ -99,6 +99,51 @@
     .aseg-modal label{font-size:11px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.04em;font-weight:600;display:block;margin-bottom:4px}
     .aseg-modal input,.aseg-modal select{width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:4px;font-family:inherit;font-size:13.5px;outline:none}
     .aseg-modal .actions{display:flex;justify-content:flex-end;gap:8px;margin-top:14px}
+
+    /* PASO 2 — scanner de 7 planes */
+    .scanner{margin-bottom:20px}
+    .scanner-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+    .scanner-h .t{font-family:"IBM Plex Serif",serif;font-size:22px;font-weight:500;letter-spacing:-0.015em;line-height:1.1;display:flex;align-items:center;gap:10px}
+    .scanner-h .num2{display:inline-grid;place-items:center;width:24px;height:24px;background:var(--ins-teal);color:#fff;border-radius:50%;font-family:"IBM Plex Mono";font-size:12px}
+    .scanner-h .selector{display:flex;align-items:center;gap:10px;font-size:12.5px;color:var(--ink-3)}
+    .scanner-h .selector .pill{background:var(--ins-coral);color:#fff;padding:5px 12px;border-radius:4px;font-weight:600;font-size:11.5px;letter-spacing:.02em}
+    .scanner-h .selector .clear{background:transparent;border:none;color:var(--ins-teal);font-family:inherit;font-size:12px;cursor:pointer;text-decoration:underline}
+
+    .plans7{display:grid;grid-template-columns:repeat(7, 1fr);gap:8px;background:var(--line);border:1px solid var(--line);border-radius:6px;padding:1px;overflow:hidden}
+    .p7{background:var(--paper);padding:14px 12px 12px;display:flex;flex-direction:column;position:relative;cursor:pointer}
+    .p7:hover{background:var(--ins-teal-soft)}
+    .p7.selected{background:var(--ins-teal-soft);box-shadow:inset 0 0 0 2px var(--ins-teal)}
+    .p7 .top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px}
+    .p7 .ambito{font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--ins-coral-deep);font-weight:700;line-height:1.2}
+    .p7 .star{width:22px;height:22px;border-radius:5px;background:var(--paper);border:1px solid var(--line);color:var(--ink-3);display:grid;place-items:center;font-size:11px;font-weight:700;flex-shrink:0}
+    .p7 .star::before{content:"☆"}
+    .p7.selected .star{color:#fff;background:var(--ins-coral);border-color:var(--ins-coral)}
+    .p7.selected .star::before{content:"★"}
+    .p7 .nm{font-family:"IBM Plex Serif",serif;font-size:18px;font-weight:500;letter-spacing:-0.015em;line-height:1;margin-bottom:4px}
+    .p7 .suma{font-size:11px;color:var(--ink-3);margin-bottom:10px}
+    .p7 .suma .v{font-family:"IBM Plex Mono";font-size:11px;color:var(--ink);font-weight:600;display:block;margin-top:1px}
+    .p7 .prima-box{margin-top:auto;padding:10px 0 6px;border-top:1px solid var(--line)}
+    .p7 .prima-box .lbl{font-size:9.5px;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-3);font-weight:700;margin-bottom:3px}
+    .p7 .prima-box .amt-row{display:flex;align-items:baseline;gap:2px}
+    .p7 .prima-box .cur{font-family:"IBM Plex Serif",serif;font-size:13px;color:var(--ink-3)}
+    .p7 .prima-box .amt{font-family:"IBM Plex Serif",serif;font-size:20px;font-weight:500;letter-spacing:-0.02em;line-height:1;color:var(--ink)}
+    .p7 .prima-box .per{font-size:10.5px;color:var(--ink-3);margin-top:3px;font-style:italic}
+    .p7 .nodata{font-size:11px;color:var(--ink-3);font-style:italic;padding:8px 0;text-align:center;font-family:"IBM Plex Serif"}
+
+    /* Comparativa tabla detallada */
+    .cmp-table-wrap{margin-top:18px;background:var(--paper);border:1px solid var(--line);border-radius:6px;overflow:hidden}
+    .cmp-table-h{padding:12px 20px;background:var(--cream);border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
+    .cmp-table-h .t{font-weight:600;font-size:13px;color:var(--ink)}
+    .cmp-table-h .toggle-expand{font-size:12px;color:var(--ins-teal);background:none;border:none;cursor:pointer;font-family:inherit;font-weight:500;text-decoration:underline}
+    .cmp-table{width:100%;border-collapse:collapse;font-size:12px}
+    .cmp-table thead th{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-3);padding:8px 10px;text-align:right;background:var(--cream-2);border-bottom:1px solid var(--line)}
+    .cmp-table thead th:first-child{text-align:left;color:var(--ink)}
+    .cmp-table thead th.selected{background:var(--ins-teal-soft);color:var(--ins-teal-deep)}
+    .cmp-table thead th.selected::after{content:" ★";color:var(--ins-coral);font-size:11px}
+    .cmp-table tbody td{padding:7px 10px;font-size:12px;border-bottom:1px solid var(--line-2);text-align:right;font-family:"IBM Plex Mono";color:var(--ink);font-weight:500;white-space:nowrap}
+    .cmp-table tbody td:first-child{text-align:left;font-family:"IBM Plex Sans";color:var(--ink-2);font-weight:400;white-space:normal}
+    .cmp-table tbody td.na{color:var(--ink-3);font-style:italic;font-family:"IBM Plex Sans";font-weight:400}
+    .cmp-table tbody td.selected{background:var(--ins-teal-soft)}
   </style>
 </head>
 <body>
@@ -215,6 +260,65 @@
       "76-80": { esencial1: 1872239, esencial2: 1972033, pro1: 3033219, pro2: 3225560,  platinum1: 3268755,  platinum2: 3425800,  deluxe: 3536435 },
       "81+":   { esencial1: 2626466, esencial2: 2766176, pro1: 4549829, pro2: 4838340,  platinum1: 4870445,  platinum2: 5104442,  deluxe: 5304653 }
     };
+
+    // Coberturas por plan — sublímites en USD y CRC. 'NA' = no aplica.
+    // Fuente: Coberturas y Planes.pdf (USD) + Coberturas Planes Colones.pdf (CRC)
+    const COBERTURAS_DEFS = [
+      { id: "gastos_medicos",        label: "Gastos médicos" },
+      { id: "deducible",             label: "Deducible anual" },
+      { id: "stop_loss",             label: "Stop loss" },
+      { id: "maternidad",            label: "Maternidad" },
+      { id: "prematurez",            label: "Prematurez" },
+      { id: "congenitas",            label: "Enfermedades congénitas" },
+      { id: "trasplantes",           label: "Trasplantes" },
+      { id: "aparatos_apoyo",        label: "Aparatos de apoyo" },
+      { id: "medicamentos",          label: "Medicamentos ambulatorios" },
+      { id: "epidemicas",            label: "Epidémicas y pandémicas" },
+      { id: "mentales",              label: "Mentales / trastornos nerviosos" },
+      { id: "deportivas",            label: "Actividades deportivas" },
+      { id: "futbol",                label: "Práctica competitiva de fútbol" },
+      { id: "ambulancia_aerea",      label: "Ambulancia aérea" },
+      { id: "dental_accidente",      label: "Cobertura dental por accidente" },
+      { id: "asistencia_viajero",    label: "Asistencia al viajero" },
+      { id: "chequeos",              label: "Cobertura de chequeos" },
+      { id: "nino_sano",             label: "Niño sano" },
+      { id: "fallecimiento",         label: "Fallecimiento" },
+      { id: "salpingectomia",        label: "Salpingectomía" },
+      { id: "vasectomia",            label: "Vasectomía" },
+      { id: "vih_sida",              label: "VIH / SIDA" },
+      { id: "terapias",              label: "Terapias" },
+      { id: "preexistencias",        label: "Preexistencias declaradas" },
+      { id: "medicina_virtual",      label: "Medicina virtual",       included:true },
+      { id: "transporte_evacuacion", label: "Transporte por evacuación" },
+      { id: "emergencias_medicas",   label: "Emergencias médicas" }
+    ];
+
+    // Sublímites en USD por plan
+    const COBERTURAS_USD = {
+      esencial1: { gastos_medicos:15000, deducible:0, stop_loss:1500, maternidad:"NA", prematurez:"NA", congenitas:"NA", trasplantes:15000, aparatos_apoyo:500, medicamentos:500, epidemicas:"NA", mentales:750, deportivas:500, futbol:500, ambulancia_aerea:1000, dental_accidente:1000, asistencia_viajero:"NA", chequeos:"NA", nino_sano:"NA", fallecimiento:10000, salpingectomia:"NA", vasectomia:"NA", vih_sida:7500, terapias:750, preexistencias:"NA", medicina_virtual:"Incluido", transporte_evacuacion:5000, emergencias_medicas:5000 },
+      esencial2: { gastos_medicos:25000, deducible:0, stop_loss:2500, maternidad:"NA", prematurez:"NA", congenitas:"NA", trasplantes:25000, aparatos_apoyo:1000, medicamentos:500, epidemicas:"NA", mentales:750, deportivas:1250, futbol:1250, ambulancia_aerea:1000, dental_accidente:1000, asistencia_viajero:"NA", chequeos:"NA", nino_sano:"NA", fallecimiento:10000, salpingectomia:"NA", vasectomia:"NA", vih_sida:7500, terapias:750, preexistencias:"NA", medicina_virtual:"Incluido", transporte_evacuacion:5000, emergencias_medicas:5000 },
+      pro1:      { gastos_medicos:50000, deducible:100, stop_loss:"2500 CA", maternidad:"NA", prematurez:"NA", congenitas:"NA", trasplantes:50000, aparatos_apoyo:2000, medicamentos:500, epidemicas:15000, mentales:750, deportivas:2500, futbol:2500, ambulancia_aerea:1000, dental_accidente:1000, asistencia_viajero:10000, chequeos:"Incluido", nino_sano:200, fallecimiento:10000, salpingectomia:"NA", vasectomia:"NA", vih_sida:7500, terapias:750, preexistencias:"NA", medicina_virtual:"Incluido", transporte_evacuacion:500, emergencias_medicas:5000 },
+      pro2:      { gastos_medicos:100000, deducible:200, stop_loss:"2500 CA", maternidad:3000, prematurez:25000, congenitas:25000, trasplantes:100000, aparatos_apoyo:2000, medicamentos:1000, epidemicas:15000, mentales:1125, deportivas:10000, futbol:10000, ambulancia_aerea:7000, dental_accidente:1000, asistencia_viajero:10000, chequeos:"Incluido", nino_sano:200, fallecimiento:10000, salpingectomia:"NA", vasectomia:"NA", vih_sida:7500, terapias:1125, preexistencias:"NA", medicina_virtual:"Incluido", transporte_evacuacion:10000, emergencias_medicas:10000 },
+      platinum1: { gastos_medicos:300000, deducible:250, stop_loss:"2500 CA / 5000 INT", maternidad:4500, prematurez:100000, congenitas:100000, trasplantes:150000, aparatos_apoyo:10000, medicamentos:10000, epidemicas:15000, mentales:1125, deportivas:300000, futbol:300000, ambulancia_aerea:10000, dental_accidente:1000, asistencia_viajero:10000, chequeos:"Incluido", nino_sano:200, fallecimiento:10000, salpingectomia:"NA", vasectomia:"NA", vih_sida:15000, terapias:1500, preexistencias:"NA", medicina_virtual:"Incluido", transporte_evacuacion:10000, emergencias_medicas:10000 },
+      platinum2: { gastos_medicos:500000, deducible:500, stop_loss:"2500 CA / 5000 INT", maternidad:6000, prematurez:100000, congenitas:100000, trasplantes:250000, aparatos_apoyo:10000, medicamentos:50000, epidemicas:15000, mentales:1125, deportivas:500000, futbol:500000, ambulancia_aerea:25000, dental_accidente:1000, asistencia_viajero:10000, chequeos:"Incluido", nino_sano:200, fallecimiento:10000, salpingectomia:500, vasectomia:250, vih_sida:15000, terapias:1500, preexistencias:50000, medicina_virtual:"Incluido", transporte_evacuacion:10000, emergencias_medicas:10000 },
+      deluxe:    { gastos_medicos:1000000, deducible:1000, stop_loss:"2500 CA / 5000 INT", maternidad:7000, prematurez:100000, congenitas:100000, trasplantes:300000, aparatos_apoyo:10000, medicamentos:100000, epidemicas:15000, mentales:1125, deportivas:1000000, futbol:1000000, ambulancia_aerea:50000, dental_accidente:1000, asistencia_viajero:10000, chequeos:"Incluido", nino_sano:200, fallecimiento:10000, salpingectomia:500, vasectomia:250, vih_sida:15000, terapias:1500, preexistencias:100000, medicina_virtual:"Incluido", transporte_evacuacion:20000, emergencias_medicas:20000 }
+    };
+
+    // Misma estructura para CRC. Los valores son los del folleto oficial colones.
+    const COBERTURAS_CRC = {
+      esencial1: { gastos_medicos:8250000, deducible:0, stop_loss:825000, maternidad:"NA", prematurez:"NA", congenitas:"NA", trasplantes:8250000, aparatos_apoyo:275000, medicamentos:275000, epidemicas:"NA", mentales:412500, deportivas:275000, futbol:275000, ambulancia_aerea:550000, dental_accidente:550000, asistencia_viajero:"NA", chequeos:"NA", nino_sano:"NA", fallecimiento:5500000, salpingectomia:"NA", vasectomia:"NA", vih_sida:4125000, terapias:412500, preexistencias:"NA", medicina_virtual:"Incluido", transporte_evacuacion:2750000, emergencias_medicas:2750000 },
+      esencial2: { gastos_medicos:13750000, deducible:0, stop_loss:1375000, maternidad:"NA", prematurez:"NA", congenitas:"NA", trasplantes:13750000, aparatos_apoyo:550000, medicamentos:275000, epidemicas:"NA", mentales:412500, deportivas:687500, futbol:687500, ambulancia_aerea:550000, dental_accidente:550000, asistencia_viajero:"NA", chequeos:"NA", nino_sano:"NA", fallecimiento:5500000, salpingectomia:"NA", vasectomia:"NA", vih_sida:4125000, terapias:412500, preexistencias:"NA", medicina_virtual:"Incluido", transporte_evacuacion:2750000, emergencias_medicas:2750000 },
+      pro1:      { gastos_medicos:27500000, deducible:55000, stop_loss:"1.375.000 CA", maternidad:"NA", prematurez:"NA", congenitas:"NA", trasplantes:27500000, aparatos_apoyo:1100000, medicamentos:275000, epidemicas:8250000, mentales:412500, deportivas:1375000, futbol:1375000, ambulancia_aerea:550000, dental_accidente:550000, asistencia_viajero:5500000, chequeos:"Incluido", nino_sano:110000, fallecimiento:5500000, salpingectomia:"NA", vasectomia:"NA", vih_sida:4125000, terapias:412500, preexistencias:"NA", medicina_virtual:"Incluido", transporte_evacuacion:275000, emergencias_medicas:2750000 },
+      pro2:      { gastos_medicos:55000000, deducible:110000, stop_loss:"1.375.000 CA", maternidad:1650000, prematurez:13750000, congenitas:13750000, trasplantes:55000000, aparatos_apoyo:1100000, medicamentos:550000, epidemicas:8250000, mentales:618750, deportivas:5500000, futbol:5500000, ambulancia_aerea:3850000, dental_accidente:550000, asistencia_viajero:5500000, chequeos:"Incluido", nino_sano:110000, fallecimiento:5500000, salpingectomia:"NA", vasectomia:"NA", vih_sida:4125000, terapias:618750, preexistencias:"NA", medicina_virtual:"Incluido", transporte_evacuacion:5500000, emergencias_medicas:5500000 },
+      platinum1: { gastos_medicos:165000000, deducible:137500, stop_loss:"1.375.000 CA / 2.750.000 INT", maternidad:2475000, prematurez:55000000, congenitas:55000000, trasplantes:82500000, aparatos_apoyo:5500000, medicamentos:5500000, epidemicas:8250000, mentales:618750, deportivas:165000000, futbol:165000000, ambulancia_aerea:5500000, dental_accidente:550000, asistencia_viajero:5500000, chequeos:"Incluido", nino_sano:110000, fallecimiento:5500000, salpingectomia:"NA", vasectomia:"NA", vih_sida:8250000, terapias:825000, preexistencias:"NA", medicina_virtual:"Incluido", transporte_evacuacion:5500000, emergencias_medicas:5500000 },
+      platinum2: { gastos_medicos:275000000, deducible:275000, stop_loss:"1.375.000 CA / 2.750.000 INT", maternidad:3300000, prematurez:55000000, congenitas:55000000, trasplantes:137500000, aparatos_apoyo:5500000, medicamentos:27500000, epidemicas:8250000, mentales:618750, deportivas:275000000, futbol:275000000, ambulancia_aerea:13750000, dental_accidente:550000, asistencia_viajero:5500000, chequeos:"Incluido", nino_sano:110000, fallecimiento:5500000, salpingectomia:275000, vasectomia:137500, vih_sida:8250000, terapias:825000, preexistencias:27500000, medicina_virtual:"Incluido", transporte_evacuacion:5500000, emergencias_medicas:5500000 },
+      deluxe:    { gastos_medicos:550000000, deducible:550000, stop_loss:"1.375.000 CA / 2.750.000 INT", maternidad:3850000, prematurez:55000000, congenitas:55000000, trasplantes:165000000, aparatos_apoyo:5500000, medicamentos:55000000, epidemicas:8250000, mentales:618750, deportivas:550000000, futbol:550000000, ambulancia_aerea:27500000, dental_accidente:550000, asistencia_viajero:5500000, chequeos:"Incluido", nino_sano:110000, fallecimiento:5500000, salpingectomia:275000, vasectomia:137500, vih_sida:8250000, terapias:825000, preexistencias:55000000, medicina_virtual:"Incluido", transporte_evacuacion:11000000, emergencias_medicas:11000000 }
+    };
+
+    function getCobertura(planId, covId, moneda){
+      const tabla = moneda === "USD" ? COBERTURAS_USD : COBERTURAS_CRC;
+      return tabla[planId][covId];
+    }
 
     // Recargos por fraccionamiento (decisión oficina: SIN mensual)
     const RECARGOS = {
@@ -621,10 +725,118 @@
       });
     }
 
-    // Placeholder de renderPaso2 — se completa en Task 8
     function renderPaso2(){
       const el = document.getElementById('paso2-scanner');
-      if(el) el.innerHTML = '<div class="loading">Paso 2 — scanner (Task 8)</div>';
+      const sel = state.planesSeleccionados;
+      const tieneAsegurados = state.asegurados.length > 0;
+
+      const cards = PLANES.map(p => {
+        if(!tieneAsegurados){
+          return `<article class="p7" data-plan="${p.id}">
+            <div class="top"><div class="ambito">${escapeHtml(p.ambito)}</div></div>
+            <div class="nm">${p.nombre}</div>
+            <div class="suma">suma anual<span class="v">${fmtMoneda(state.moneda==='USD'?p.sumaUSD:p.sumaCRC, state.moneda)}</span></div>
+            <div class="prima-box"><div class="nodata">agregar asegurados para ver prima</div></div>
+          </article>`;
+        }
+        const fam = primaFamiliar(p.id, state.moneda, state.asegurados);
+        const isSel = sel.includes(p.id);
+        return `<article class="p7 ${isSel?"selected":""}" data-plan="${p.id}">
+          <div class="top">
+            <div class="ambito">${escapeHtml(p.ambito)}</div>
+            <span class="star" data-action="toggle-plan" data-plan="${p.id}"></span>
+          </div>
+          <div class="nm">${p.nombre}</div>
+          <div class="suma">suma anual<span class="v">${fmtMoneda(state.moneda==='USD'?p.sumaUSD:p.sumaCRC, state.moneda)}</span></div>
+          <div class="prima-box">
+            <div class="lbl">Prima familiar/año</div>
+            <div class="amt-row"><span class="cur">${state.moneda==='USD'?'$':'₡'}</span><span class="amt">${fmtMoneda(fam, state.moneda).replace(/^[₡$]/,'')}</span></div>
+            <div class="per">+ 2 % IVA</div>
+          </div>
+        </article>`;
+      }).join('');
+
+      el.innerHTML = `
+        <div class="scanner-h">
+          <div class="t"><span class="num2">2</span>Los 7 planes · primas calculadas para esta familia</div>
+          <div class="selector">
+            Click ★ para seleccionar hasta 3
+            <span class="pill">${sel.length} / 3 seleccionados</span>
+            ${sel.length ? '<button class="clear" data-action="clear-sel">limpiar selección</button>' : ''}
+          </div>
+        </div>
+        <div class="plans7">${cards}</div>
+        ${tieneAsegurados ? renderComparativaTabla() : ""}
+      `;
+    }
+
+    let comparativaExpandida = false;
+    const COVS_TOP = ["gastos_medicos","deducible","maternidad","prematurez","trasplantes","medicamentos","epidemicas","asistencia_viajero","fallecimiento"];
+
+    function renderComparativaTabla(){
+      const sel = state.planesSeleccionados;
+      const covs = comparativaExpandida ? COBERTURAS_DEFS : COBERTURAS_DEFS.filter(c => COVS_TOP.includes(c.id));
+      const ths = PLANES.map(p =>
+        `<th class="${sel.includes(p.id)?"selected":""}">${p.nombre}</th>`
+      ).join('');
+      const rows = covs.map(cov => {
+        const cells = PLANES.map(p => {
+          const v = getCobertura(p.id, cov.id, state.moneda);
+          const isSel = sel.includes(p.id);
+          if(v === "NA") return `<td class="na ${isSel?"selected":""}">no aplica</td>`;
+          if(typeof v === "number") return `<td class="${isSel?"selected":""}">${fmtMoneda(v, state.moneda)}</td>`;
+          return `<td class="${isSel?"selected":""}">${escapeHtml(String(v))}</td>`;
+        }).join('');
+        return `<tr><td>${escapeHtml(cov.label)}</td>${cells}</tr>`;
+      }).join('');
+
+      return `
+        <div class="cmp-table-wrap">
+          <div class="cmp-table-h">
+            <span class="t">Comparativa detallada · coberturas por plan</span>
+            <button class="toggle-expand" data-action="toggle-cmp">${comparativaExpandida ? "▴ Ocultar coberturas adicionales" : "▾ Mostrar todas las coberturas"}</button>
+          </div>
+          <table class="cmp-table">
+            <thead><tr><th>Cobertura</th>${ths}</tr></thead>
+            <tbody>${rows}</tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    // Bind events de Paso 2 (delegado)
+    function bindPaso2Events(){
+      const root = document.querySelector('[data-view="agente"]');
+      root.addEventListener('click', e => {
+        if(e.target.dataset.action === 'toggle-plan'){
+          e.stopPropagation();
+          const planId = e.target.dataset.plan;
+          const sel = state.planesSeleccionados;
+          if(sel.includes(planId)){
+            state.planesSeleccionados = sel.filter(id => id !== planId);
+            if(state.planRecomendado === planId) state.planRecomendado = null;
+          } else if(sel.length < 3){
+            state.planesSeleccionados.push(planId);
+          } else {
+            alert('Máximo 3 planes seleccionados. Quita uno primero.');
+            return;
+          }
+          saveDraft();
+          renderPaso2();
+          renderPaso3();
+        }
+        if(e.target.dataset.action === 'clear-sel'){
+          state.planesSeleccionados = [];
+          state.planRecomendado = null;
+          saveDraft();
+          renderPaso2();
+          renderPaso3();
+        }
+        if(e.target.dataset.action === 'toggle-cmp'){
+          comparativaExpandida = !comparativaExpandida;
+          renderPaso2();
+        }
+      });
     }
     // Placeholder de renderPaso3 — se completa en Task 10
     function renderPaso3(){
@@ -637,6 +849,7 @@
       renderPaso2();
       renderPaso3();
       bindPaso1Events();
+      bindPaso2Events();
     }
 
     // =====================================================================
@@ -731,6 +944,12 @@
       console.assert(dec.cliente.nombre === "Test", '[smoke] payload roundtrip cliente');
       console.assert(dec.asegurados.length === 4, '[smoke] payload roundtrip asegurados');
       console.assert(!enc.includes("+") && !enc.includes("/") && !enc.includes("="), '[smoke] base64url no debe tener + / =');
+
+      // Coberturas
+      console.assert(getCobertura("pro1","gastos_medicos","USD") === 50000, '[smoke] cobertura pro1 gastos USD');
+      console.assert(getCobertura("pro1","gastos_medicos","CRC") === 27500000, '[smoke] cobertura pro1 gastos CRC');
+      console.assert(getCobertura("esencial1","maternidad","CRC") === "NA", '[smoke] cobertura esencial1 maternidad = NA');
+      console.assert(COBERTURAS_DEFS.length === 27, '[smoke] 27 coberturas definidas');
 
       console.log('[vital360] smoke tests OK · ' + TARIFAS_VERSION);
     }
