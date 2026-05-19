@@ -53,6 +53,10 @@
     /* Loading state */
     .loading{padding:60px 40px;text-align:center;color:var(--ink-3);font-family:"IBM Plex Mono";font-size:12px}
 
+    /* Banner modo prueba (auth no configurada) */
+    .banner-prueba{background:#FFF4D6;border-bottom:1px solid #E8C97A;padding:10px 32px;font-size:12.5px;color:#7A5B0E;display:flex;align-items:center;gap:10px;font-weight:500}
+    .banner-prueba .pin{background:var(--ins-gold);color:#fff;padding:2px 8px;border-radius:3px;font-size:10.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;font-family:"IBM Plex Mono"}
+
     /* === VISTA AGENTE === */
     .masthead-agente{background:var(--paper);border-bottom:1px solid var(--line)}
     .masthead-inner{max-width:1480px;margin:0 auto;padding:14px 32px;display:flex;align-items:center;justify-content:space-between}
@@ -1598,15 +1602,20 @@
     }
 
     function initGoogleAuth(){
-      // Bypass para desarrollo: ?dev=1 simula login con el primer agente
-      if(new URLSearchParams(location.search).get('dev') === '1'){
+      // Bypass automático mientras GOOGLE_CLIENT_ID sea placeholder, o ?dev=1 manual.
+      // Cuando se ponga el Client ID real de Google Cloud Console, este bypass se desactiva solo.
+      const isDevQuery   = new URLSearchParams(location.search).get('dev') === '1';
+      const oauthSinSetup = GOOGLE_CLIENT_ID.startsWith('REEMPLAZAR');
+      if(isDevQuery || oauthSinSetup){
         const email = Object.keys(AGENTES)[0];
         agenteActual = Object.assign({}, AGENTES[email]);
         document.getElementById('mh-user-av').textContent = agenteActual.nombre.split(" ").map(w => w[0]).slice(0,2).join("").toUpperCase();
-        document.getElementById('mh-user-name').textContent = agenteActual.nombre + " (dev)";
+        const suffix = oauthSinSetup ? " · MODO PRUEBA" : " (dev)";
+        document.getElementById('mh-user-name').textContent = agenteActual.nombre + suffix;
         loadDraft();
         renderAgente();
         showView("agente");
+        if(oauthSinSetup) showBannerModoPrueba();
         return;
       }
       // Si el SDK de Google ya cargó, configurar; si no, esperar
@@ -1646,6 +1655,16 @@
       loadDraft();
       renderAgente();
       showView("agente");
+    }
+
+    function showBannerModoPrueba(){
+      if(document.getElementById('banner-prueba')) return;
+      const banner = document.createElement('div');
+      banner.id = 'banner-prueba';
+      banner.className = 'banner-prueba';
+      banner.innerHTML = '<span class="pin">Modo prueba</span> Auth Google sin configurar todavía — cualquier persona con el link entra como agente. Reemplazar <code>GOOGLE_CLIENT_ID</code> en <code>index.html</code> para activar la whitelist.';
+      const agenteView = document.querySelector('[data-view="agente"]');
+      agenteView.insertBefore(banner, agenteView.firstChild);
     }
 
     function parseJwt(token){
