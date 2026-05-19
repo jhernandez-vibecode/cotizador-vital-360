@@ -732,6 +732,10 @@
     // ID de Google OAuth Client — reemplazar con el real antes de deploy
     const GOOGLE_CLIENT_ID = "REEMPLAZAR_ANTES_DE_DEPLOY.apps.googleusercontent.com";
 
+    // Gmail API — para envío directo desde el browser (mismo patrón que cotizador-autos)
+    const GMAIL_SCOPE    = "https://www.googleapis.com/auth/gmail.send";
+    const GMAIL_SEND_URL = "https://gmail.googleapis.com/gmail/v1/users/me/messages/send";
+
     // =====================================================================
     // Sección 2: Cálculos de prima
     // =====================================================================
@@ -1529,6 +1533,134 @@
       openEmailPreviewModal({ to: cliEmail, html, payload });
     }
 
+    // =====================================================================
+    // Gmail API · envío directo desde el browser
+    // Replica del patrón del cotizador-autos: GIS Token Model → MIME → POST
+    // =====================================================================
+
+    let _gmailTokenClient = null;
+    let _gmailAccessToken = null;
+
+    function initGmailTokenClient(){
+      if(_gmailTokenClient) return _gmailTokenClient;
+      if(!window.google || !google.accounts || !google.accounts.oauth2){
+        throw new Error('Google Identity Services no está cargado. Verificar el script accounts.google.com/gsi/client en el <head>.');
+      }
+      _gmailTokenClient = google.accounts.oauth2.initTokenClient({
+        client_id: GOOGLE_CLIENT_ID,
+        scope:     GMAIL_SCOPE,
+        callback:  function(){} // se sobreescribe en getGmailToken
+      });
+      return _gmailTokenClient;
+    }
+
+    function getGmailToken(){
+      if(_gmailAccessToken) return Promise.resolve(_gmailAccessToken);
+      initGmailTokenClient();
+      return new Promise(function(resolve, reject){
+        _gmailTokenClient.callback = function(response){
+          if(response.error){
+            reject(new Error('OAuth: ' + response.error + (response.error_description ? ' — ' + response.error_description : '')));
+            return;
+          }
+          _gmailAccessToken = response.access_token;
+          resolve(response.access_token);
+        };
+        try {
+          _gmailTokenClient.requestAccessToken({ prompt: '' });
+        } catch(e){ reject(e); }
+      });
+    }
+
+    function clearGmailToken(){ _gmailAccessToken = null; }
+
+    async function sendGmailRaw(raw){
+      if(!_gmailAccessToken) throw new Error('Falta token Gmail');
+      const response = await fetch(GMAIL_SEND_URL, {
+        method: 'POST',
+        headers: {
+          'Authorization': 'Bearer ' + _gmailAccessToken,
+          'Content-Type':  'application/json'
+        },
+        body: JSON.stringify({ raw: raw })
+      });
+      if(!response.ok){
+        const errText = await response.text();
+        if(response.status === 401){
+          clearGmailToken();
+          throw new Error('Token Gmail expiró (1 h). Reintente.');
+        }
+        throw new Error('Gmail API ' + response.status + ': ' + errText);
+      }
+      return await response.json();
+    }
+
+    function buildMimeVital360({ to, from, subject, html }){
+      const CRLF = '\r\n';
+      const sub64    = _encodeRFC2047(subject);
+      const fromEnc  = _encodeFromHeader(from);
+      const message =
+        'From: '         + fromEnc           + CRLF +
+        'To: '           + to                + CRLF +
+        'Subject: '      + sub64             + CRLF +
+        'MIME-Version: 1.0'                  + CRLF +
+        'Content-Type: text/html; charset=UTF-8' + CRLF +
+        'Content-Transfer-Encoding: 7bit'    + CRLF +
+        CRLF +
+        html;
+      return _base64UrlEncode(message);
+    }
+
+    function _base64UrlEncode(str){
+      const b64 = btoa(unescape(encodeURIComponent(str)));
+      return b64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+    }
+
+    function _encodeRFC2047(s){
+      if(/^[\x20-\x7E]*$/.test(s)) return s;
+      return '=?UTF-8?B?' + btoa(unescape(encodeURIComponent(s))) + '?=';
+    }
+
+    function _encodeFromHeader(from){
+      const m = from.match(/^"([^"]+)"\s*(<[^>]+>)$/);
+      if(!m) return from;
+      const name = m[1], email = m[2];
+      if(/^[\x20-\x7E]*$/.test(name)) return '"' + name + '" ' + email;
+      return '=?UTF-8?B?' + btoa(unescape(encodeURIComponent(name))) + '?= ' + email;
+    }
+
+    // Acción principal: arma MIME, obtiene token (popup si necesario) y envía.
+    async function enviarEmailDirecto({ to, subject, html, btnEl }){
+      const oauthSinSetup = GOOGLE_CLIENT_ID.startsWith('REEMPLAZAR');
+      if(oauthSinSetup){
+        alert('Para enviar directo desde Gmail, primero configurá el Google OAuth Client ID en index.html y agregale el scope gmail.send en Google Cloud Console.');
+        return;
+      }
+      if(!agenteActual || !agenteActual.email){
+        alert('Sesión Gmail no inicializada. Vuelva a entrar.');
+        return;
+      }
+      const originalText = btnEl ? btnEl.textContent : '';
+      if(btnEl){ btnEl.disabled = true; btnEl.textContent = '⏳ Conectando con Gmail…'; }
+      try {
+        await getGmailToken();
+        if(btnEl) btnEl.textContent = '✉ Enviando…';
+        const from = '"' + agenteActual.nombre + '" <' + agenteActual.email + '>';
+        const raw = buildMimeVital360({ to, from, subject, html });
+        const resp = await sendGmailRaw(raw);
+        if(btnEl){ btnEl.textContent = '✓ Enviado · ID ' + (resp.id || 'ok'); btnEl.classList.add('ok'); }
+        // Cerrar el modal después de 1.5s
+        setTimeout(() => {
+          const bg = document.getElementById('email-modal-bg');
+          if(bg) bg.remove();
+        }, 1500);
+      } catch(e){
+        console.error(e);
+        alert('No se pudo enviar: ' + e.message);
+        if(btnEl){ btnEl.disabled = false; btnEl.textContent = originalText; }
+      }
+    }
+
     function openEmailPreviewModal({ to, html, payload }){
       const subject = "Su cotización Vital 360 · " + (payload.cliente.nombre || "Cliente") + " · N.º " + payload.id;
       const gmailComposeUrl = "https://mail.google.com/mail/?view=cm&fs=1"
@@ -1549,12 +1681,14 @@
             <button class="x" data-action="cancel-email-modal" title="Cerrar">×</button>
           </div>
           <div class="email-modal-actions">
-            <button class="btn btn-primary" data-action="copy-html">📋 Copiar HTML al portapapeles</button>
-            <a class="btn btn-secondary" href="${gmailComposeUrl}" target="_blank">✉ Abrir Gmail con destinatario y asunto</a>
-            <button class="btn btn-secondary" data-action="download-eml">💾 Descargar como .eml</button>
+            <button class="btn btn-primary" data-action="send-direct">🚀 Enviar ahora desde Gmail</button>
+            <button class="btn btn-secondary" data-action="copy-html">📋 Copiar HTML</button>
+            <a class="btn btn-secondary" href="${gmailComposeUrl}" target="_blank">✉ Abrir Gmail manualmente</a>
+            <button class="btn btn-secondary" data-action="download-eml">💾 Descargar .eml</button>
           </div>
           <div class="email-modal-hint">
-            <strong>Flujo recomendado:</strong> 1) Click en <em>Copiar HTML</em> 2) Click <em>Abrir Gmail</em> 3) En el compose de Gmail, borrar el cuerpo de placeholder y <kbd>Ctrl+V</kbd> el HTML. 4) Enviar.
+            <strong>1-click:</strong> Click en <em>Enviar ahora desde Gmail</em>. La primera vez te va a pedir autorizar el permiso "enviar correos como tú" (popup de Google). Después de eso, el correo sale instantáneo desde tu cuenta <code>${_escEmail(agenteActual && agenteActual.email || '')}</code>.<br>
+            <strong>Alternativa manual:</strong> Copiar HTML → Abrir Gmail → pegar en el cuerpo (<kbd>Ctrl+V</kbd>) → enviar.
           </div>
           <div class="email-modal-preview">
             <iframe srcdoc="${escapeAttr(html)}" sandbox="" loading="lazy"></iframe>
@@ -1566,6 +1700,9 @@
         if(e.target === wrap || e.target.dataset.action === 'cancel-email-modal'){
           wrap.remove();
           return;
+        }
+        if(e.target.dataset.action === 'send-direct'){
+          enviarEmailDirecto({ to, subject, html, btnEl: e.target });
         }
         if(e.target.dataset.action === 'copy-html'){
           navigator.clipboard.writeText(html).then(
@@ -1678,24 +1815,9 @@
       renderAgente();
     }
 
-    // ---------- Apps Script sync (configurable) ----------
-    // Para activar el respaldo en Google Sheets, JC debe:
-    // 1) Crear un Google Sheet + Apps Script (instrucciones en README)
-    // 2) Deploy del Apps Script como Web App "Cualquiera"
-    // 3) Pegar la URL acá:
-    const APPS_SCRIPT_URL = ""; // ej: "https://script.google.com/macros/s/AKfycb.../exec"
-
-    function sincronizarSheet(registro){
-      if(!APPS_SCRIPT_URL) return; // sin URL configurada → solo localStorage
-      try {
-        fetch(APPS_SCRIPT_URL, {
-          method: "POST",
-          mode: "no-cors",          // Apps Script funciona con no-cors para fire-and-forget
-          headers: { "Content-Type": "text/plain;charset=utf-8" },
-          body: JSON.stringify({ action: "upsert", registro })
-        }).catch(e => console.warn('[vital360] sync sheet falló', e));
-      } catch(e){ console.warn('[vital360] sync sheet error', e); }
-    }
+    // Stub para compatibilidad — el respaldo en Sheets se sustituye por Gmail API directo.
+    // Si en el futuro queremos persistir en sheet, agregar acá.
+    function sincronizarSheet(_registro){ /* no-op */ }
 
     // ---------- Render ----------
     function cotizacionesActivas(){
@@ -2369,7 +2491,7 @@
       console.assert(getCobertura("pro1","gastos_medicos","USD") === 50000, '[smoke] cobertura pro1 gastos USD');
       console.assert(getCobertura("pro1","gastos_medicos","CRC") === 27500000, '[smoke] cobertura pro1 gastos CRC');
       console.assert(getCobertura("esencial1","maternidad","CRC") === "NA", '[smoke] cobertura esencial1 maternidad = NA');
-      console.assert(COBERTURAS_DEFS.length === 27, '[smoke] 27 coberturas definidas');
+      console.assert(COBERTURAS_DEFS.length === 28, '[smoke] 28 coberturas definidas');
 
       console.log('[vital360] smoke tests OK · ' + TARIFAS_VERSION);
     }
