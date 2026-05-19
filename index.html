@@ -160,6 +160,64 @@
     const GOOGLE_CLIENT_ID = "REEMPLAZAR_ANTES_DE_DEPLOY.apps.googleusercontent.com";
 
     // =====================================================================
+    // Sección 2: Cálculos de prima
+    // =====================================================================
+
+    function rangoEdad(edad){
+      if(edad < 0) throw new Error('edad inválida: ' + edad);
+      if(edad <= 25) return "0-25";
+      if(edad <= 29) return "26-29";
+      if(edad <= 34) return "30-34";
+      if(edad <= 39) return "35-39";
+      if(edad <= 44) return "40-44";
+      if(edad <= 49) return "45-49";
+      if(edad <= 54) return "50-54";
+      if(edad <= 59) return "55-59";
+      if(edad <= 64) return "60-64";
+      if(edad <= 69) return "65-69";
+      if(edad <= 75) return "70-75";
+      if(edad <= 80) return "76-80";
+      return "81+";
+    }
+
+    function primaIndividual(planId, moneda, edad){
+      const tabla = moneda === "USD" ? PRIMAS_USD : PRIMAS_CRC;
+      const rango = rangoEdad(edad);
+      const prima = tabla[rango] && tabla[rango][planId];
+      if(prima == null) throw new Error('no se encontró prima para plan=' + planId + ' rango=' + rango);
+      return prima;
+    }
+
+    function primaFamiliar(planId, moneda, asegurados){
+      return asegurados.reduce((sum, a) => sum + primaIndividual(planId, moneda, a.edad), 0);
+    }
+
+    function totalConRecargo(modalidad, moneda, primaFamiliarAnual){
+      const r = RECARGOS[modalidad];
+      if(!r) throw new Error('modalidad no válida: ' + modalidad);
+      const recargo = moneda === "USD" ? r.USD : r.CRC;
+      return primaFamiliarAnual * (1 + recargo);
+    }
+
+    function cuotaPorPeriodo(modalidad, moneda, primaFamiliarAnual){
+      const r = RECARGOS[modalidad];
+      return totalConRecargo(modalidad, moneda, primaFamiliarAnual) / r.cuotas;
+    }
+
+    function porPersonaAnio(primaFamiliarAnual, numAsegurados){
+      return primaFamiliarAnual / numAsegurados;
+    }
+
+    // Formatter: número → "₡1.234.567" o "$1,234.56" según moneda
+    function fmtMoneda(n, moneda){
+      const v = Math.round(n);
+      if(moneda === "USD"){
+        return "$" + v.toLocaleString("en-US");
+      }
+      return "₡" + v.toLocaleString("es-CR");
+    }
+
+    // =====================================================================
     // Sección 10: Init + smoke tests
     // =====================================================================
     (function smokeTests(){
@@ -172,6 +230,38 @@
       console.assert(RECARGOS.semestral.CRC === 0.05, '[smoke] recargo semestral CRC = 5 %');
       console.assert(IVA_PCT === 0.02, '[smoke] IVA = 2 %');
       console.assert(!RECARGOS.mensual, '[smoke] NO debe existir RECARGOS.mensual');
+
+      // Sección 2 · rangoEdad
+      console.assert(rangoEdad(0)  === "0-25",  '[smoke] rangoEdad(0)');
+      console.assert(rangoEdad(25) === "0-25",  '[smoke] rangoEdad(25)');
+      console.assert(rangoEdad(26) === "26-29", '[smoke] rangoEdad(26)');
+      console.assert(rangoEdad(42) === "40-44", '[smoke] rangoEdad(42)');
+      console.assert(rangoEdad(70) === "70-75", '[smoke] rangoEdad(70)');
+      console.assert(rangoEdad(85) === "81+",   '[smoke] rangoEdad(85)');
+
+      // Sección 2 · primaIndividual
+      console.assert(primaIndividual("pro1","USD",42) === 1001,   '[smoke] primaIndividual USD 42 pro1');
+      console.assert(primaIndividual("pro1","CRC",42) === 550511, '[smoke] primaIndividual CRC 42 pro1');
+
+      // Sección 2 · primaFamiliar (familia ejemplo del spec: 42, 39, 12, 8)
+      const familia = [{edad:42},{edad:39},{edad:12},{edad:8}];
+      const familiarPro1USD = primaFamiliar("pro1","USD",familia);
+      const familiarPro1CRC = primaFamiliar("pro1","CRC",familia);
+      // 1001 + 910 + 445 + 445 = 2801 USD
+      console.assert(familiarPro1USD === 2801, '[smoke] familia 42·39·12·8 pro1 USD = 2801, got ' + familiarPro1USD);
+      // 550511 + 500465 + 244750 + 244750 = 1540476 CRC
+      console.assert(familiarPro1CRC === 1540476, '[smoke] familia 42·39·12·8 pro1 CRC = 1540476, got ' + familiarPro1CRC);
+
+      // Sección 2 · recargos
+      const totSem = totalConRecargo("semestral","CRC",1000000);
+      console.assert(totSem === 1050000, '[smoke] semestral CRC × 1M = 1.05M, got ' + totSem);
+      const cuotaSem = cuotaPorPeriodo("semestral","CRC",1000000);
+      console.assert(cuotaSem === 525000, '[smoke] cuota semestral CRC × 1M = 525k, got ' + cuotaSem);
+
+      // Sección 2 · formato
+      console.assert(fmtMoneda(1768350, "CRC") === "₡1.768.350", '[smoke] fmt CRC, got ' + fmtMoneda(1768350,"CRC"));
+      console.assert(fmtMoneda(2801, "USD") === "$2,801", '[smoke] fmt USD, got ' + fmtMoneda(2801,"USD"));
+
       console.log('[vital360] smoke tests de datos OK · tarifas ' + TARIFAS_VERSION);
     })();
   </script>
