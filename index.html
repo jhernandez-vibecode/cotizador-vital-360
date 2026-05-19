@@ -74,7 +74,7 @@
     .ib-h .t{font-weight:600;font-size:13.5px;color:var(--ink);display:flex;align-items:center;gap:8px}
     .ib-h .num1,.ib-h .num2,.ib-h .num3{display:inline-grid;place-items:center;width:20px;height:20px;background:var(--ins-teal);color:#fff;border-radius:50%;font-family:"IBM Plex Mono";font-size:11px}
     .ib-h .step{font-family:"IBM Plex Mono";font-size:11px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.04em}
-    .ib-body{padding:18px 20px;display:grid;grid-template-columns:1.5fr 2.5fr 1fr;gap:24px;align-items:start}
+    .ib-body{padding:18px 20px;display:grid;grid-template-columns:3fr 1fr;gap:24px;align-items:start}
     .ib-section .h{font-size:11px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.04em;font-weight:600;margin-bottom:8px}
     .ib-section .row{display:grid;gap:8px;margin-bottom:8px}
     .ib-section .row.two-col{grid-template-columns:1fr 1fr}
@@ -88,6 +88,11 @@
     .aseg-chip .x{background:none;border:none;color:var(--ink-3);font-size:14px;line-height:1;cursor:pointer;padding:0;margin-left:2px}
     .aseg-add{padding:7px 12px;background:transparent;border:1.5px dashed var(--line);color:var(--ink-3);border-radius:18px;font-family:inherit;font-size:12.5px;cursor:pointer;font-weight:500}
     .aseg-add:hover{border-color:var(--ins-teal);color:var(--ins-teal-deep)}
+    .aseg-chip.titular{background:var(--cream);border-color:var(--ins-gold);color:var(--ink)}
+    .aseg-chip.titular .ico{background:var(--ins-gold)}
+    .tit-info{margin-top:10px;font-size:11.5px;color:var(--ink-3);padding:8px 12px;background:var(--cream);border-radius:4px;border:1px solid var(--line-2)}
+    .tit-info strong{color:var(--ink);font-weight:600}
+    .tit-info.warn{background:#FFF4D6;border-color:#E8C97A;color:#7A5B0E}
 
     .cur-tog{display:flex;background:var(--cream);border:1px solid var(--line);border-radius:6px;padding:3px;gap:0}
     .cur-tog button{flex:1;padding:7px 12px;background:transparent;border:none;font-family:inherit;font-size:12.5px;font-weight:600;color:var(--ink-2);cursor:pointer;border-radius:4px;display:flex;align-items:center;justify-content:center;gap:6px}
@@ -812,30 +817,30 @@
 
     function renderPaso1(){
       const body = document.getElementById('paso1-body');
-      const chips = state.asegurados.map((a, i) =>
-        `<span class="aseg-chip" data-idx="${i}">
+      const chips = state.asegurados.map((a, i) => {
+        const isTit = a.parentesco === "titular";
+        return `<span class="aseg-chip ${isTit?'titular':''}" data-idx="${i}">
            <span class="ico">${inicialDe(a.nombre)}</span>
-           <span>${escapeHtml(a.nombre || '(sin nombre)')}</span>
+           <span>${escapeHtml(a.nombre || '(sin nombre)')}${isTit?' · titular':''}</span>
            <span class="age">${a.edad}</span>
            <button class="x" data-action="del" data-idx="${i}" title="Quitar">×</button>
-         </span>`
-      ).join('');
+         </span>`;
+      }).join('');
+
+      const tit = state.asegurados.find(a => a.parentesco === "titular");
+      const tieneTit = !!tit;
+      const titBox = tieneTit
+        ? `<div class="tit-info">Cliente <strong>${escapeHtml(tit.nombre)}</strong> · cédula ${escapeHtml(state.cliente.cedula || "—")} · WhatsApp ${escapeHtml(state.cliente.telefono || "—")}</div>`
+        : `<div class="tit-info warn">⚠ Falta el titular. Agréguelo como asegurado con parentesco "titular" para que cuente como cliente.</div>`;
 
       body.innerHTML = `
-        <div class="ib-section">
-          <div class="h">Cliente</div>
-          <div class="row"><input id="cli-nombre" placeholder="Nombre completo" value="${escapeAttr(state.cliente.nombre)}"></div>
-          <div class="row two-col">
-            <input id="cli-cedula" placeholder="Cédula" value="${escapeAttr(state.cliente.cedula)}">
-            <input id="cli-tel" placeholder="WhatsApp" value="${escapeAttr(state.cliente.telefono)}">
-          </div>
-        </div>
         <div class="ib-section">
           <div class="h">Asegurados · ${state.asegurados.length} ${state.asegurados.length === 1 ? "persona" : "personas"}</div>
           <div class="aseg-chips">
             ${chips}
             <button class="aseg-add" data-action="add">+ Agregar asegurado</button>
           </div>
+          ${titBox}
         </div>
         <div class="ib-section">
           <div class="h">Moneda</div>
@@ -847,15 +852,22 @@
       `;
     }
 
-    // Modal para editar/agregar asegurado
+    // Modal para editar/agregar asegurado.
+    // Si parentesco=titular, además captura cédula + WhatsApp (que son del contratante).
     function openAsegModal(idx){
-      const ex = idx == null ? { nombre:"", parentesco:"titular", edad:30, nacionalidad:"CR" } : state.asegurados[idx];
+      const yaHayTitular = state.asegurados.some((a, i) => a.parentesco === "titular" && i !== idx);
+      const defaultParentesco = yaHayTitular ? "conyuge" : "titular";
+      const ex = idx == null
+        ? { nombre:"", parentesco:defaultParentesco, edad:30, nacionalidad:"CR" }
+        : state.asegurados[idx];
       const isEdit = idx != null;
+      const cedula = state.cliente.cedula || "";
+      const tel    = state.cliente.telefono || "";
       const html = `
         <div class="aseg-modal-bg open" id="aseg-modal-bg">
           <div class="aseg-modal">
             <h3>${isEdit ? "Editar" : "Agregar"} asegurado</h3>
-            <div class="row"><label>Nombre</label><input id="am-nombre" value="${escapeAttr(ex.nombre)}"></div>
+            <div class="row"><label>Nombre completo</label><input id="am-nombre" value="${escapeAttr(ex.nombre)}"></div>
             <div class="row two-col">
               <div><label>Parentesco</label>
                 <select id="am-parentesco">
@@ -869,6 +881,10 @@
                 ${NACIONALIDADES.map(n => `<option value="${n}" ${n===ex.nacionalidad?"selected":""}>${NACIONALIDAD_LABEL[n]}</option>`).join('')}
               </select>
             </div>
+            <div id="am-titular-extra" class="row two-col" style="${ex.parentesco==='titular' ? '' : 'display:none'}">
+              <div><label>Cédula <span style="color:var(--ink-3);font-weight:400;text-transform:none;letter-spacing:0">(titular)</span></label><input id="am-cedula" value="${escapeAttr(cedula)}"></div>
+              <div><label>WhatsApp <span style="color:var(--ink-3);font-weight:400;text-transform:none;letter-spacing:0">(titular)</span></label><input id="am-tel" value="${escapeAttr(tel)}" placeholder="8888 8888"></div>
+            </div>
             <div class="actions">
               ${isEdit ? `<button class="btn btn-secondary" data-action="del-from-modal" data-idx="${idx}">Quitar</button>` : ""}
               <button class="btn btn-secondary" data-action="cancel-modal">Cancelar</button>
@@ -878,6 +894,10 @@
         </div>
       `;
       document.body.insertAdjacentHTML('beforeend', html);
+      // Toggle visibilidad de campos de titular cuando cambia parentesco
+      document.getElementById('am-parentesco').addEventListener('change', e => {
+        document.getElementById('am-titular-extra').style.display = e.target.value === 'titular' ? '' : 'none';
+      });
     }
     function closeAsegModal(){
       const bg = document.getElementById('aseg-modal-bg');
@@ -886,17 +906,17 @@
 
     function bindPaso1Events(){
       const root = document.querySelector('[data-view="agente"]');
-      root.addEventListener('input', e => {
-        if(e.target.id === 'cli-nombre') state.cliente.nombre = e.target.value;
-        if(e.target.id === 'cli-cedula') state.cliente.cedula = e.target.value;
-        if(e.target.id === 'cli-tel')    state.cliente.telefono = e.target.value;
-        saveDraft();
-      });
       root.addEventListener('click', e => {
         const action = e.target.dataset.action;
         const idx = e.target.dataset.idx;
         if(action === 'add')      openAsegModal(null);
-        if(action === 'del'){ state.asegurados.splice(Number(idx), 1); saveDraft(); renderPaso1(); renderPaso2(); renderPaso3(); }
+        if(action === 'del'){
+          const removed = state.asegurados.splice(Number(idx), 1)[0];
+          if(removed && removed.parentesco === 'titular'){
+            state.cliente.nombre = ""; state.cliente.cedula = ""; state.cliente.telefono = "";
+          }
+          saveDraft(); renderPaso1(); renderPaso2(); renderPaso3();
+        }
         if(e.target.classList.contains('aseg-chip') || e.target.closest('.aseg-chip')){
           const chip = e.target.closest('.aseg-chip');
           if(chip && e.target.tagName !== 'BUTTON') openAsegModal(Number(chip.dataset.idx));
@@ -914,7 +934,10 @@
         const action = e.target.dataset.action;
         if(action === 'cancel-modal') closeAsegModal();
         if(action === 'del-from-modal'){
-          state.asegurados.splice(Number(e.target.dataset.idx), 1);
+          const removed = state.asegurados.splice(Number(e.target.dataset.idx), 1)[0];
+          if(removed && removed.parentesco === 'titular'){
+            state.cliente.nombre = ""; state.cliente.cedula = ""; state.cliente.telefono = "";
+          }
           saveDraft(); closeAsegModal(); renderPaso1(); renderPaso2(); renderPaso3();
         }
         if(action === 'save-modal'){
@@ -926,10 +949,25 @@
             alert('Nombre y edad válida son requeridos');
             return;
           }
-          const aseg = { nombre, parentesco, edad, nacionalidad };
+          // Validar: solo un titular permitido
           const idx = e.target.dataset.idx;
+          const idxN = idx === '' ? -1 : Number(idx);
+          if(parentesco === 'titular'){
+            const otroTitular = state.asegurados.findIndex((a,i) => a.parentesco === 'titular' && i !== idxN);
+            if(otroTitular !== -1){
+              alert('Solo puede haber un titular. Cambie el parentesco del otro primero.');
+              return;
+            }
+            // Sincronizar cliente del titular
+            const cedulaEl = document.getElementById('am-cedula');
+            const telEl    = document.getElementById('am-tel');
+            state.cliente.nombre   = nombre;
+            state.cliente.cedula   = cedulaEl ? cedulaEl.value.trim() : state.cliente.cedula;
+            state.cliente.telefono = telEl    ? telEl.value.trim()    : state.cliente.telefono;
+          }
+          const aseg = { nombre, parentesco, edad, nacionalidad };
           if(idx === '') state.asegurados.push(aseg);
-          else           state.asegurados[Number(idx)] = aseg;
+          else           state.asegurados[idxN] = aseg;
           saveDraft(); closeAsegModal(); renderPaso1(); renderPaso2(); renderPaso3();
         }
       });
