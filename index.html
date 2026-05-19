@@ -257,9 +257,13 @@
 
     /* CLIENTE — comparativa detallada (27 coberturas) */
     .cmp-table-c-wrap{background:var(--paper);border:1px solid var(--line);border-radius:8px;overflow:hidden;margin-bottom:24px}
-    .cmp-table-c-h{padding:20px 28px;background:var(--cream);border-bottom:1px solid var(--line)}
+    .cmp-table-c-h{padding:20px 28px;background:var(--cream);border:none;border-bottom:1px solid var(--line);width:100%;display:flex;justify-content:space-between;align-items:center;gap:20px;cursor:pointer;font-family:inherit;text-align:left;color:inherit;transition:background .15s}
+    .cmp-table-c-wrap:not(.open) .cmp-table-c-h{border-bottom:none}
+    .cmp-table-c-h:hover{background:var(--cream-2)}
     .cmp-table-c-h h3{font-family:"IBM Plex Serif",serif;font-size:20px;font-weight:500;letter-spacing:-0.015em;margin-bottom:4px}
     .cmp-table-c-h .sub{font-size:12.5px;color:var(--ink-3);line-height:1.5;max-width:62ch}
+    .cmp-toggle-chev{font-family:"IBM Plex Sans";font-size:13px;font-weight:600;color:var(--ins-teal-deep);background:var(--paper);border:1px solid var(--ins-teal-line);padding:8px 14px;border-radius:6px;flex-shrink:0;white-space:nowrap}
+    .cmp-table-c-wrap.open .cmp-toggle-chev{background:var(--ins-teal);color:#fff;border-color:var(--ins-teal)}
     .cmp-table-c{width:100%;border-collapse:collapse;font-size:12.5px}
     .cmp-table-c thead th{font-family:"IBM Plex Sans";font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-3);padding:10px 14px;text-align:right;background:var(--cream-2);border-bottom:1px solid var(--line)}
     .cmp-table-c thead th:first-child{text-align:left;color:var(--ink)}
@@ -1262,7 +1266,8 @@
     function renderCliente(payload){
       cli = {
         payload,
-        moneda: payload.monedaInicial || "CRC"
+        moneda: payload.monedaInicial || "CRC",
+        cmpExpandida: false
       };
       renderClienteHero();
       renderClienteToggle();
@@ -1334,6 +1339,26 @@
       }
     }
 
+    // Bind acciones del main (delegado, una sola vez)
+    function bindClienteMainEvents(){
+      const main = document.getElementById('cli-main');
+      if(main.dataset.bound) return;
+      main.dataset.bound = "1";
+      main.addEventListener('click', e => {
+        const btn = e.target.closest('[data-action]');
+        if(!btn) return;
+        if(btn.dataset.action === 'toggle-cmp-cli'){
+          cli.cmpExpandida = !cli.cmpExpandida;
+          renderClienteMain();
+          // Si se expandió, scroll suave al header de la sección
+          if(cli.cmpExpandida){
+            const sec = main.querySelector('.cmp-table-c-wrap');
+            if(sec) sec.scrollIntoView({behavior:'smooth', block:'start'});
+          }
+        }
+      });
+    }
+
     function renderClienteMain(){
       const main = document.getElementById('cli-main');
       main.innerHTML =
@@ -1345,6 +1370,7 @@
         renderClienteEspera() +
         renderClienteCTA() +
         renderClienteDisclaimers();
+      bindClienteMainEvents();
     }
 
     function renderClienteCaracteristicas(){
@@ -1573,31 +1599,42 @@
 
     function renderClienteCmpDetallada(){
       const p = cli.payload;
-      const ths = p.planes.map(planId => {
-        const plan = PLANES.find(pl => pl.id === planId);
-        const isRec = planId === p.planRecomendado;
-        return `<th class="${isRec?'rec':''}">${plan.nombre}${isRec?' ★':''}</th>`;
-      }).join('');
-      const rows = COBERTURAS_DEFS.map(cov => {
-        const cells = p.planes.map(planId => {
-          const v = getCobertura(planId, cov.id, cli.moneda);
+      const expandida = cli.cmpExpandida;
+
+      const tablaHtml = !expandida ? "" : (() => {
+        const ths = p.planes.map(planId => {
+          const plan = PLANES.find(pl => pl.id === planId);
           const isRec = planId === p.planRecomendado;
-          if(v === "NA") return `<td class="na ${isRec?'rec':''}">no aplica</td>`;
-          if(typeof v === "number") return `<td class="${isRec?'rec':''}">${fmtMoneda(v, cli.moneda)}</td>`;
-          return `<td class="${isRec?'rec':''}">${escapeHtml(String(v))}</td>`;
+          return `<th class="${isRec?'rec':''}">${plan.nombre}${isRec?' ★':''}</th>`;
         }).join('');
-        return `<tr><td>${escapeHtml(cov.label)}</td>${cells}</tr>`;
-      }).join('');
-      return `
-        <section class="cmp-table-c-wrap">
-          <div class="cmp-table-c-h">
-            <h3>Comparativa detallada · ${COBERTURAS_DEFS.length} coberturas</h3>
-            <p class="sub">Todos los sublímites del producto, lado a lado. Lo que dice "no aplica" no está cubierto en ese plan.</p>
-          </div>
+        const rows = COBERTURAS_DEFS.map(cov => {
+          const cells = p.planes.map(planId => {
+            const v = getCobertura(planId, cov.id, cli.moneda);
+            const isRec = planId === p.planRecomendado;
+            if(v === "NA") return `<td class="na ${isRec?'rec':''}">no aplica</td>`;
+            if(typeof v === "number") return `<td class="${isRec?'rec':''}">${fmtMoneda(v, cli.moneda)}</td>`;
+            return `<td class="${isRec?'rec':''}">${escapeHtml(String(v))}</td>`;
+          }).join('');
+          return `<tr><td>${escapeHtml(cov.label)}</td>${cells}</tr>`;
+        }).join('');
+        return `
           <table class="cmp-table-c">
             <thead><tr><th>Cobertura</th>${ths}</tr></thead>
             <tbody>${rows}</tbody>
           </table>
+        `;
+      })();
+
+      return `
+        <section class="cmp-table-c-wrap ${expandida?'open':''}">
+          <button class="cmp-table-c-h" data-action="toggle-cmp-cli">
+            <div class="cmp-table-c-h-text">
+              <h3>Comparativa detallada · ${COBERTURAS_DEFS.length} coberturas</h3>
+              <p class="sub">Todos los sublímites del producto, lado a lado.</p>
+            </div>
+            <span class="cmp-toggle-chev">${expandida ? "▴ Ocultar" : "▾ Ver todas"}</span>
+          </button>
+          ${tablaHtml}
         </section>
       `;
     }
