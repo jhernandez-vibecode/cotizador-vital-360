@@ -51,6 +51,54 @@
 
     /* Loading state */
     .loading{padding:60px 40px;text-align:center;color:var(--ink-3);font-family:"IBM Plex Mono";font-size:12px}
+
+    /* === VISTA AGENTE === */
+    .masthead-agente{background:var(--paper);border-bottom:1px solid var(--line)}
+    .masthead-inner{max-width:1480px;margin:0 auto;padding:14px 32px;display:flex;align-items:center;justify-content:space-between}
+    .brand{display:flex;align-items:center;gap:16px}
+    .brand-divider{width:1px;height:30px;background:var(--line)}
+    .brand-tag .a{font-size:13px;font-weight:600;color:var(--ink)}
+    .brand-tag .b{font-size:11.5px;color:var(--ink-3);line-height:1.2}
+    .mh-user{display:flex;align-items:center;gap:8px;padding:6px 10px 6px 6px;border:1px solid var(--line);border-radius:24px;background:var(--paper);font-size:12.5px}
+    .mh-user .av{width:26px;height:26px;border-radius:50%;background:var(--ins-teal);color:#fff;display:grid;place-items:center;font-weight:600;font-size:11px}
+    .page-agente{max-width:1480px;margin:0 auto;padding:24px 32px 60px}
+
+    /* PASO 1 — banda de inputs */
+    .input-band{background:var(--paper);border:1px solid var(--line);border-radius:6px;overflow:hidden;margin-bottom:20px}
+    .ib-h{padding:12px 20px;background:var(--cream);border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
+    .ib-h .t{font-weight:600;font-size:13.5px;color:var(--ink);display:flex;align-items:center;gap:8px}
+    .ib-h .num1,.ib-h .num2,.ib-h .num3{display:inline-grid;place-items:center;width:20px;height:20px;background:var(--ins-teal);color:#fff;border-radius:50%;font-family:"IBM Plex Mono";font-size:11px}
+    .ib-h .step{font-family:"IBM Plex Mono";font-size:11px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.04em}
+    .ib-body{padding:18px 20px;display:grid;grid-template-columns:1.5fr 2.5fr 1fr;gap:24px;align-items:start}
+    .ib-section .h{font-size:11px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.04em;font-weight:600;margin-bottom:8px}
+    .ib-section .row{display:grid;gap:8px;margin-bottom:8px}
+    .ib-section .row.two-col{grid-template-columns:1fr 1fr}
+    .ib-section input,.ib-section select{padding:7px 9px;border:1px solid var(--line);border-radius:4px;font-family:inherit;font-size:13px;outline:none;background:var(--paper);width:100%}
+    .ib-section input:focus,.ib-section select:focus{border-color:var(--ins-teal);box-shadow:0 0 0 2px var(--ins-teal-soft)}
+
+    .aseg-chips{display:flex;flex-wrap:wrap;gap:6px;align-items:flex-start}
+    .aseg-chip{display:flex;align-items:center;gap:8px;padding:7px 12px 7px 10px;background:var(--ins-teal-soft);border:1px solid var(--ins-teal-line);border-radius:18px;font-size:12.5px;color:var(--ins-teal-deep);font-weight:500;cursor:pointer}
+    .aseg-chip .ico{width:18px;height:18px;border-radius:50%;background:var(--ins-teal);color:#fff;display:grid;place-items:center;font-family:"IBM Plex Serif";font-size:11px;font-style:italic;font-weight:400}
+    .aseg-chip .age{font-family:"IBM Plex Mono";font-size:11.5px;color:var(--ink-2);background:var(--paper);padding:1px 6px;border-radius:8px}
+    .aseg-chip .x{background:none;border:none;color:var(--ink-3);font-size:14px;line-height:1;cursor:pointer;padding:0;margin-left:2px}
+    .aseg-add{padding:7px 12px;background:transparent;border:1.5px dashed var(--line);color:var(--ink-3);border-radius:18px;font-family:inherit;font-size:12.5px;cursor:pointer;font-weight:500}
+    .aseg-add:hover{border-color:var(--ins-teal);color:var(--ins-teal-deep)}
+
+    .cur-tog{display:flex;background:var(--cream);border:1px solid var(--line);border-radius:6px;padding:3px;gap:0}
+    .cur-tog button{flex:1;padding:7px 12px;background:transparent;border:none;font-family:inherit;font-size:12.5px;font-weight:600;color:var(--ink-2);cursor:pointer;border-radius:4px;display:flex;align-items:center;justify-content:center;gap:6px}
+    .cur-tog button.on{background:var(--ins-teal);color:#fff}
+    .cur-tog button .sym{font-family:"IBM Plex Mono";font-size:13px}
+
+    /* Modal mini para editar asegurado */
+    .aseg-modal-bg{position:fixed;inset:0;background:rgba(14,33,39,.6);display:none;align-items:center;justify-content:center;z-index:50}
+    .aseg-modal-bg.open{display:flex}
+    .aseg-modal{background:var(--paper);border-radius:8px;padding:24px 28px;width:420px;max-width:90vw}
+    .aseg-modal h3{font-family:"IBM Plex Serif",serif;font-size:18px;margin-bottom:14px;font-weight:500}
+    .aseg-modal .row{display:grid;gap:8px;margin-bottom:10px}
+    .aseg-modal .row.two-col{grid-template-columns:1fr 1fr}
+    .aseg-modal label{font-size:11px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.04em;font-weight:600;display:block;margin-bottom:4px}
+    .aseg-modal input,.aseg-modal select{width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:4px;font-family:inherit;font-size:13.5px;outline:none}
+    .aseg-modal .actions{display:flex;justify-content:flex-end;gap:8px;margin-top:14px}
   </style>
 </head>
 <body>
@@ -60,8 +108,40 @@
   </div>
 
   <div data-view="agente">
-    <!-- Vista agente — se construye en Tasks 6-10 -->
-    <div class="loading">Vista agente (placeholder)</div>
+    <header class="masthead-agente">
+      <div class="masthead-inner">
+        <div class="brand">
+          <div class="brand-logo"><span class="word">Vital<span class="num">360</span></span></div>
+          <div class="brand-divider"></div>
+          <div class="brand-tag">
+            <div class="a">Cotizador · vista agente</div>
+            <div class="b">Seguros Digitales · 100 años INS</div>
+          </div>
+        </div>
+        <div class="mh-user" id="mh-user">
+          <span class="av" id="mh-user-av">··</span>
+          <span id="mh-user-name">Sin sesión</span>
+        </div>
+      </div>
+    </header>
+    <main class="page-agente">
+
+      <!-- Paso 1 -->
+      <section class="input-band">
+        <div class="ib-h">
+          <span class="t"><span class="num1">1</span>Datos del cliente y asegurados</span>
+          <span class="step">paso 1 · 3</span>
+        </div>
+        <div class="ib-body" id="paso1-body"><!-- render dinámico --></div>
+      </section>
+
+      <!-- Paso 2 -->
+      <section class="scanner" id="paso2-scanner"><!-- render dinámico (Task 8) --></section>
+
+      <!-- Paso 3 -->
+      <section class="send-band" id="paso3-send"><!-- render dinámico (Task 10) --></section>
+
+    </main>
   </div>
 
   <div data-view="cliente">
@@ -395,6 +475,171 @@
     }
 
     // =====================================================================
+    // Sección 7: Render vista agente
+    // =====================================================================
+
+    const PARENTESCOS = ["titular","conyuge","hijo","otro"];
+    const NACIONALIDADES = ["CR","extranjero_residente_permanente","extranjero_residente_temporal","extranjero_pasaporte"];
+    const NACIONALIDAD_LABEL = {
+      CR: "Costa Rica",
+      extranjero_residente_permanente: "Extranjero · residente permanente",
+      extranjero_residente_temporal: "Extranjero · residente temporal",
+      extranjero_pasaporte: "Extranjero · pasaporte"
+    };
+
+    function inicialDe(nombre){
+      return (nombre || "?").trim().charAt(0).toUpperCase();
+    }
+
+    function escapeHtml(s){
+      return String(s == null ? "" : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;"}[c]));
+    }
+    function escapeAttr(s){ return escapeHtml(s); }
+
+    function renderPaso1(){
+      const body = document.getElementById('paso1-body');
+      const chips = state.asegurados.map((a, i) =>
+        `<span class="aseg-chip" data-idx="${i}">
+           <span class="ico">${inicialDe(a.nombre)}</span>
+           <span>${escapeHtml(a.nombre || '(sin nombre)')}</span>
+           <span class="age">${a.edad}</span>
+           <button class="x" data-action="del" data-idx="${i}" title="Quitar">×</button>
+         </span>`
+      ).join('');
+
+      body.innerHTML = `
+        <div class="ib-section">
+          <div class="h">Cliente</div>
+          <div class="row"><input id="cli-nombre" placeholder="Nombre completo" value="${escapeAttr(state.cliente.nombre)}"></div>
+          <div class="row two-col">
+            <input id="cli-cedula" placeholder="Cédula" value="${escapeAttr(state.cliente.cedula)}">
+            <input id="cli-tel" placeholder="WhatsApp" value="${escapeAttr(state.cliente.telefono)}">
+          </div>
+        </div>
+        <div class="ib-section">
+          <div class="h">Asegurados · ${state.asegurados.length} ${state.asegurados.length === 1 ? "persona" : "personas"}</div>
+          <div class="aseg-chips">
+            ${chips}
+            <button class="aseg-add" data-action="add">+ Agregar asegurado</button>
+          </div>
+        </div>
+        <div class="ib-section">
+          <div class="h">Moneda</div>
+          <div class="cur-tog">
+            <button data-cur="CRC" class="${state.moneda === 'CRC' ? 'on' : ''}"><span class="sym">₡</span>Colones</button>
+            <button data-cur="USD" class="${state.moneda === 'USD' ? 'on' : ''}"><span class="sym">$</span>Dólares</button>
+          </div>
+        </div>
+      `;
+    }
+
+    // Modal para editar/agregar asegurado
+    function openAsegModal(idx){
+      const ex = idx == null ? { nombre:"", parentesco:"titular", edad:30, nacionalidad:"CR" } : state.asegurados[idx];
+      const isEdit = idx != null;
+      const html = `
+        <div class="aseg-modal-bg open" id="aseg-modal-bg">
+          <div class="aseg-modal">
+            <h3>${isEdit ? "Editar" : "Agregar"} asegurado</h3>
+            <div class="row"><label>Nombre</label><input id="am-nombre" value="${escapeAttr(ex.nombre)}"></div>
+            <div class="row two-col">
+              <div><label>Parentesco</label>
+                <select id="am-parentesco">
+                  ${PARENTESCOS.map(p => `<option value="${p}" ${p===ex.parentesco?"selected":""}>${p}</option>`).join('')}
+                </select>
+              </div>
+              <div><label>Edad</label><input id="am-edad" type="number" min="0" max="100" value="${ex.edad}"></div>
+            </div>
+            <div class="row"><label>Nacionalidad / residencia</label>
+              <select id="am-nac">
+                ${NACIONALIDADES.map(n => `<option value="${n}" ${n===ex.nacionalidad?"selected":""}>${NACIONALIDAD_LABEL[n]}</option>`).join('')}
+              </select>
+            </div>
+            <div class="actions">
+              ${isEdit ? `<button class="btn btn-secondary" data-action="del-from-modal" data-idx="${idx}">Quitar</button>` : ""}
+              <button class="btn btn-secondary" data-action="cancel-modal">Cancelar</button>
+              <button class="btn btn-primary" data-action="save-modal" data-idx="${idx==null?'':idx}">${isEdit ? "Guardar" : "Agregar"}</button>
+            </div>
+          </div>
+        </div>
+      `;
+      document.body.insertAdjacentHTML('beforeend', html);
+    }
+    function closeAsegModal(){
+      const bg = document.getElementById('aseg-modal-bg');
+      if(bg) bg.remove();
+    }
+
+    function bindPaso1Events(){
+      const root = document.querySelector('[data-view="agente"]');
+      root.addEventListener('input', e => {
+        if(e.target.id === 'cli-nombre') state.cliente.nombre = e.target.value;
+        if(e.target.id === 'cli-cedula') state.cliente.cedula = e.target.value;
+        if(e.target.id === 'cli-tel')    state.cliente.telefono = e.target.value;
+        saveDraft();
+      });
+      root.addEventListener('click', e => {
+        const action = e.target.dataset.action;
+        const idx = e.target.dataset.idx;
+        if(action === 'add')      openAsegModal(null);
+        if(action === 'del'){ state.asegurados.splice(Number(idx), 1); saveDraft(); renderPaso1(); renderPaso2(); renderPaso3(); }
+        if(e.target.classList.contains('aseg-chip') || e.target.closest('.aseg-chip')){
+          const chip = e.target.closest('.aseg-chip');
+          if(chip && e.target.tagName !== 'BUTTON') openAsegModal(Number(chip.dataset.idx));
+        }
+        if(e.target.dataset.cur){
+          state.moneda = e.target.dataset.cur;
+          saveDraft();
+          renderPaso1();
+          renderPaso2();
+          renderPaso3();
+        }
+      });
+      // Eventos del modal (delegados sobre body)
+      document.body.addEventListener('click', e => {
+        const action = e.target.dataset.action;
+        if(action === 'cancel-modal') closeAsegModal();
+        if(action === 'del-from-modal'){
+          state.asegurados.splice(Number(e.target.dataset.idx), 1);
+          saveDraft(); closeAsegModal(); renderPaso1(); renderPaso2(); renderPaso3();
+        }
+        if(action === 'save-modal'){
+          const nombre = document.getElementById('am-nombre').value.trim();
+          const parentesco = document.getElementById('am-parentesco').value;
+          const edad = Number(document.getElementById('am-edad').value);
+          const nacionalidad = document.getElementById('am-nac').value;
+          if(!nombre || isNaN(edad) || edad < 0){
+            alert('Nombre y edad válida son requeridos');
+            return;
+          }
+          const aseg = { nombre, parentesco, edad, nacionalidad };
+          const idx = e.target.dataset.idx;
+          if(idx === '') state.asegurados.push(aseg);
+          else           state.asegurados[Number(idx)] = aseg;
+          saveDraft(); closeAsegModal(); renderPaso1(); renderPaso2(); renderPaso3();
+        }
+      });
+    }
+
+    // Placeholder de renderPaso2 — se completa en Task 8
+    function renderPaso2(){
+      const el = document.getElementById('paso2-scanner');
+      if(el) el.innerHTML = '<div class="loading">Paso 2 — scanner (Task 8)</div>';
+    }
+    // Placeholder de renderPaso3 — se completa en Task 10
+    function renderPaso3(){
+      const el = document.getElementById('paso3-send');
+      if(el) el.innerHTML = '';
+    }
+
+    function renderAgente(){
+      renderPaso1();
+      renderPaso2();
+      renderPaso3();
+      bindPaso1Events();
+    }
+
+    // =====================================================================
     // Sección 8: Render vista cliente (stub — se completa en Tasks 11-15)
     // =====================================================================
     function renderCliente(payload){
@@ -504,7 +749,7 @@
       }
       // Vista agente: por ahora sin auth (Task 14 agrega Google)
       loadDraft();
-      // renderAgente(); — se implementa en Tasks 7-10
+      renderAgente();
       showView("agente");
     }
 
