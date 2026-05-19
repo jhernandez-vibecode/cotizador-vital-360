@@ -343,8 +343,9 @@
     .col-c-ambito{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ins-coral-deep);font-weight:700;margin-bottom:6px}
     .col-c.rec .col-c-ambito{margin-top:8px}
     .col-c-name{font-family:"IBM Plex Serif",serif;font-size:28px;font-weight:500;letter-spacing:-0.02em;line-height:1;margin-bottom:8px}
-    .col-c-suma{font-size:11.5px;color:var(--ink-3)}
-    .col-c-suma .v{font-family:"IBM Plex Mono";color:var(--ink);font-weight:500}
+    .col-c-suma{font-size:10.5px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.06em;font-weight:700;margin-bottom:4px;display:block}
+    .col-c-suma .v{display:block;font-family:"IBM Plex Serif",serif;font-size:22px;color:var(--ink);font-weight:500;letter-spacing:-0.015em;margin-top:2px;text-transform:none}
+    .col-c-suma-meta{font-size:10.5px;color:var(--ink-3);font-family:"IBM Plex Mono";margin-bottom:6px}
     .col-c-price{padding:22px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin-top:18px}
     .col-c-price .lbl{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);font-weight:700;margin-bottom:6px}
     .col-c-price .amt-row{display:flex;align-items:baseline;gap:3px;color:var(--ink)}
@@ -489,8 +490,18 @@
     .cta-strip-r .btn-wa:hover{background:var(--ins-coral-deep)}
 
     /* CLIENTE — disclaimers */
-    .fine{background:var(--cream);border:1px solid var(--line);border-radius:8px;padding:22px 28px;font-size:12px;color:var(--ink-3);line-height:1.65}
+    .fine{background:var(--cream);border:1px solid var(--line);border-radius:8px;padding:22px 28px;font-size:12px;color:var(--ink-3);line-height:1.65;margin-bottom:18px}
     .fine strong{color:var(--ink-2);font-weight:600}
+
+    /* CLIENTE — footer SDI */
+    .sdi-foot{background:var(--ins-teal-deep);border-radius:8px;padding:24px 28px;text-align:center;color:#fff}
+    .sdi-mark{display:inline-flex;align-items:center;gap:10px;margin-bottom:14px}
+    .sdi-mark .sdi-word{font-family:"IBM Plex Sans";font-weight:500;font-size:32px;letter-spacing:-1px;color:#fff;line-height:1}
+    .sdi-mark .sdi-bars{display:inline-flex;flex-direction:column;gap:3px}
+    .sdi-mark .sdi-bars i{display:block;width:22px;height:4px;background:#fff;border-radius:1px}
+    .sdi-foot-line{font-size:12px;color:#C7DBE0;margin:4px 0;line-height:1.55}
+    .sdi-foot-line strong{color:#fff;font-weight:600}
+    .sdi-foot-line.sub{font-size:11px;color:#94aab0}
   </style>
 </head>
 <body>
@@ -713,10 +724,11 @@
     // Whitelist de agentes (auth Google)
     const AGENTES = {
       "jhernandez@segurosdelins.com": {
-        nombre:   "JC Hernández",
+        nombre:   "Juan Carlos Hernandez",
         whatsapp: "8822 1348",
         email:    "jhernandez@segurosdelins.com",
-        codigo:   "001"
+        codigo:   "001",
+        licencia: "08-1318"
       }
       // Agregar más agentes acá cuando se autoricen
     };
@@ -1401,12 +1413,18 @@
       const planRecId = payload.planRecomendado || payload.planes[0];
       const planRec = PLANES.find(pl => pl.id === planRecId);
       const numAseg = payload.asegurados.length;
-      const primaRec = primaFamiliar(planRecId, payload.monedaInicial, payload.asegurados);
-      const primaFmt = fmtMoneda(primaRec, payload.monedaInicial);
-      const planesNombres = payload.planes.map(id => {
-          const pl = PLANES.find(x => x.id === id);
-          return id === payload.planRecomendado ? "★ " + pl.nombre : pl.nombre;
-        }).join(" · ");
+
+      // Calcular prima anual de los 3 planes (sin recargo)
+      const planesData = payload.planes.map(id => {
+        const pl = PLANES.find(x => x.id === id);
+        const fam = primaFamiliar(id, payload.monedaInicial, payload.asegurados);
+        return {
+          id, plan: pl,
+          isRec: id === payload.planRecomendado,
+          primaAnual: fam,
+          primaFmt: fmtMoneda(fam, payload.monedaInicial)
+        };
+      });
 
       return `<!DOCTYPE html>
 <html lang="es">
@@ -1457,20 +1475,30 @@
             </td>
           </tr>
 
-          <!-- 5. Resumen mini (anclaje de prima recomendada) -->
+          <!-- 5. Precios anuales de los planes — recomendado destacado -->
           <tr>
-            <td style="padding:0 28px 22px;">
-              <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#E3EEF1;border-left:4px solid #1F5C6B;border-radius:6px;">
+            <td style="padding:0 28px 8px;">
+              <p style="margin:0 0 12px;font-size:11px;font-weight:bold;color:#143F4A;letter-spacing:0.06em;text-transform:uppercase;">Prima familiar anual · ${numAseg} ${numAseg === 1 ? "asegurado" : "asegurados"}</p>
+              <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:separate;border-spacing:6px 0;">
                 <tr>
-                  <td style="padding:14px 16px;">
-                    <p style="margin:0 0 4px;font-size:10.5px;font-weight:bold;color:#143F4A;letter-spacing:0.06em;text-transform:uppercase;">Plan recomendado para usted</p>
-                    <p style="margin:0;font-size:17px;font-weight:bold;color:#143F4A;font-family:Georgia,'Times New Roman',serif;">${_escEmail(planRec ? planRec.nombre : "—")}${planRec ? " &middot; " + _escEmail(planRec.ambito) : ""}</p>
-                    <p style="margin:8px 0 4px;font-size:13px;color:#34464D;">Prima familiar anual para los ${numAseg} asegurados:</p>
-                    <p style="margin:0;font-size:22px;font-weight:bold;color:#0E2127;font-family:Georgia,serif;">${_escEmail(primaFmt)} <span style="font-size:11px;color:#6A7A80;font-weight:normal;font-style:italic;font-family:Arial;">+ 2 % IVA · ${_escEmail(payload.monedaInicial)}</span></p>
-                    <p style="margin:8px 0 0;font-size:11.5px;color:#6A7A80;">Comparando: ${_escEmail(planesNombres)}</p>
-                  </td>
+                  ${planesData.map(pd => {
+                    const isRec = pd.isRec;
+                    const bg     = isRec ? "#1F5C6B" : "#ffffff";
+                    const border = isRec ? "2px solid #E36B43" : "1px solid #C7DBE0";
+                    const color  = isRec ? "#ffffff" : "#143F4A";
+                    const labelClr = isRec ? "#FCE6DC" : "#6A7A80";
+                    const flag = isRec ? `<p style="margin:0 0 4px;background:#E36B43;color:#ffffff;font-size:9px;font-weight:800;padding:3px 8px;border-radius:999px;display:inline-block;text-transform:uppercase;letter-spacing:0.05em;">&#9733; Recomendado</p>` : "";
+                    return `<td width="33%" align="center" bgcolor="${bg}" style="background:${bg};color:${color};border:${border};border-radius:8px;padding:14px 8px;vertical-align:middle;">
+                      ${flag}
+                      <p style="margin:${isRec ? '4px' : '0'} 0 2px;font-size:10px;text-transform:uppercase;letter-spacing:0.06em;font-weight:bold;color:${labelClr};">${_escEmail(pd.plan.ambito)}</p>
+                      <p style="margin:2px 0 8px;font-family:Georgia,serif;font-size:16px;font-weight:600;color:${color};letter-spacing:-0.01em;">${_escEmail(pd.plan.nombre)}</p>
+                      <p style="margin:0;font-family:Georgia,serif;font-size:${isRec ? '20px' : '17px'};font-weight:800;color:${color};letter-spacing:-0.02em;">${_escEmail(pd.primaFmt)}</p>
+                      <p style="margin:3px 0 0;font-size:10px;color:${labelClr};font-style:italic;">${_escEmail(payload.monedaInicial)} anual</p>
+                    </td>`;
+                  }).join("")}
                 </tr>
               </table>
+              <p style="margin:10px 0 0;font-size:11px;color:#6A7A80;font-style:italic;text-align:center;">+ 2 % IVA · valores de la cuota anual. <strong style="color:#143F4A;font-style:normal;">En la cotización completa</strong> verá también las opciones <strong style="color:#143F4A;font-style:normal;">semestral y trimestral</strong> con los recargos correspondientes.</p>
             </td>
           </tr>
 
@@ -1496,12 +1524,30 @@
             </td>
           </tr>
 
-          <!-- 8. FOOTER navy con datos del agente -->
+          <!-- 8. FOOTER navy con logo SDI + datos del agente + propiedad intelectual -->
           <tr>
-            <td bgcolor="#143F4A" style="background:#143F4A;padding:20px 24px;text-align:center;color:#ffffff;margin-top:24px;">
+            <td bgcolor="#143F4A" style="background:#143F4A;padding:24px 24px 20px;text-align:center;color:#ffffff;">
+              <!-- Logo SDI recreado con tablas para compatibilidad email -->
+              <table cellpadding="0" cellspacing="0" border="0" align="center" style="margin:0 auto 14px;">
+                <tr>
+                  <td valign="middle" style="font-family:Arial,Helvetica,sans-serif;font-weight:500;font-size:30px;letter-spacing:-1px;color:#ffffff;line-height:1;">SDI</td>
+                  <td valign="middle" style="padding-left:10px;">
+                    <table cellpadding="0" cellspacing="0" border="0">
+                      <tr><td bgcolor="#ffffff" style="background:#ffffff;height:4px;width:22px;line-height:4px;font-size:0;">&nbsp;</td></tr>
+                      <tr><td style="height:3px;line-height:3px;font-size:0;">&nbsp;</td></tr>
+                      <tr><td bgcolor="#ffffff" style="background:#ffffff;height:4px;width:22px;line-height:4px;font-size:0;">&nbsp;</td></tr>
+                      <tr><td style="height:3px;line-height:3px;font-size:0;">&nbsp;</td></tr>
+                      <tr><td bgcolor="#ffffff" style="background:#ffffff;height:4px;width:22px;line-height:4px;font-size:0;">&nbsp;</td></tr>
+                      <tr><td style="height:3px;line-height:3px;font-size:0;">&nbsp;</td></tr>
+                      <tr><td bgcolor="#ffffff" style="background:#ffffff;height:4px;width:22px;line-height:4px;font-size:0;">&nbsp;</td></tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
               <p style="margin:0;font-size:14px;font-weight:bold;color:#ffffff;">${_escEmail(a.nombre)}</p>
-              <p style="margin:4px 0 0;font-size:11px;color:#C7DBE0;">Agente autorizado INS · WhatsApp ${_escEmail(a.whatsapp)}${a.email ? " · " + _escEmail(a.email) : ""}</p>
-              <p style="margin:10px 0 0;font-size:10.5px;color:#94aab0;font-style:italic;line-height:1.5;">Cotización informativa basada en tarifas oficiales del INS vigentes a la fecha. Vigencia ${payload.vigenciaDias} días. Producto registrado SUGESE P20-76-A01-1097 V3.</p>
+              <p style="margin:4px 0 0;font-size:11px;color:#C7DBE0;">Agente autorizado INS · Lic. SUGESE ${_escEmail(a.licencia || '08-1318')} · WhatsApp ${_escEmail(a.whatsapp)}${a.email ? " · " + _escEmail(a.email) : ""}</p>
+              <p style="margin:14px 0 0;font-size:10.5px;color:#94aab0;font-style:italic;line-height:1.55;">Cotización informativa basada en tarifas oficiales del INS vigentes a la fecha. Vigencia ${payload.vigenciaDias} días. Producto Vital 360 registrado bajo norma SUGESE P20-76-A01-1097 V3.</p>
+              <p style="margin:10px 0 0;font-size:10px;color:#6A7A80;">Esta cotización pertenece a <strong style="color:#ffffff;font-weight:600;">Seguros Digitales SDI&reg;</strong> · &copy; 2026 Propiedad intelectual de ${_escEmail(a.nombre)}</p>
             </td>
           </tr>
 
@@ -2259,10 +2305,20 @@
     }
 
     function renderClienteDisclaimers(){
+      const a = cli.payload.agente;
       return `
         <section class="fine">
           <strong>Información importante.</strong> Esta cotización es de carácter informativo y se basa en las tarifas oficiales del Instituto Nacional de Seguros vigentes a la fecha indicada. Mantiene vigencia por ${cli.payload.vigenciaDias} días naturales. Las primas mostradas <strong>no incluyen el impuesto al valor agregado (IVA 2 %, tarifa especial para seguros de personas, Ley 9635 de Costa Rica)</strong>. La aceptación final del riesgo y la emisión de la póliza corresponden al INS conforme a la Ley Reguladora del Contrato de Seguros y al producto registrado bajo norma SUGESE P20-76-A01-1097 V3.
         </section>
+        <footer class="sdi-foot">
+          <div class="sdi-mark">
+            <span class="sdi-word">SDI</span>
+            <span class="sdi-bars"><i></i><i></i><i></i><i></i></span>
+          </div>
+          <p class="sdi-foot-line">Esta cotización pertenece a <strong>Seguros Digitales SDI<sup>®</sup></strong></p>
+          <p class="sdi-foot-line sub">Agente ${escapeHtml(a.nombre)} · Lic. SUGESE ${escapeHtml(a.licencia || '08-1318')} · ${escapeHtml(a.whatsapp || '')}</p>
+          <p class="sdi-foot-line sub">© 2026 Propiedad intelectual de ${escapeHtml(a.nombre)}</p>
+        </footer>
       `;
     }
 
@@ -2288,6 +2344,7 @@
           <div class="col-c-ambito">${escapeHtml(plan.ambito)}</div>
           <div class="col-c-name">${plan.nombre}</div>
           <div class="col-c-suma">Suma asegurada anual <span class="v">${fmtMoneda(suma, cli.moneda)}</span></div>
+          <div class="col-c-suma-meta">${cli.moneda} · por persona</div>
           <div class="col-c-price">
             <div class="lbl">Prima familiar anual</div>
             <div class="amt-row"><span class="cur">${cli.moneda==='USD'?'$':'₡'}</span><span class="amt">${fmtMoneda(fam, cli.moneda).replace(/^[₡$]/,'')}</span></div>
