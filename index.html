@@ -341,9 +341,78 @@
     }
 
     // =====================================================================
-    // Sección 10: Init + smoke tests
+    // Sección 5: Estado central de la app
     // =====================================================================
-    (function smokeTests(){
+
+    const ESTADO_INICIAL = {
+      cotizacionId: null,        // generado al primer guardado
+      fechaCreacion: null,
+      cliente: { nombre: "", cedula: "", telefono: "" },
+      asegurados: [
+        // Por defecto vacío. El agente agrega al menos al titular.
+      ],
+      moneda: "CRC",
+      planesSeleccionados: [],   // ids · máx 3
+      planRecomendado: null      // id de uno de los 3
+    };
+
+    let state = JSON.parse(JSON.stringify(ESTADO_INICIAL)); // deep clone
+
+    const LS_KEY = "vital360.borrador";
+
+    function saveDraft(){
+      try {
+        localStorage.setItem(LS_KEY, JSON.stringify(state));
+      } catch(e){ console.warn('[vital360] no se pudo guardar borrador', e); }
+    }
+
+    function loadDraft(){
+      try {
+        const raw = localStorage.getItem(LS_KEY);
+        if(!raw) return false;
+        const parsed = JSON.parse(raw);
+        if(parsed && typeof parsed === "object"){
+          state = Object.assign({}, ESTADO_INICIAL, parsed);
+          return true;
+        }
+      } catch(e){ console.warn('[vital360] borrador inválido', e); }
+      return false;
+    }
+
+    function clearDraft(){
+      localStorage.removeItem(LS_KEY);
+      state = JSON.parse(JSON.stringify(ESTADO_INICIAL));
+    }
+
+    // =====================================================================
+    // Sección 6: Auth (stub — se completa en Task 14)
+    // =====================================================================
+
+    let agenteActual = null; // se setea cuando Google auth completa
+
+    function isAuthorized(email){
+      return Object.prototype.hasOwnProperty.call(AGENTES, email);
+    }
+
+    // =====================================================================
+    // Sección 8: Render vista cliente (stub — se completa en Tasks 11-15)
+    // =====================================================================
+    function renderCliente(payload){
+      const el = document.querySelector('[data-view="cliente"]');
+      el.innerHTML = '<div class="loading">Vista cliente · payload recibido: ' + (payload && payload.cliente && payload.cliente.nombre || '(sin nombre)') + '</div>';
+    }
+
+    // =====================================================================
+    // Sección 10: Init
+    // =====================================================================
+
+    function showView(viewName){
+      document.querySelectorAll('[data-view]').forEach(el => {
+        el.classList.toggle('active', el.dataset.view === viewName);
+      });
+    }
+
+    function runSmokeTests(){
       console.assert(PLANES.length === 7, '[smoke] PLANES debe tener 7 elementos');
       console.assert(RANGOS_EDAD.length === 13, '[smoke] RANGOS_EDAD debe tener 13 elementos');
       console.assert(Object.keys(PRIMAS_USD).length === 13, '[smoke] PRIMAS_USD debe tener 13 rangos');
@@ -418,8 +487,28 @@
       console.assert(dec.asegurados.length === 4, '[smoke] payload roundtrip asegurados');
       console.assert(!enc.includes("+") && !enc.includes("/") && !enc.includes("="), '[smoke] base64url no debe tener + / =');
 
-      console.log('[vital360] smoke tests de datos OK · tarifas ' + TARIFAS_VERSION);
-    })();
+      console.log('[vital360] smoke tests OK · ' + TARIFAS_VERSION);
+    }
+
+    function init(){
+      runSmokeTests();
+      const ruta = determinarVista();
+      if(ruta.tipo === "cliente"){
+        if(!ruta.payload){
+          showView("bloqueado");
+          return;
+        }
+        renderCliente(ruta.payload);
+        showView("cliente");
+        return;
+      }
+      // Vista agente: por ahora sin auth (Task 14 agrega Google)
+      loadDraft();
+      // renderAgente(); — se implementa en Tasks 7-10
+      showView("agente");
+    }
+
+    document.addEventListener('DOMContentLoaded', init);
   </script>
 </body>
 </html>
