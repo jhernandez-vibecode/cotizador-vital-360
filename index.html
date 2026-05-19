@@ -8,17 +8,73 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Serif:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
-    /* CSS se agrega en Task 2 */
-    body { font-family: 'IBM Plex Sans', sans-serif; padding: 40px; }
+    :root{
+      --ins-teal:#1F5C6B;
+      --ins-teal-deep:#143F4A;
+      --ins-teal-soft:#E3EEF1;
+      --ins-teal-line:#C7DBE0;
+      --ins-coral:#E36B43;
+      --ins-coral-soft:#FCE6DC;
+      --ins-coral-deep:#B94F2B;
+      --ins-gold:#C18A2C;
+      --cream:#F7F1E4;
+      --cream-2:#EFE8D5;
+      --paper:#FFFFFF;
+      --ink:#0E2127;
+      --ink-2:#34464D;
+      --ink-3:#6A7A80;
+      --line:#D7DCDE;
+      --line-2:#EBEDEE;
+      --green-ok:#19A65A;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body{font-family:"IBM Plex Sans",sans-serif;background:var(--paper);color:var(--ink);-webkit-font-smoothing:antialiased}
+    body{font-size:13.5px;line-height:1.5;letter-spacing:-0.005em;min-height:100vh}
+    .serif{font-family:"IBM Plex Serif",serif}
+    .mono{font-family:"IBM Plex Mono",monospace;font-size:.88em}
+
+    /* Brand */
+    .brand-logo{display:flex;align-items:baseline;gap:6px}
+    .brand-logo .word{font-family:"IBM Plex Sans";font-weight:300;font-size:30px;letter-spacing:-0.02em;line-height:1;color:var(--ink)}
+    .brand-logo .num{font-family:"IBM Plex Sans";font-weight:300;font-size:16px;vertical-align:super;color:var(--ins-coral);margin-left:-2px}
+
+    /* Buttons */
+    .btn{padding:11px 16px;border-radius:4px;font-family:inherit;font-size:13.5px;font-weight:600;cursor:pointer;border:1px solid;letter-spacing:-0.005em;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+    .btn-primary{background:var(--ins-coral);color:#fff;border-color:var(--ins-coral)}
+    .btn-primary:hover{background:var(--ins-coral-deep);border-color:var(--ins-coral-deep)}
+    .btn-secondary{background:var(--paper);color:var(--ink-2);border-color:var(--line)}
+    .btn-secondary:hover{border-color:var(--ink-3)}
+
+    /* Hidden by default — vistas se muestran/ocultan con JS */
+    [data-view]{display:none}
+    [data-view].active{display:block}
+
+    /* Loading state */
+    .loading{padding:60px 40px;text-align:center;color:var(--ink-3);font-family:"IBM Plex Mono";font-size:12px}
   </style>
 </head>
 <body>
-  <h1>Cotizador Vital 360</h1>
-  <p id="status">Cargando…</p>
+  <!-- Vistas: una sola se muestra según routing (data-view + clase 'active' por JS) -->
+  <div data-view="loading" class="active">
+    <div class="loading">Cargando cotizador Vital 360…</div>
+  </div>
+
+  <div data-view="agente">
+    <!-- Vista agente — se construye en Tasks 6-10 -->
+    <div class="loading">Vista agente (placeholder)</div>
+  </div>
+
+  <div data-view="cliente">
+    <!-- Vista cliente — se construye en Tasks 11-15 -->
+    <div class="loading">Vista cliente (placeholder)</div>
+  </div>
+
+  <div data-view="bloqueado">
+    <div class="loading">Acceso restringido (placeholder)</div>
+  </div>
 
   <script>
     // ===== Sección 10: Init =====
-    document.getElementById('status').textContent = 'Skeleton OK · ' + new Date().toISOString();
     console.log('[vital360] skeleton cargado');
   </script>
 </body>
