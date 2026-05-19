@@ -53,6 +53,58 @@
     /* Loading state */
     .loading{padding:60px 40px;text-align:center;color:var(--ink-3);font-family:"IBM Plex Mono";font-size:12px}
 
+    /* Tooltip de cobertura — funciona en hover (desktop) y tap (mobile) */
+    .has-tip{position:relative;display:inline-flex;align-items:center;gap:6px;cursor:help;border-bottom:1px dotted var(--ink-3);outline:none}
+    .has-tip .tip-ico{display:inline-grid;place-items:center;width:14px;height:14px;border-radius:50%;background:var(--ins-teal-soft);color:var(--ins-teal-deep);font-family:"IBM Plex Serif",serif;font-style:italic;font-size:10px;font-weight:600;flex-shrink:0;line-height:1}
+    .has-tip:hover .tip-ico,.has-tip:focus .tip-ico,.has-tip.tipped .tip-ico{background:var(--ins-teal);color:#fff}
+    .has-tip::after{
+      content: attr(data-tip);
+      position:absolute;
+      bottom:calc(100% + 8px);
+      left:0;
+      max-width:280px;
+      width:max-content;
+      background:var(--ins-teal-deep);
+      color:#fff;
+      padding:10px 12px;
+      border-radius:6px;
+      font-family:"IBM Plex Sans",sans-serif;
+      font-size:12px;
+      font-weight:400;
+      font-style:normal;
+      line-height:1.5;
+      letter-spacing:-0.005em;
+      box-shadow:0 6px 20px rgba(14,33,39,.25);
+      white-space:normal;
+      opacity:0;
+      visibility:hidden;
+      transform:translateY(4px);
+      transition:opacity .12s, transform .12s;
+      pointer-events:none;
+      z-index:30;
+    }
+    .has-tip::before{
+      content:"";
+      position:absolute;
+      bottom:calc(100% + 2px);
+      left:14px;
+      border:6px solid transparent;
+      border-top-color:var(--ins-teal-deep);
+      opacity:0;
+      visibility:hidden;
+      transition:opacity .12s;
+      z-index:30;
+    }
+    .has-tip:hover::after,.has-tip:focus::after,.has-tip.tipped::after,
+    .has-tip:hover::before,.has-tip:focus::before,.has-tip.tipped::before{
+      opacity:1;
+      visibility:visible;
+      transform:translateY(0);
+    }
+    /* Tooltip dentro de cards de plan (col-c-feat) — más espacio reservado */
+    .col-c-feat .has-tip::after{left:-4px}
+    .col-c-feat .has-tip::before{left:10px}
+
     /* Banner modo prueba (auth no configurada) */
     .banner-prueba{background:#FFF4D6;border-bottom:1px solid #E8C97A;padding:10px 32px;font-size:12.5px;color:#7A5B0E;display:flex;align-items:center;gap:10px;font-weight:500}
     .banner-prueba .pin{background:var(--ins-gold);color:#fff;padding:2px 8px;border-radius:3px;font-size:10.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;font-family:"IBM Plex Mono"}
@@ -562,35 +614,36 @@
 
     // Coberturas por plan — sublímites en USD y CRC. 'NA' = no aplica.
     // Fuente: Coberturas y Planes.pdf (USD) + Coberturas Planes Colones.pdf (CRC)
+    // Descripciones cortas basadas en las Condiciones Generales del INS (cláusulas I, VII y VIII).
     const COBERTURAS_DEFS = [
-      { id: "gastos_medicos",        label: "Gastos médicos" },
-      { id: "deducible",             label: "Deducible anual" },
-      { id: "coaseguro",             label: "Coaseguro" },
-      { id: "stop_loss",             label: "Stop loss" },
-      { id: "maternidad",            label: "Maternidad" },
-      { id: "prematurez",            label: "Prematurez" },
-      { id: "congenitas",            label: "Enfermedades congénitas" },
-      { id: "trasplantes",           label: "Trasplantes" },
-      { id: "aparatos_apoyo",        label: "Aparatos de apoyo" },
-      { id: "medicamentos",          label: "Medicamentos ambulatorios" },
-      { id: "epidemicas",            label: "Epidémicas y pandémicas" },
-      { id: "mentales",              label: "Mentales / trastornos nerviosos" },
-      { id: "deportivas",            label: "Actividades deportivas" },
-      { id: "futbol",                label: "Práctica competitiva de fútbol" },
-      { id: "ambulancia_aerea",      label: "Ambulancia aérea" },
-      { id: "dental_accidente",      label: "Cobertura dental por accidente" },
-      { id: "asistencia_viajero",    label: "Asistencia al viajero" },
-      { id: "chequeos",              label: "Cobertura de chequeos" },
-      { id: "nino_sano",             label: "Niño sano" },
-      { id: "fallecimiento",         label: "Fallecimiento" },
-      { id: "salpingectomia",        label: "Salpingectomía" },
-      { id: "vasectomia",            label: "Vasectomía" },
-      { id: "vih_sida",              label: "VIH / SIDA" },
-      { id: "terapias",              label: "Terapias" },
-      { id: "preexistencias",        label: "Preexistencias declaradas" },
-      { id: "medicina_virtual",      label: "Medicina virtual",       included:true },
-      { id: "transporte_evacuacion", label: "Transporte por evacuación" },
-      { id: "emergencias_medicas",   label: "Emergencias médicas" }
+      { id: "gastos_medicos",        label: "Gastos médicos",                       desc: "Tope máximo anual por persona para hospitalización, cirugías, consultas, exámenes y tratamientos cubiertos. Es el techo global del plan." },
+      { id: "deducible",             label: "Deducible anual",                      desc: "Monto que usted asume por año antes de que el INS empiece a pagar. Una vez alcanzado, la aseguradora cubre los gastos hasta el límite del plan." },
+      { id: "coaseguro",             label: "Coaseguro",                            desc: "Porcentaje del costo cubierto que usted aporta tras agotar el deducible. El resto lo paga el INS. Su aporte total anual está limitado por el stop loss." },
+      { id: "stop_loss",             label: "Stop loss",                            desc: "Máximo que usted llegará a pagar por concepto de coaseguro durante el año. Una vez alcanzado, el INS cubre el 100 % del resto." },
+      { id: "maternidad",            label: "Maternidad",                           desc: "Embarazo, parto, cesárea y complicaciones. Tiene 13 meses de espera desde el inicio de la póliza." },
+      { id: "prematurez",            label: "Prematurez",                           desc: "Atención del recién nacido prematuro o con bajo peso en unidad neonatal." },
+      { id: "congenitas",            label: "Enfermedades congénitas",              desc: "Enfermedades presentes desde el nacimiento (cardiopatías, malformaciones, etc.) en hijos nacidos al amparo de esta póliza." },
+      { id: "trasplantes",           label: "Trasplantes",                          desc: "Trasplante de órganos cubiertos: donante, cirugía, medicamentos antirechazo y seguimiento. Período de espera 24 meses." },
+      { id: "aparatos_apoyo",        label: "Aparatos de apoyo",                    desc: "Sillas de ruedas, prótesis, órtesis, bastones y equipos médicos necesarios para la recuperación." },
+      { id: "medicamentos",          label: "Medicamentos ambulatorios",            desc: "Medicamentos prescritos por médico tratante en consulta externa (no asociados a hospitalización)." },
+      { id: "epidemicas",            label: "Epidémicas y pandémicas",              desc: "Atención por enfermedades declaradas epidémicas o pandémicas por las autoridades de salud." },
+      { id: "mentales",              label: "Mentales / trastornos nerviosos",      desc: "Tratamientos psiquiátricos: consultas, terapias, medicación e internamiento. Bajo prescripción de psiquiatra." },
+      { id: "deportivas",            label: "Actividades deportivas",               desc: "Lesiones por actividades deportivas no competitivas (recreativas o aficionado)." },
+      { id: "futbol",                label: "Práctica competitiva de fútbol",       desc: "Lesiones por práctica competitiva de fútbol (liga formal, torneo). No incluye cuando el deporte es la principal fuente de ingreso." },
+      { id: "ambulancia_aerea",      label: "Ambulancia aérea",                     desc: "Traslado en ambulancia aérea cuando la condición clínica lo justifique, con aprobación previa del INS." },
+      { id: "dental_accidente",      label: "Cobertura dental por accidente",       desc: "Atención dental por accidente o emergencia (no estética ni preventiva). Sin deducible ni coaseguro." },
+      { id: "asistencia_viajero",    label: "Asistencia al viajero",                desc: "Asistencia médica y de viaje fuera de Costa Rica: telemedicina, traslados, repatriación. Solo planes Regional e Internacional." },
+      { id: "chequeos",              label: "Cobertura de chequeos",                desc: "Chequeo médico anual preventivo, coordinado con la red de proveedores INS. Sin deducible ni coaseguro." },
+      { id: "nino_sano",             label: "Niño sano",                            desc: "Consultas pediátricas, vacunación y control de desarrollo en niños menores de 5 años." },
+      { id: "fallecimiento",         label: "Fallecimiento",                        desc: "Indemnización pagada al beneficiario designado por fallecimiento del asegurado titular o dependiente." },
+      { id: "salpingectomia",        label: "Salpingectomía",                       desc: "Anticoncepción quirúrgica definitiva en mujeres (ligadura de trompas)." },
+      { id: "vasectomia",            label: "Vasectomía",                           desc: "Anticoncepción quirúrgica definitiva en hombres." },
+      { id: "vih_sida",              label: "VIH / SIDA",                           desc: "Tratamiento de VIH/SIDA y complicaciones. Es monto asegurado vitalicio (de por vida), no anual: se reduce con cada reclamo." },
+      { id: "terapias",              label: "Terapias",                             desc: "Terapias de rehabilitación física, ocupacional o del lenguaje, prescritas tras accidente o enfermedad cubierta." },
+      { id: "preexistencias",        label: "Preexistencias declaradas",            desc: "Enfermedades anteriores al inicio de póliza que fueron declaradas y aceptadas por el INS. Período de espera 12 meses." },
+      { id: "medicina_virtual",      label: "Medicina virtual",       included:true, desc: "Consultas médicas por video, 24/7, sin costo ni deducible. Incluido en todos los planes." },
+      { id: "transporte_evacuacion", label: "Transporte por evacuación",            desc: "Traslado terrestre o aéreo a un centro médico apropiado cuando la condición del paciente lo requiera, con aprobación previa." },
+      { id: "emergencias_medicas",   label: "Emergencias médicas",                  desc: "Atención de urgencias en sala de emergencias. Debe notificarse al INS dentro de 48 hrs para que opere la cobertura normal." }
     ];
 
     // Sublímites en USD por plan
@@ -620,6 +673,14 @@
       if(covId === "coaseguro") return Math.round(COASEGURO_PCT * 100) + " %";
       const tabla = moneda === "USD" ? COBERTURAS_USD : COBERTURAS_CRC;
       return tabla[planId][covId];
+    }
+
+    // Renderea el nombre de una cobertura con un icono de ayuda y tooltip.
+    // El span contenedor tiene .has-tip; el tooltip aparece al hover (desktop)
+    // o al tap (mobile) — el click toggle se maneja con un handler delegado.
+    function labelTip(cov){
+      if(!cov || !cov.desc) return escapeHtml(cov?.label || "");
+      return `<span class="has-tip" data-tip="${escapeAttr(cov.desc)}" tabindex="0">${escapeHtml(cov.label)}<span class="tip-ico">i</span></span>`;
     }
 
     // Recargos por fraccionamiento (decisión oficina: SIN mensual)
@@ -1127,7 +1188,7 @@
           if(typeof v === "number") return `<td class="${isSel?"selected":""}">${fmtMoneda(v, state.moneda)}</td>`;
           return `<td class="${isSel?"selected":""}">${escapeHtml(String(v))}</td>`;
         }).join('');
-        return `<tr><td>${escapeHtml(cov.label)}</td>${cells}</tr>`;
+        return `<tr><td>${labelTip(cov)}</td>${cells}</tr>`;
       }).join('');
 
       return `
@@ -1859,11 +1920,14 @@
         const isRec = planId === p.planRecomendado;
         const suma = cli.moneda === "USD" ? plan.sumaUSD : plan.sumaCRC;
         const feats = COVS_CLIENTE.map(cov => {
+          const def = COBERTURAS_DEFS.find(d => d.id === cov.id);
+          // Si COVS_CLIENTE override el label, usar el override pero conservar la desc
+          const tipObj = def ? { label: cov.label, desc: def.desc } : cov;
           const v = getCobertura(planId, cov.id, cli.moneda);
-          if(v === "NA") return `<li><span class="k"><span class="x">—</span>${escapeHtml(cov.label)}</span><span class="v na">no incluye</span></li>`;
+          if(v === "NA") return `<li><span class="k"><span class="x">—</span>${labelTip(tipObj)}</span><span class="v na">no incluye</span></li>`;
           const valTxt = typeof v === "number" ? fmtMoneda(v, cli.moneda) :
                          cov.id === "deducible" && v === 0 ? "Sin deducible" : escapeHtml(String(v));
-          return `<li><span class="k"><span class="check">✓</span>${escapeHtml(cov.label)}</span><span class="v">${valTxt}</span></li>`;
+          return `<li><span class="k"><span class="check">✓</span>${labelTip(tipObj)}</span><span class="v">${valTxt}</span></li>`;
         }).join('');
         return `<article class="col-c ${isRec?"rec":""}">
           ${isRec ? '<span class="col-c-flag">★ Recomendado</span>' : ""}
@@ -1914,7 +1978,7 @@
             if(typeof v === "number") return `<td class="${isRec?'rec':''}">${fmtMoneda(v, cli.moneda)}</td>`;
             return `<td class="${isRec?'rec':''}">${escapeHtml(String(v))}</td>`;
           }).join('');
-          return `<tr><td>${escapeHtml(cov.label)}</td>${cells}</tr>`;
+          return `<tr><td>${labelTip(cov)}</td>${cells}</tr>`;
         }).join('');
         return `
           <table class="cmp-table-c">
@@ -2165,6 +2229,14 @@
         return JSON.parse(decodeURIComponent(escape(atob(b64))));
       } catch(e){ return null; }
     }
+
+    // Toggle de tooltip por tap (mobile/touch) — desktop ya funciona con :hover
+    document.addEventListener('click', e => {
+      const tip = e.target.closest('.has-tip');
+      // Cierra otros tooltips abiertos
+      document.querySelectorAll('.has-tip.tipped').forEach(t => { if(t !== tip) t.classList.remove('tipped'); });
+      if(tip) tip.classList.toggle('tipped');
+    });
 
     document.addEventListener('DOMContentLoaded', init);
   </script>
