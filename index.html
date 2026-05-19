@@ -269,6 +269,13 @@
     .pay-opt .rec{font-size:11.5px;color:var(--ink-3);margin-bottom:14px}
     .pay-opt .ct{font-family:"IBM Plex Serif",serif;font-size:24px;letter-spacing:-0.02em;line-height:1;color:var(--ink)}
     .pay-opt .tot{font-size:11.5px;color:var(--ink-3);margin-top:4px}
+    .pay-blocks{display:flex;flex-direction:column;gap:18px}
+    .pay-block{border:1px solid var(--line);border-radius:6px;padding:14px 16px;background:var(--paper)}
+    .pay-block.rec{background:linear-gradient(180deg, var(--ins-teal-soft), var(--paper) 60%);border-color:var(--ins-teal-line)}
+    .pay-block-h{display:flex;align-items:baseline;gap:10px;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--line-2);flex-wrap:wrap}
+    .pay-block-h .ambito{font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--ins-coral-deep);font-weight:700}
+    .pay-block-h .nm{font-family:"IBM Plex Serif",serif;font-size:20px;font-weight:500;letter-spacing:-0.015em;color:var(--ink);display:flex;align-items:center;gap:10px}
+    .pay-block-h .rec-flag{font-family:"IBM Plex Sans";font-size:10.5px;letter-spacing:.04em;text-transform:uppercase;color:#fff;background:var(--ins-coral);padding:3px 9px;border-radius:3px;font-weight:700}
 
     /* CLIENTE — Servicios incluidos */
     .included{background:var(--cream);border:1px solid var(--line);border-radius:8px;padding:28px 32px;margin-bottom:24px;display:grid;grid-template-columns:1fr 1.5fr;gap:36px;align-items:start}
@@ -1499,35 +1506,46 @@
 
     function renderClientePago(){
       const p = cli.payload;
-      const planRec = p.planRecomendado || p.planes[0];
-      const plan = PLANES.find(pl => pl.id === planRec);
-      const fam = primaFamiliar(planRec, cli.moneda, p.asegurados);
-
       const opts = [
         { mod:"anual",      nm:"Anual",      rec:"recargo 0 %",      cuotas:"una sola cuota" },
         { mod:"semestral",  nm:"Semestral",  rec:"recargo + " + (cli.moneda==='USD'?'3':'5') + " %", cuotas:"2 cuotas" },
         { mod:"trimestral", nm:"Trimestral", rec:"recargo + " + (cli.moneda==='USD'?'4':'7') + " %", cuotas:"4 cuotas" }
       ];
-      const items = opts.map(o => {
-        const tot   = totalConRecargo(o.mod, cli.moneda, fam);
-        const cuota = cuotaPorPeriodo(o.mod, cli.moneda, fam);
-        const isBest = o.mod === "anual";
-        const totLine = isBest ? `una sola cuota` : `${o.cuotas} · total año ${fmtMoneda(tot, cli.moneda)}`;
-        return `<div class="pay-opt ${isBest?"best":""}">
-          <div class="nm">${o.nm}</div>
-          <div class="rec">${o.rec}</div>
-          <div class="ct">${fmtMoneda(cuota, cli.moneda)}</div>
-          <div class="tot">${totLine}</div>
-        </div>`;
+
+      const bloques = p.planes.map(planId => {
+        const plan = PLANES.find(pl => pl.id === planId);
+        const isRec = planId === p.planRecomendado;
+        const fam = primaFamiliar(planId, cli.moneda, p.asegurados);
+        const items = opts.map(o => {
+          const tot   = totalConRecargo(o.mod, cli.moneda, fam);
+          const cuota = cuotaPorPeriodo(o.mod, cli.moneda, fam);
+          const isBest = o.mod === "anual";
+          const totLine = isBest ? `una sola cuota` : `${o.cuotas} · total año ${fmtMoneda(tot, cli.moneda)}`;
+          return `<div class="pay-opt ${isBest?"best":""}">
+            <div class="nm">${o.nm}</div>
+            <div class="rec">${o.rec}</div>
+            <div class="ct">${fmtMoneda(cuota, cli.moneda)}</div>
+            <div class="tot">${totLine}</div>
+          </div>`;
+        }).join('');
+        return `
+          <div class="pay-block ${isRec?'rec':''}">
+            <div class="pay-block-h">
+              <span class="ambito">${escapeHtml(plan.ambito)}</span>
+              <span class="nm">${plan.nombre}${isRec ? '<span class="rec-flag">★ recomendado</span>' : ''}</span>
+            </div>
+            <div class="pay-options">${items}</div>
+          </div>
+        `;
       }).join('');
 
       return `
         <section class="pay-cli">
           <div class="pay-cli-h">
-            <div class="t">Formas de pago <em class="em">· ${plan.nombre}${p.planRecomendado ? " (recomendado)" : ""}</em></div>
+            <div class="t">Formas de pago <em class="em">· ${p.planes.length > 1 ? p.planes.length + " planes lado a lado" : "comparativa"}</em></div>
             <div class="legend">Tarifas oficiales INS. Pagando anual no hay recargo. El fraccionamiento incrementa el total del año.</div>
           </div>
-          <div class="pay-options">${items}</div>
+          <div class="pay-blocks">${bloques}</div>
         </section>
       `;
     }
