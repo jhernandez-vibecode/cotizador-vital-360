@@ -7,6 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Serif:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
   <style>
     :root{
       --ins-teal:#1F5C6B;
@@ -387,7 +388,20 @@
   </div>
 
   <div data-view="bloqueado">
-    <div class="loading">Acceso restringido (placeholder)</div>
+    <div style="max-width:520px;margin:80px auto;padding:40px;text-align:center;background:var(--paper);border:1px solid var(--line);border-radius:8px;font-family:'IBM Plex Sans'">
+      <h2 style="font-family:'IBM Plex Serif';font-size:28px;font-weight:500;margin-bottom:12px">Acceso restringido</h2>
+      <p style="color:var(--ink-3);font-size:14px;margin-bottom:18px">Este cotizador está reservado para agentes autorizados de Seguros Digitales SDI.</p>
+      <p style="color:var(--ink-3);font-size:13px">Para solicitar acceso, contacte a <a href="mailto:jhernandez@segurosdelins.com" style="color:var(--ins-teal-deep)">jhernandez@segurosdelins.com</a>.</p>
+      <p id="block-email" style="margin-top:18px;font-family:'IBM Plex Mono';font-size:12px;color:var(--ink-3)"></p>
+    </div>
+  </div>
+
+  <div data-view="login">
+    <div style="max-width:420px;margin:80px auto;padding:40px;text-align:center;background:var(--paper);border:1px solid var(--line);border-radius:8px">
+      <h2 style="font-family:'IBM Plex Serif';font-size:28px;font-weight:500;margin-bottom:8px">Cotizador Vital 360</h2>
+      <p style="color:var(--ink-3);font-size:14px;margin-bottom:24px">Inicie sesión con su cuenta autorizada para continuar.</p>
+      <div id="g_id_signin"></div>
+    </div>
   </div>
 
   <script>
@@ -1574,18 +1588,71 @@
       runSmokeTests();
       const ruta = determinarVista();
       if(ruta.tipo === "cliente"){
-        if(!ruta.payload){
-          showView("bloqueado");
-          return;
-        }
+        if(!ruta.payload){ showView("bloqueado"); return; }
         renderCliente(ruta.payload);
         showView("cliente");
         return;
       }
-      // Vista agente: por ahora sin auth (Task 14 agrega Google)
+      // Vista agente requiere auth
+      initGoogleAuth();
+    }
+
+    function initGoogleAuth(){
+      // Bypass para desarrollo: ?dev=1 simula login con el primer agente
+      if(new URLSearchParams(location.search).get('dev') === '1'){
+        const email = Object.keys(AGENTES)[0];
+        agenteActual = Object.assign({}, AGENTES[email]);
+        document.getElementById('mh-user-av').textContent = agenteActual.nombre.split(" ").map(w => w[0]).slice(0,2).join("").toUpperCase();
+        document.getElementById('mh-user-name').textContent = agenteActual.nombre + " (dev)";
+        loadDraft();
+        renderAgente();
+        showView("agente");
+        return;
+      }
+      // Si el SDK de Google ya cargó, configurar; si no, esperar
+      if(!window.google || !google.accounts){
+        setTimeout(initGoogleAuth, 200);
+        return;
+      }
+      google.accounts.id.initialize({
+        client_id: GOOGLE_CLIENT_ID,
+        callback: handleGoogleResponse
+      });
+      google.accounts.id.renderButton(
+        document.getElementById('g_id_signin'),
+        { theme: "filled_blue", size: "large", text: "signin_with", width: 280 }
+      );
+      showView("login");
+      // Auto-prompt si hay sesión previa
+      try { google.accounts.id.prompt(); } catch(e){}
+    }
+
+    function handleGoogleResponse(response){
+      const payload = parseJwt(response.credential);
+      if(!payload || !payload.email){
+        document.getElementById('block-email').textContent = "Token sin email.";
+        showView("bloqueado");
+        return;
+      }
+      if(!isAuthorized(payload.email)){
+        document.getElementById('block-email').textContent = "Email autenticado: " + payload.email;
+        showView("bloqueado");
+        return;
+      }
+      // Autorizado: cargar perfil del agente
+      agenteActual = Object.assign({}, AGENTES[payload.email]);
+      document.getElementById('mh-user-av').textContent = agenteActual.nombre.split(" ").map(w => w[0]).slice(0,2).join("").toUpperCase();
+      document.getElementById('mh-user-name').textContent = agenteActual.nombre;
       loadDraft();
       renderAgente();
       showView("agente");
+    }
+
+    function parseJwt(token){
+      try {
+        const b64 = token.split('.')[1].replace(/-/g,'+').replace(/_/g,'/');
+        return JSON.parse(decodeURIComponent(escape(atob(b64))));
+      } catch(e){ return null; }
     }
 
     document.addEventListener('DOMContentLoaded', init);
