@@ -1026,7 +1026,7 @@
     }
 
     let comparativaExpandida = false;
-    const COVS_TOP = ["gastos_medicos","deducible","maternidad","prematurez","trasplantes","medicamentos","epidemicas","asistencia_viajero","fallecimiento"];
+    const COVS_TOP = ["gastos_medicos","deducible","stop_loss","maternidad","prematurez","trasplantes","medicamentos","epidemicas","asistencia_viajero","fallecimiento"];
 
     function renderComparativaTabla(){
       const sel = state.planesSeleccionados;
@@ -1226,6 +1226,7 @@
     const COVS_CLIENTE = [
       { id:"gastos_medicos",     label:"Hospitalización" },
       { id:"deducible",          label:"Deducible anual" },
+      { id:"stop_loss",          label:"Stop loss (tope coaseguro)" },
       { id:"trasplantes",        label:"Trasplantes" },
       { id:"medicamentos",       label:"Medicamentos" },
       { id:"maternidad",         label:"Maternidad" },
