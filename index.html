@@ -144,6 +144,27 @@
     .cmp-table tbody td:first-child{text-align:left;font-family:"IBM Plex Sans";color:var(--ink-2);font-weight:400;white-space:normal}
     .cmp-table tbody td.na{color:var(--ink-3);font-style:italic;font-family:"IBM Plex Sans";font-weight:400}
     .cmp-table tbody td.selected{background:var(--ins-teal-soft)}
+
+    /* PASO 3 — banda envío */
+    .send-band{margin-top:20px;background:var(--ins-teal-deep);color:#fff;border-radius:6px;overflow:hidden;display:grid;grid-template-columns:1.5fr 1fr;gap:0}
+    .send-l{padding:24px 28px}
+    .send-l .h{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.6);font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+    .send-l .num3{display:inline-grid;place-items:center;width:18px;height:18px;background:var(--ins-coral);color:#fff;border-radius:50%;font-size:10px;font-family:"IBM Plex Mono"}
+    .send-l .t{font-family:"IBM Plex Serif",serif;font-size:24px;font-weight:400;letter-spacing:-0.015em;line-height:1.1}
+    .send-l .sel-list{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+    .send-l .sl-chip{background:rgba(255,255,255,.1);padding:6px 12px;border-radius:18px;font-size:12px;border:1px solid rgba(255,255,255,.2);display:flex;align-items:center;gap:8px}
+    .send-l .sl-chip.rec{border-color:var(--ins-coral);background:rgba(227,107,67,.15)}
+    .send-l .sl-chip .set-rec{background:transparent;border:none;color:rgba(255,255,255,.6);font-family:inherit;font-size:11px;cursor:pointer;text-decoration:underline}
+    .send-l .sl-chip.rec .set-rec{color:var(--ins-coral)}
+    .send-l p{font-size:13px;color:rgba(255,255,255,.75);margin-top:14px;max-width:48ch;line-height:1.55}
+    .send-l .empty{padding:30px 0 10px;color:rgba(255,255,255,.55);font-style:italic;font-family:"IBM Plex Serif";font-size:15px}
+    .send-r{padding:24px 28px;background:rgba(0,0,0,.18);border-left:1px solid rgba(255,255,255,.08);display:flex;flex-direction:column;gap:10px;justify-content:center}
+    .send-r button{padding:12px 18px;border:none;border-radius:6px;font-family:inherit;font-size:13.5px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;text-align:left}
+    .send-r .btn-wa{background:var(--ins-coral);color:#fff}
+    .send-r .btn-wa:hover{background:var(--ins-coral-deep)}
+    .send-r .btn-preview{background:rgba(255,255,255,.08);color:#fff;border:1px solid rgba(255,255,255,.18)}
+    .send-r .btn-copy{background:transparent;color:rgba(255,255,255,.7);border:1px solid rgba(255,255,255,.15);font-size:12px}
+    .send-r button:disabled{opacity:.4;cursor:not-allowed}
   </style>
 </head>
 <body>
@@ -836,12 +857,120 @@
           comparativaExpandida = !comparativaExpandida;
           renderPaso2();
         }
+        if(e.target.dataset.action === 'set-rec'){
+          state.planRecomendado = e.target.dataset.plan;
+          saveDraft();
+          renderPaso3();
+        }
+        if(e.target.dataset.action === 'send-wa')  sendByWhatsApp();
+        if(e.target.dataset.action === 'preview')  previewCliente();
+        if(e.target.dataset.action === 'copy')     copyLinkCliente();
       });
     }
-    // Placeholder de renderPaso3 — se completa en Task 10
     function renderPaso3(){
       const el = document.getElementById('paso3-send');
-      if(el) el.innerHTML = '';
+      const sel = state.planesSeleccionados;
+
+      if(sel.length === 0){
+        el.innerHTML = `
+          <div class="send-l">
+            <div class="h"><span class="num3">3</span>Enviar al cliente</div>
+            <div class="t">Seleccione al menos un plan en el paso 2</div>
+            <div class="empty">— sin planes seleccionados aún —</div>
+          </div>
+          <div class="send-r">
+            <button class="btn-wa" disabled>📱 Enviar por WhatsApp</button>
+            <button class="btn-preview" disabled>👁 Vista previa</button>
+            <button class="btn-copy" disabled>🔗 Copiar link</button>
+          </div>
+        `;
+        return;
+      }
+
+      const chips = sel.map(planId => {
+        const p = PLANES.find(pl => pl.id === planId);
+        const fam = primaFamiliar(planId, state.moneda, state.asegurados);
+        const isRec = state.planRecomendado === planId;
+        return `<span class="sl-chip ${isRec?"rec":""}">
+          ${isRec ? "★ " : ""}${p.nombre} · ${fmtMoneda(fam, state.moneda)}
+          ${isRec ? "<em>recomendado</em>" : `<button class="set-rec" data-action="set-rec" data-plan="${planId}">marcar recomendado</button>`}
+        </span>`;
+      }).join('');
+
+      el.innerHTML = `
+        <div class="send-l">
+          <div class="h"><span class="num3">3</span>Enviar al cliente</div>
+          <div class="t">Vista cliente con ${sel.length} plan${sel.length>1?'es':''} ${state.planRecomendado?"+ uno marcado como recomendado":""}</div>
+          <div class="sel-list">${chips}</div>
+          <p>El cliente recibirá un link con solo estos planes, con la posibilidad de alternar moneda. La cotización mantiene vigencia 30 días naturales.</p>
+        </div>
+        <div class="send-r">
+          <button class="btn-wa"      data-action="send-wa">📱 Enviar por WhatsApp</button>
+          <button class="btn-preview" data-action="preview">👁 Vista previa cliente</button>
+          <button class="btn-copy"    data-action="copy">🔗 Copiar link</button>
+        </div>
+      `;
+    }
+
+    // =====================================================================
+    // Sección 9: WhatsApp + payload del link cliente
+    // =====================================================================
+
+    function buildPayloadCliente(){
+      if(!agenteActual) agenteActual = { nombre:"Agente INS", whatsapp:"", email:"" };
+      return {
+        v: 1,
+        id: state.cotizacionId || ("0" + Date.now().toString().slice(-4)),
+        fecha: new Date().toISOString().slice(0,10),
+        vigenciaDias: 30,
+        cliente: state.cliente,
+        asegurados: state.asegurados,
+        monedaInicial: state.moneda,
+        planes: state.planesSeleccionados.slice(),
+        planRecomendado: state.planRecomendado,
+        agente: agenteActual
+      };
+    }
+
+    function buildLinkCliente(payload){
+      const enc = encodePayload(payload);
+      const base = location.origin + location.pathname.replace(/index\.html$/,'');
+      return base + (base.endsWith('/') ? '' : '/') + '?c=' + enc;
+    }
+
+    function buildWhatsAppMessage(payload, link){
+      const planesTxt = payload.planes.map(planId => {
+        const p = PLANES.find(pl => pl.id === planId);
+        const fam = primaFamiliar(planId, payload.monedaInicial, payload.asegurados);
+        const star = planId === payload.planRecomendado ? "🟡" : "🔵";
+        return `${star} ${p.nombre}: ${fmtMoneda(fam, payload.monedaInicial)} anual`;
+      }).join('\n');
+      return `Hola ${payload.cliente.nombre || "estimado"}, le comparto su cotización Vital 360 con ${payload.planes.length === 1 ? "una opción" : payload.planes.length + " opciones"} que pensé para usted:\n\n${planesTxt}\n\nPuede revisar el detalle, cambiar entre colones y dólares, y descargar los formularios aquí:\n${link}\n\nCualquier consulta me escribe directo.\n${payload.agente.nombre} · ${payload.agente.whatsapp}`;
+    }
+
+    function sendByWhatsApp(){
+      const payload = buildPayloadCliente();
+      const link = buildLinkCliente(payload);
+      const msg = buildWhatsAppMessage(payload, link);
+      const phone = String(state.cliente.telefono || "").replace(/\D/g,'');
+      // Endpoint web.whatsapp.com — NUNCA wa.me (corrompe emojis)
+      const url = "https://web.whatsapp.com/send/?phone=" + (phone ? "506"+phone : "") + "&text=" + encodeURIComponent(msg);
+      window.open(url, "_blank");
+    }
+
+    function previewCliente(){
+      const payload = buildPayloadCliente();
+      const link = buildLinkCliente(payload);
+      window.open(link, "_blank");
+    }
+
+    function copyLinkCliente(){
+      const payload = buildPayloadCliente();
+      const link = buildLinkCliente(payload);
+      navigator.clipboard.writeText(link).then(
+        () => alert("Link copiado al portapapeles."),
+        () => prompt("Copie el link manualmente:", link)
+      );
     }
 
     function renderAgente(){
