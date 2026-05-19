@@ -220,6 +220,127 @@
     }
 
     // =====================================================================
+    // Sección 3: Lógica de disparadores de documentos
+    // Reglas extraídas de la Guía de Suscripción Vital 360 (INS 15/05/2024)
+    // =====================================================================
+
+    function calcularDocumentos(asegurados, planIdRecomendado){
+      const docs = {
+        base: [
+          { id: "solicitud",        nombre: "Solicitud de Seguro Vital 360",     archivo: "docs/solicitud-vital-360.pdf",       desc: "Formulario principal del titular y dependientes. Vigencia 60 días." },
+          { id: "autorizacion",     nombre: "Autorización Consulta Expedientes", archivo: "docs/autorizacion-expedientes.pdf",  desc: "Permite al INS verificar información en CCSS y fuentes oficiales." },
+          { id: "declaracion-salud",nombre: "Declaración de Salud + COVID-19",   archivo: "docs/declaracion-salud.pdf",         desc: "Declaración jurada. Una por cada asegurado mayor de edad." }
+        ],
+        disparadores: []
+      };
+
+      // Disparador 1: edad 66-70 → telesuscripción
+      const conTelesuscripcion = asegurados.filter(a => a.edad >= 66 && a.edad <= 70);
+      if(conTelesuscripcion.length){
+        docs.disparadores.push({
+          id: "telesuscripcion",
+          chip: "disparador: edad 66–70",
+          titulo: "Por asegurado de 66 a 70 años · " + conTelesuscripcion.map(a => a.nombre).join(", "),
+          items: [{
+            tipo: "aviso",
+            nombre: "Telesuscripción · entrevista dirigida",
+            desc: "El INS coordinará una llamada con la persona para una entrevista de aseguramiento. No requiere documento físico; lo coordina el agente una vez completada la solicitud."
+          }]
+        });
+      }
+
+      // Disparador 2: edad 71+ → batería de exámenes
+      const conBateria = asegurados.filter(a => a.edad >= 71);
+      if(conBateria.length){
+        docs.disparadores.push({
+          id: "bateria-71plus",
+          chip: "disparador: edad ≥ 71",
+          titulo: "Por asegurado mayor de 71 años · " + conBateria.map(a => a.nombre + ", " + a.edad).join("; "),
+          items: [
+            { tipo: "pdf", nombre: "Boleta de Examen Físico", archivo: "docs/boleta-examen-fisico.pdf", desc: "Examen médico presencial firmado por un médico autorizado por el INS." },
+            { tipo: "lista", nombre: "Lista de exámenes de laboratorio", desc: "Cubiertos por el INS, deben hacerse en proveedor autorizado. Vigencia 90 días.", examenes: [
+              "Uroanálisis",
+              "Electrocardiograma de reposo",
+              "Valoración cardiovascular",
+              "Hemoglobina glicosilada",
+              "Glicemia en ayunas",
+              "Enzimas hepáticas (ALT, AST, GGT)",
+              "Bilirrubina total (directa e indirecta)",
+              "Creatinina",
+              "Perfil de lípidos",
+              "Antígeno prostático (PSA) · hombres",
+              "Sangre oculta en heces (Guayaco)"
+            ]}
+          ]
+        });
+      }
+
+      // Disparador 3: plan internacional + extranjero sin residencia permanente
+      const esInternacional = ID_PLAN_INTERNACIONAL.includes(planIdRecomendado);
+      const extranjeros = asegurados.filter(a => a.nacionalidad === "extranjero_residente_temporal" || a.nacionalidad === "extranjero_pasaporte");
+      if(esInternacional && extranjeros.length){
+        docs.disparadores.push({
+          id: "arraigo",
+          chip: "disparador: plan internacional + extranjero",
+          titulo: "Por plan Internacional + asegurado extranjero · " + extranjeros.map(a => a.nombre).join(", "),
+          items: [{
+            tipo: "aviso",
+            nombre: "Comprobación de arraigo en Costa Rica",
+            desc: "Para planes Internacional debe presentar UNO de estos: (a) Cédula de residencia DIMEX, (b) carta del patrono con período de contrato, (c) certificación CCSS con 2+ años de cotización, o (d) certificación de cónyuge costarricense con 3+ años. El agente le indica cuál es la más fácil de aportar."
+          }]
+        });
+      }
+
+      // Disparador 4: 3+ dependientes mayores de 18
+      const mayoresDependientes = asegurados.filter(a => a.parentesco !== "titular" && a.edad >= 18);
+      if(mayoresDependientes.length >= 3){
+        docs.disparadores.push({
+          id: "abreviada",
+          chip: "disparador: 3+ dependientes mayores de 18",
+          titulo: "Por incluir 3 o más dependientes mayores de 18 años",
+          items: [{
+            tipo: "pdf",
+            nombre: "Solicitud Abreviada Vital",
+            archivo: "docs/solicitud-abreviada.pdf",
+            desc: "Segunda hoja para firmas adicionales. La solicitud principal solo tiene 2 espacios de firma para mayores de edad."
+          }]
+        });
+      }
+
+      return docs;
+    }
+
+    // =====================================================================
+    // Sección 4: Routing y payload Base64URL
+    // =====================================================================
+
+    function determinarVista(){
+      const params = new URLSearchParams(location.search);
+      const c = params.get("c");
+      if(c) return { tipo: "cliente", payload: decodePayload(c) };
+      return { tipo: "agente" };
+    }
+
+    function encodePayload(obj){
+      const json = JSON.stringify(obj);
+      // Base64URL: usa - _ en lugar de + / y sin padding
+      const b64 = btoa(unescape(encodeURIComponent(json)));
+      return b64.replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+    }
+
+    function decodePayload(b64url){
+      try {
+        let b64 = b64url.replace(/-/g,'+').replace(/_/g,'/');
+        while(b64.length % 4) b64 += '=';
+        const json = decodeURIComponent(escape(atob(b64)));
+        return JSON.parse(json);
+      } catch(e){
+        console.error('[vital360] payload inválido', e);
+        return null;
+      }
+    }
+
+    // =====================================================================
     // Sección 10: Init + smoke tests
     // =====================================================================
     (function smokeTests(){
@@ -263,6 +384,39 @@
       // Sección 2 · formato
       console.assert(fmtMoneda(1768350, "CRC") === "₡1.768.350", '[smoke] fmt CRC, got ' + fmtMoneda(1768350,"CRC"));
       console.assert(fmtMoneda(2801, "USD") === "$2,801", '[smoke] fmt USD, got ' + fmtMoneda(2801,"USD"));
+
+      // Sección 3 · disparadores
+      const fam0 = [
+        {nombre:"José", parentesco:"titular", edad:42, nacionalidad:"CR"},
+        {nombre:"Ana",  parentesco:"conyuge", edad:39, nacionalidad:"CR"},
+        {nombre:"Luis", parentesco:"hijo",    edad:12, nacionalidad:"CR"},
+        {nombre:"Sofí", parentesco:"hijo",    edad:8,  nacionalidad:"CR"}
+      ];
+      const docs0 = calcularDocumentos(fam0, "pro1");
+      console.assert(docs0.base.length === 3, '[smoke] base = 3 docs');
+      console.assert(docs0.disparadores.length === 0, '[smoke] familia simple no debe activar disparadores');
+
+      const fam1 = [
+        {nombre:"Klaus",  parentesco:"titular", edad:68, nacionalidad:"extranjero_residente_temporal"},
+        {nombre:"María",  parentesco:"conyuge", edad:35, nacionalidad:"CR"},
+        {nombre:"Lukas",  parentesco:"hijo",    edad:12, nacionalidad:"CR"},
+        {nombre:"Rafael", parentesco:"otro",    edad:72, nacionalidad:"CR"}
+      ];
+      const docs1 = calcularDocumentos(fam1, "platinum2");
+      console.assert(docs1.disparadores.length === 3, '[smoke] familia compleja debe activar 3 disparadores, got ' + docs1.disparadores.length);
+      const ids1 = docs1.disparadores.map(d => d.id);
+      console.assert(ids1.includes("telesuscripcion"), '[smoke] debe incluir telesuscripcion');
+      console.assert(ids1.includes("bateria-71plus"),  '[smoke] debe incluir bateria-71plus');
+      console.assert(ids1.includes("arraigo"),         '[smoke] debe incluir arraigo');
+
+      // Sección 4 · payload
+      const sample = { id:"0001", cliente:{nombre:"Test"}, asegurados:fam0, planes:["pro1"], moneda:"CRC" };
+      const enc = encodePayload(sample);
+      const dec = decodePayload(enc);
+      console.assert(dec.id === "0001", '[smoke] payload roundtrip id');
+      console.assert(dec.cliente.nombre === "Test", '[smoke] payload roundtrip cliente');
+      console.assert(dec.asegurados.length === 4, '[smoke] payload roundtrip asegurados');
+      console.assert(!enc.includes("+") && !enc.includes("/") && !enc.includes("="), '[smoke] base64url no debe tener + / =');
 
       console.log('[vital360] smoke tests de datos OK · tarifas ' + TARIFAS_VERSION);
     })();
