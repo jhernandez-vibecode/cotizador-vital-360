@@ -365,6 +365,21 @@
     .col-c-feat li .k .x{color:var(--ink-3);font-size:12px}
     .col-c-feat li .v{font-family:"IBM Plex Mono";font-size:12.5px;color:var(--ink);font-weight:500;white-space:nowrap}
     .col-c-feat li .v.na{font-family:"IBM Plex Sans";font-style:italic;color:var(--ink-3);font-weight:400}
+    .col-c-esquema{padding:0 0 18px}
+    .esquema-btn{width:100%;padding:9px 12px;background:var(--cream);border:1px solid var(--line);color:var(--ins-teal-deep);font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;border-radius:6px;letter-spacing:.02em}
+    .esquema-btn:hover{background:var(--ins-teal-soft);border-color:var(--ins-teal-line)}
+
+    /* Lightbox del esquema oficial */
+    .lightbox-bg{position:fixed;inset:0;background:rgba(14,33,39,.85);display:flex;align-items:center;justify-content:center;z-index:70;padding:20px;overflow:auto}
+    .lightbox{background:var(--paper);border-radius:8px;max-width:1100px;width:100%;max-height:96vh;display:flex;flex-direction:column;overflow:hidden}
+    .lightbox-h{padding:14px 22px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap}
+    .lightbox-h h3{font-family:"IBM Plex Serif",serif;font-size:20px;font-weight:500;margin:0}
+    .lightbox-pre{font-size:10.5px;color:var(--ins-coral-deep);text-transform:uppercase;letter-spacing:.06em;font-weight:700;margin:0 0 2px}
+    .lightbox-actions{display:flex;gap:8px}
+    .lightbox-actions .btn{padding:9px 14px;font-size:12.5px}
+    .lightbox-note{margin:0;padding:10px 22px;background:#FFF4D6;border-bottom:1px solid #E8C97A;color:#7A5B0E;font-size:12px;line-height:1.55}
+    .lightbox-img-wrap{flex:1;overflow:auto;padding:20px;background:#f0f1f2;text-align:center}
+    .lightbox-img-wrap img{max-width:100%;height:auto;border:1px solid var(--line);box-shadow:0 4px 14px rgba(14,33,39,.12);background:#fff}
 
     /* CLIENTE — comparativa detallada (27 coberturas) */
     .cmp-table-c-wrap{background:var(--paper);border:1px solid var(--line);border-radius:8px;overflow:hidden;margin-bottom:24px}
@@ -696,6 +711,15 @@
       platinum2: { gastos_medicos:275000000, deducible:275000, stop_loss:"1.375.000 CA / 2.750.000 INT", maternidad:3300000, prematurez:55000000, congenitas:55000000, trasplantes:137500000, aparatos_apoyo:5500000, medicamentos:27500000, epidemicas:8250000, mentales:618750, deportivas:275000000, futbol:275000000, ambulancia_aerea:13750000, dental_accidente:550000, asistencia_viajero:5500000, chequeos:"Incluido", nino_sano:110000, fallecimiento:5500000, salpingectomia:275000, vasectomia:137500, vih_sida:8250000, terapias:825000, preexistencias:27500000, medicina_virtual:"Incluido", transporte_evacuacion:5500000, emergencias_medicas:5500000 },
       deluxe:    { gastos_medicos:550000000, deducible:550000, stop_loss:"1.375.000 CA / 2.750.000 INT", maternidad:3850000, prematurez:55000000, congenitas:55000000, trasplantes:165000000, aparatos_apoyo:5500000, medicamentos:55000000, epidemicas:8250000, mentales:618750, deportivas:550000000, futbol:550000000, ambulancia_aerea:27500000, dental_accidente:550000, asistencia_viajero:5500000, chequeos:"Incluido", nino_sano:110000, fallecimiento:5500000, salpingectomia:275000, vasectomia:137500, vih_sida:8250000, terapias:825000, preexistencias:55000000, medicina_virtual:"Incluido", transporte_evacuacion:11000000, emergencias_medicas:11000000 }
     };
+
+    // Mapping plan + moneda → archivo JPG del esquema oficial del INS.
+    // Platinum 2 CRC no existe en fuente; se usa USD como fallback.
+    function getEsquemaUrl(planId, moneda){
+      const sufijo = moneda === "USD" ? "usd" : "crc";
+      // Excepción: platinum2 no tiene versión CRC
+      const ef = (planId === "platinum2" && moneda === "CRC") ? "usd" : sufijo;
+      return `docs/esquemas/${planId}-${ef}.jpg`;
+    }
 
     function getCobertura(planId, covId, moneda){
       // Coaseguro: uniforme para todos los planes
@@ -2115,6 +2139,41 @@
             if(sec) sec.scrollIntoView({behavior:'smooth', block:'start'});
           }
         }
+        if(btn.dataset.action === 'ver-esquema'){
+          abrirLightboxEsquema(btn.dataset.plan);
+        }
+      });
+    }
+
+    function abrirLightboxEsquema(planId){
+      const plan = PLANES.find(pl => pl.id === planId);
+      if(!plan) return;
+      const url = getEsquemaUrl(planId, cli.moneda);
+      const fallbackUsd = planId === "platinum2" && cli.moneda === "CRC";
+      const html = `
+        <div class="lightbox-bg" id="lightbox-bg">
+          <div class="lightbox">
+            <header class="lightbox-h">
+              <div>
+                <p class="lightbox-pre">Esquema oficial INS · ${escapeHtml(plan.ambito)}</p>
+                <h3>${escapeHtml(plan.nombre)}</h3>
+              </div>
+              <div class="lightbox-actions">
+                <a class="btn btn-secondary" href="${url}" download title="Descargar imagen">⬇ Descargar</a>
+                <button class="btn btn-secondary" data-action="lightbox-close">Cerrar</button>
+              </div>
+            </header>
+            ${fallbackUsd ? '<p class="lightbox-note">El esquema en colones de Platinum 2 no está disponible. Se muestra el oficial en dólares (los sublímites son equivalentes a 550 colones por dólar).</p>' : ''}
+            <div class="lightbox-img-wrap">
+              <img src="${url}" alt="Esquema ${escapeHtml(plan.nombre)}" />
+            </div>
+          </div>
+        </div>
+      `;
+      document.body.insertAdjacentHTML('beforeend', html);
+      const bg = document.getElementById('lightbox-bg');
+      bg.addEventListener('click', e => {
+        if(e.target === bg || e.target.dataset.action === 'lightbox-close') bg.remove();
       });
     }
 
@@ -2244,6 +2303,7 @@
               <div class="docs-list-c">${baseItems}</div>
             </div>
             ${dispSections}
+            ${renderClienteMaterialInformativo()}
             <div class="docs-note">
               <strong>Nota sobre cuestionarios médicos adicionales</strong>
               Si al llenar la Declaración de Salud algún asegurado responde afirmativamente alguna pregunta sobre afecciones específicas (diabetes, hipertensión, problemas digestivos, depresión/ansiedad, etc.), el INS puede requerir un cuestionario adicional específico. El agente le indicará cuál corresponde según sus respuestas.
@@ -2251,6 +2311,44 @@
             </div>
           </div>
         </section>
+      `;
+    }
+
+    // Bloque "Material informativo": PDFs descargables del producto
+    function renderClienteMaterialInformativo(){
+      const p = cli.payload;
+      // Asistencia viajero solo aplica si hay planes Regional o Internacional cotizados
+      const ambitos = new Set(p.planes.map(id => {
+        if(["esencial1","esencial2"].includes(id)) return "local";
+        if(["pro1","pro2"].includes(id)) return "regional";
+        return "internacional";
+      }));
+      const incluyeViajero = ambitos.has("regional") || ambitos.has("internacional");
+
+      const materiales = [
+        { id:"cg", nombre:"Condiciones generales del seguro", desc:"Cláusulas oficiales del contrato, definiciones, exclusiones y procedimiento de reclamos.", archivo:"docs/condiciones-generales.pdf" },
+        { id:"mv", nombre:"Medicina virtual 360", desc:"Cómo funciona la consulta médica por video, 24/7, incluida en todos los planes.", archivo:"docs/medicina-virtual-360.pdf" },
+        { id:"cd", nombre:"Cobertura dental 360", desc:"Detalle de la atención dental por accidente y emergencia.", archivo:"docs/cobertura-dental-360.pdf" }
+      ];
+      if(incluyeViajero){
+        materiales.push({ id:"av", nombre:"Asistencia al viajero 360", desc:"Servicios disponibles al viajar fuera de Costa Rica (planes Regional e Internacional).", archivo:"docs/asistencia-viajero-360.pdf" });
+      }
+
+      const items = materiales.map(m => `
+        <div class="doc-c">
+          <div class="icon"></div>
+          <div class="info">
+            <div class="nm">${escapeHtml(m.nombre)}</div>
+            <div class="desc">${escapeHtml(m.desc)}</div>
+          </div>
+          <a class="dl" href="${m.archivo}" download title="Descargar PDF">↓</a>
+        </div>`).join('');
+
+      return `
+        <div class="docs-section-c">
+          <div class="label-c"><span class="lpin cond"></span>Material informativo del producto · ${materiales.length} folletos</div>
+          <div class="docs-list-c">${items}</div>
+        </div>
       `;
     }
 
@@ -2354,6 +2452,9 @@
           <div class="col-c-feat">
             <div class="h">Lo que cubre</div>
             <ul>${feats}</ul>
+          </div>
+          <div class="col-c-esquema">
+            <button class="esquema-btn" data-action="ver-esquema" data-plan="${planId}">🔍 Ver esquema oficial INS</button>
           </div>
         </article>`;
       }).join('');
