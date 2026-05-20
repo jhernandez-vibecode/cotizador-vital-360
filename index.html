@@ -174,6 +174,8 @@
     .hist-actions button:hover,.hist-actions a:hover{border-color:var(--ins-teal);color:var(--ins-teal-deep)}
     .hist-actions button.danger:hover{border-color:var(--ins-coral);color:var(--ins-coral-deep)}
     .hist-actions button.ok:hover{border-color:var(--green-ok);color:var(--green-ok)}
+    .hist-actions button.poliza{background:var(--ins-gold);color:#fff;border-color:var(--ins-gold);font-weight:600}
+    .hist-actions button.poliza:hover{background:#A67120;border-color:#A67120}
 
     /* PASO 1 — banda de inputs */
     .input-band{background:var(--paper);border:1px solid var(--line);border-radius:6px;overflow:hidden;margin-bottom:20px}
@@ -1333,7 +1335,6 @@
         }
         if(e.target.dataset.action === 'send-wa')      sendByWhatsApp();
         if(e.target.dataset.action === 'send-mail')    sendByEmail();
-        if(e.target.dataset.action === 'send-poliza')  sendByEmailPoliza();
         if(e.target.dataset.action === 'preview')      previewCliente();
         if(e.target.dataset.action === 'copy')         copyLinkCliente();
       });
@@ -1381,7 +1382,6 @@
           <button class="btn-mail"    data-action="send-mail">📧 Enviar cotización por correo</button>
           <button class="btn-preview" data-action="preview">👁 Vista previa cliente</button>
           <button class="btn-copy"    data-action="copy">🔗 Copiar link</button>
-          <button class="btn-poliza"  data-action="send-poliza">📨 Póliza vigente + guía de reclamos</button>
         </div>
       `;
     }
@@ -1909,9 +1909,35 @@
       openPolizaCaptureModal({ cliEmail });
     }
 
-    function openPolizaCaptureModal({ cliEmail }){
-      const planRecId = state.planRecomendado || state.planesSeleccionados[0];
+    // Abre el modal de captura de N.º póliza.
+    // - Si se pasa `payloadOverride`, usa ese payload (caso: desde "Mis cotizaciones")
+    //   sin tocar el state actual del cotizador.
+    // - Si no, usa state actual (caso legacy: desde Paso 3).
+    // El selector "Plan contratado" expone los 7 planes — el cliente puede haber
+    // comprado un plan distinto al cotizado originalmente.
+    function openPolizaCaptureModal({ cliEmail, payloadOverride } = {}){
+      const usaOverride = !!payloadOverride;
+      const planesCotizados = usaOverride
+        ? (payloadOverride.planes || [])
+        : (state.planesSeleccionados || []);
+      const planRecId = usaOverride
+        ? (payloadOverride.planRecomendado || planesCotizados[0])
+        : (state.planRecomendado || planesCotizados[0]);
+      const monedaDefault = usaOverride
+        ? (payloadOverride.monedaInicial || "CRC")
+        : (state.moneda || "CRC");
       const fechaHoy = new Date().toISOString().slice(0,10);
+
+      // Selector de plan: los 7 planes; marcamos cuál fue cotizado y cuál recomendado.
+      const optionsPlan = PLANES.map(pl => {
+        const cotizado = planesCotizados.includes(pl.id);
+        const esRec    = pl.id === planRecId;
+        const sel      = esRec ? "selected" : "";
+        const marca    = esRec ? "★ " : (cotizado ? "· " : "");
+        const tag      = esRec ? " (recomendado)" : (cotizado ? " (cotizado)" : "");
+        return `<option value="${pl.id}" ${sel}>${marca}${pl.nombre} · ${pl.ambito}${tag}</option>`;
+      }).join('');
+
       const html = `
         <div class="aseg-modal-bg open" id="poliza-modal-bg">
           <div class="aseg-modal" style="width:480px;">
@@ -1921,19 +1947,13 @@
               <div><label>N.º de póliza</label><input id="pm-numero" placeholder="ej. 01-101-0123456" autofocus></div>
               <div><label>Vigencia desde</label><input id="pm-fecha" type="date" value="${fechaHoy}"></div>
             </div>
-            <div class="row"><label>Plan contratado</label>
-              <select id="pm-plan">
-                ${state.planesSeleccionados.map(id => {
-                  const pl = PLANES.find(x => x.id === id);
-                  const sel = id === planRecId ? "selected" : "";
-                  return `<option value="${id}" ${sel}>${pl.nombre} · ${pl.ambito}</option>`;
-                }).join('')}
-              </select>
+            <div class="row"><label>Plan contratado <span style="color:var(--ink-3);font-weight:400;text-transform:none;letter-spacing:0">(elija el plan final emitido, puede diferir del cotizado)</span></label>
+              <select id="pm-plan">${optionsPlan}</select>
             </div>
             <div class="row"><label>Moneda de la póliza</label>
               <select id="pm-moneda">
-                <option value="CRC" ${state.moneda==='CRC'?'selected':''}>Colones</option>
-                <option value="USD" ${state.moneda==='USD'?'selected':''}>Dólares</option>
+                <option value="CRC" ${monedaDefault==='CRC'?'selected':''}>Colones</option>
+                <option value="USD" ${monedaDefault==='USD'?'selected':''}>Dólares</option>
               </select>
             </div>
             <div class="actions">
@@ -1960,15 +1980,14 @@
             return;
           }
           bg.remove();
-          // Persistir el envío como cotización con plan único = el contratado
-          const payloadBase = buildPayloadCliente();
-          // Override: para el correo de póliza el "plan" único es el contratado
-          payloadBase.planes = [planId];
-          payloadBase.planRecomendado = planId;
-          payloadBase.monedaInicial = moneda;
+          // Construir payload con el plan FINAL contratado (que puede no ser el cotizado)
+          const base = usaOverride ? JSON.parse(JSON.stringify(payloadOverride)) : buildPayloadCliente();
+          base.planes = [planId];
+          base.planRecomendado = planId;
+          base.monedaInicial = moneda;
           const polizaData = { numero, fechaInicio: fecha, planId, moneda };
-          const htmlEmail = buildEmailPolizaVigente(payloadBase, polizaData);
-          openEmailPolizaPreviewModal({ to: cliEmail, html: htmlEmail, payload: payloadBase, polizaData });
+          const htmlEmail = buildEmailPolizaVigente(base, polizaData);
+          openEmailPolizaPreviewModal({ to: cliEmail, html: htmlEmail, payload: base, polizaData });
         }
       });
     }
@@ -2347,7 +2366,7 @@
         <div class="hist-h">
           <div>
             <h2>Mis cotizaciones</h2>
-            <div class="sub">${historial.length} totales · ${cotizacionesActivas().length} activas${APPS_SCRIPT_URL ? "" : " · respaldo solo en este navegador"}</div>
+            <div class="sub">${historial.length} totales · ${cotizacionesActivas().length} activas · respaldo solo en este navegador</div>
           </div>
           <div class="hist-filter">
             <span>Ver:</span>
@@ -2378,6 +2397,7 @@
           ? `<button data-action="restaurar" data-id="${h.id}">↺ Restaurar</button>`
           : `
             ${h.estado !== "aceptada" ? `<button class="ok" data-action="aceptar" data-id="${h.id}">✓ Aceptar</button>` : ""}
+            ${h.estado === "aceptada" ? `<button class="poliza" data-action="enviar-poliza" data-id="${h.id}">📨 Enviar póliza vigente</button>` : ""}
             ${h.estado !== "pendiente" ? `<button data-action="pendiente" data-id="${h.id}">⌛ Pendiente</button>` : ""}
             <a href="${h.link}" target="_blank">👁 Ver</a>
             <button data-action="copy" data-id="${h.id}">🔗 Copiar</button>
@@ -2425,6 +2445,16 @@
         }
         if(action === 'restaurar') marcarEstado(id, "pendiente");
         if(action === 'reabrir')   reabrirCotizacion(id);
+        if(action === 'enviar-poliza'){
+          const h = historial.find(x => x.id === id);
+          if(!h) return;
+          const cliEmail = (h.payload && h.payload.cliente && h.payload.cliente.email) || "";
+          if(!cliEmail){
+            alert('Esta cotización no tiene email del cliente registrado. Reábrala (✎ Editar), agregue el email del titular y vuelva a Aceptar.');
+            return;
+          }
+          openPolizaCaptureModal({ cliEmail, payloadOverride: h.payload });
+        }
         if(action === 'copy'){
           const h = historial.find(x => x.id === id);
           if(h) navigator.clipboard.writeText(h.link).then(
