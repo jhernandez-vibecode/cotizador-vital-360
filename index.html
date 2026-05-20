@@ -143,6 +143,8 @@
     .tabs-agente .tab-btn.active{color:var(--ink);border-bottom-color:var(--ins-coral)}
     .tabs-agente .tab-count{display:inline-grid;place-items:center;min-width:22px;height:20px;padding:0 6px;background:var(--cream);color:var(--ink-2);border-radius:10px;font-family:"IBM Plex Mono";font-size:11px;font-weight:500}
     .tabs-agente .tab-btn.active .tab-count{background:var(--ins-coral);color:#fff}
+    .tabs-agente .tab-new{margin-left:auto;align-self:center;padding:7px 14px;background:transparent;border:1px solid var(--ins-coral);color:var(--ins-coral-deep);font-family:inherit;font-size:12.5px;font-weight:600;cursor:pointer;border-radius:4px}
+    .tabs-agente .tab-new:hover{background:var(--ins-coral);color:#fff}
 
     /* Historial de cotizaciones */
     .hist-h{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:18px;flex-wrap:wrap;gap:12px}
@@ -549,6 +551,7 @@
     <nav class="tabs-agente">
       <button class="tab-btn active" data-tab="cotizador">Cotizador</button>
       <button class="tab-btn"        data-tab="historial">Mis cotizaciones <span class="tab-count" id="tab-count">0</span></button>
+      <button class="tab-new"        data-action="nueva-cotizacion" title="Limpiar todo y empezar de cero">+ Nueva cotización</button>
     </nav>
     <main class="page-agente" data-tab-panel="cotizador">
 
@@ -2288,9 +2291,24 @@
       return id;
     }
 
-    // Asegura que la cotización actual esté guardada. Si ya existe (mismo cotizacionId), actualiza.
+    // Asegura que la cotización actual esté guardada. Si el cotizacionId existe
+    // PERO la identidad del cliente cambió (nombre o cédula), crea una nueva
+    // entrada — así cada cliente queda como fila independiente en el historial.
     function persistirCotizacionActual(){
       if(!agenteActual || state.asegurados.length === 0 || state.planesSeleccionados.length === 0) return;
+      // Heurística: si cambió el cliente, descartar el id existente
+      if(state.cotizacionId){
+        const existing = historial.find(h => h.id === state.cotizacionId);
+        if(existing){
+          const sameCliente =
+            (existing.payload.cliente.nombre || "").trim() === (state.cliente.nombre || "").trim() &&
+            (existing.payload.cliente.cedula || "").trim() === (state.cliente.cedula || "").trim();
+          if(!sameCliente){
+            state.cotizacionId = null;
+            state.fechaCreacion = null;
+          }
+        }
+      }
       if(!state.cotizacionId){
         state.cotizacionId = generarCotizacionId();
         state.fechaCreacion = new Date().toISOString();
@@ -2478,6 +2496,13 @@
       nav.addEventListener('click', e => {
         const btn = e.target.closest('.tab-btn');
         if(btn) cambiarTab(btn.dataset.tab);
+        if(e.target.dataset.action === 'nueva-cotizacion'){
+          if(!confirm('¿Empezar una nueva cotización? Los datos actuales (cliente, asegurados, planes) se limpian. Las cotizaciones ya enviadas siguen en "Mis cotizaciones".')) return;
+          clearDraft();
+          comparativaExpandida = false;
+          renderAgente();
+          cambiarTab("cotizador");
+        }
       });
     }
 
