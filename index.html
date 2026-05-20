@@ -760,8 +760,15 @@
         email:    "jhernandez@segurosdelins.com",
         codigo:   "001",
         licencia: "08-1318"
+      },
+      // Agente de revisión / pruebas — RNB Seguros
+      "rnbseguros@gmail.com": {
+        nombre:   "Agente RNB Seguros",
+        whatsapp: "0000 0000",
+        email:    "rnbseguros@gmail.com",
+        codigo:   "002",
+        licencia: "—"
       }
-      // Agregar más agentes acá cuando se autoricen
     };
 
     // Coaseguro uniforme del producto Vital 360 (no varía por plan).
@@ -1031,7 +1038,8 @@
     let agenteActual = null; // se setea cuando Google auth completa
 
     function isAuthorized(email){
-      return Object.prototype.hasOwnProperty.call(AGENTES, email);
+      if(!email) return false;
+      return Object.prototype.hasOwnProperty.call(AGENTES, String(email).toLowerCase());
     }
 
     // =====================================================================
@@ -3213,13 +3221,14 @@
         showView("bloqueado");
         return;
       }
-      if(!isAuthorized(payload.email)){
+      const emailLower = String(payload.email).toLowerCase();
+      if(!isAuthorized(emailLower)){
         document.getElementById('block-email').textContent = "Email autenticado: " + payload.email;
         showView("bloqueado");
         return;
       }
       // Autorizado: cargar perfil del agente
-      agenteActual = Object.assign({}, AGENTES[payload.email]);
+      agenteActual = Object.assign({}, AGENTES[emailLower]);
       document.getElementById('mh-user-av').textContent = agenteActual.nombre.split(" ").map(w => w[0]).slice(0,2).join("").toUpperCase();
       document.getElementById('mh-user-name').textContent = agenteActual.nombre;
       loadDraft();
