@@ -1124,6 +1124,9 @@
     // Modal para editar/agregar asegurado.
     // Si parentesco=titular, además captura cédula + WhatsApp (que son del contratante).
     function openAsegModal(idx){
+      // Defensa en profundidad: cerrar cualquier modal previo para no apilar instancias con IDs duplicados
+      const _prev = document.getElementById('aseg-modal-bg');
+      if(_prev) _prev.remove();
       const yaHayTitular = state.asegurados.some((a, i) => a.parentesco === "titular" && i !== idx);
       const defaultParentesco = yaHayTitular ? "conyuge" : "titular";
       const ex = idx == null
@@ -1179,6 +1182,8 @@
 
     function bindPaso1Events(){
       const root = document.querySelector('[data-view="agente"]');
+      if(root.dataset.paso1Bound) return;   // idempotencia: evita listeners duplicados en renders sucesivos
+      root.dataset.paso1Bound = "1";
       root.addEventListener('click', e => {
         const action = e.target.dataset.action;
         const idx = e.target.dataset.idx;
@@ -1330,6 +1335,8 @@
     // Bind events de Paso 2 (delegado)
     function bindPaso2Events(){
       const root = document.querySelector('[data-view="agente"]');
+      if(root.dataset.paso2Bound) return;   // idempotencia: evita listeners duplicados en renders sucesivos
+      root.dataset.paso2Bound = "1";
       root.addEventListener('click', e => {
         if(e.target.dataset.action === 'toggle-plan'){
           e.stopPropagation();
