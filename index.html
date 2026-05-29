@@ -179,6 +179,21 @@
     .hist-actions button.poliza{background:var(--ins-gold);color:#fff;border-color:var(--ins-gold);font-weight:600}
     .hist-actions button.poliza:hover{background:#A67120;border-color:#A67120}
 
+    /* Pólizas vigentes (Tab 3) — reutiliza .hist-table y .hist-actions */
+    .vig-plan{display:inline-flex;align-items:center;gap:5px;background:var(--ins-teal-soft);color:var(--ins-teal-deep);border-radius:12px;padding:3px 10px;font-size:11.5px;font-weight:600;white-space:nowrap}
+    .vig-poliza{font-family:"IBM Plex Mono";font-size:12px;font-weight:500;color:var(--ink)}
+    .vig-poliza.sin{color:var(--ink-3);font-style:italic;font-family:"IBM Plex Sans";font-weight:400}
+    .vig-guia{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:500;white-space:nowrap}
+    .vig-guia::before{content:"";width:7px;height:7px;border-radius:50%;flex-shrink:0}
+    .vig-guia.enviada{color:var(--green-ok)}
+    .vig-guia.enviada::before{background:var(--green-ok)}
+    .vig-guia.pendiente{color:var(--ink-3)}
+    .vig-guia.pendiente::before{background:var(--line)}
+    .hist-actions button.guia{background:var(--ins-teal);color:#fff;border-color:var(--ins-teal);font-weight:600}
+    .hist-actions button.guia:hover{background:var(--ins-teal-deep);border-color:var(--ins-teal-deep)}
+    .hist-actions button.guia.reenviar{background:var(--paper);color:var(--ins-teal);border-color:var(--ins-teal-line);font-weight:600}
+    .hist-actions button.guia.reenviar:hover{background:var(--ins-teal-soft)}
+
     /* PASO 1 — banda de inputs */
     .input-band{background:var(--paper);border:1px solid var(--line);border-radius:6px;overflow:hidden;margin-bottom:20px}
     .ib-h{padding:12px 20px;background:var(--cream);border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
@@ -551,6 +566,7 @@
     <nav class="tabs-agente">
       <button class="tab-btn active" data-tab="cotizador">Cotizador</button>
       <button class="tab-btn"        data-tab="historial">Mis cotizaciones <span class="tab-count" id="tab-count">0</span></button>
+      <button class="tab-btn"        data-tab="vigentes">Pólizas vigentes <span class="tab-count" id="tab-count-vig">0</span></button>
       <button class="tab-new"        data-action="nueva-cotizacion" title="Limpiar todo y empezar de cero">+ Nueva cotización</button>
     </nav>
     <main class="page-agente" data-tab-panel="cotizador">
@@ -574,6 +590,10 @@
 
     <main class="page-agente hidden" data-tab-panel="historial" id="historial-body">
       <!-- render dinámico de renderHistorial() -->
+    </main>
+
+    <main class="page-agente hidden" data-tab-panel="vigentes" id="vigentes-body">
+      <!-- render dinámico de renderPolizasVigentes() -->
     </main>
   </div>
 
@@ -1421,6 +1441,34 @@
       const enc = encodePayload(payload);
       const base = location.origin + location.pathname.replace(/index\.html$/,'');
       return base + (base.endsWith('/') ? '' : '/') + '?c=' + enc;
+    }
+
+    // Link a la guía de reclamos personalizada (sin .html para no perder el query en redirecciones)
+    function buildLinkGuia(payloadGuia){
+      const enc = encodePayload(payloadGuia);
+      const base = location.origin + location.pathname.replace(/index\.html$/,'');
+      return base + (base.endsWith('/') ? '' : '/') + 'guia-reclamos?p=' + enc;
+    }
+
+    // Fecha ISO "2025-06-03" → "03 jun 2025" (sin timezone shift: parse manual)
+    function fmtFechaEs(iso){
+      const meses = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+      const parts = String(iso).split('-').map(Number);
+      if(parts.length !== 3 || parts.some(isNaN)) return String(iso);
+      const [y,m,d] = parts;
+      return String(d).padStart(2,'0') + ' ' + (meses[m-1] || '') + ' ' + y;
+    }
+
+    // Vigencia anual desde una fecha: "03 jun 2025 – 02 jun 2026"
+    function vigenciaTexto(isoDesde){
+      const parts = String(isoDesde).split('-').map(Number);
+      if(parts.length !== 3 || parts.some(isNaN)) return String(isoDesde);
+      const [y,m,d] = parts;
+      const desde = new Date(y, m-1, d);
+      const hasta = new Date(y+1, m-1, d);
+      hasta.setDate(hasta.getDate() - 1);
+      const toIso = dt => dt.getFullYear() + '-' + String(dt.getMonth()+1).padStart(2,'0') + '-' + String(dt.getDate()).padStart(2,'0');
+      return fmtFechaEs(toIso(desde)) + ' – ' + fmtFechaEs(toIso(hasta));
     }
 
     function buildWhatsAppMessage(payload, link){
@@ -2380,6 +2428,240 @@
     function updateTabCount(){
       const el = document.getElementById('tab-count');
       if(el) el.textContent = cotizacionesActivas().length;
+      const elv = document.getElementById('tab-count-vig');
+      if(elv) elv.textContent = polizasVigentes().length;
+    }
+
+    // ---------- Pólizas vigentes (Tab 3) ----------
+    function polizasVigentes(){
+      return historial.filter(h => h.estado === "aceptada");
+    }
+
+    function renderPolizasVigentes(){
+      const body = document.getElementById('vigentes-body');
+      if(!body) return;
+      const lista = polizasVigentes();
+      lista.sort((a,b) => (b.updatedAt || b.fecha).localeCompare(a.updatedAt || a.fecha));
+
+      const header = `
+        <div class="hist-h">
+          <div>
+            <h2>Pólizas vigentes</h2>
+            <div class="sub">${lista.length} ${lista.length === 1 ? 'póliza emitida' : 'pólizas emitidas'} · envíe la guía de uso y reclamos a sus clientes</div>
+          </div>
+        </div>
+      `;
+
+      if(lista.length === 0){
+        body.innerHTML = header + `<div class="hist-empty">Todavía no hay pólizas emitidas. En <strong>Mis cotizaciones</strong>, marque una cotización como <strong>✓ Aceptar</strong> cuando el INS emita la póliza: aparecerá aquí para enviarle la guía de reclamos al cliente.</div>`;
+        return;
+      }
+
+      const rows = lista.map(h => {
+        const p = h.payload;
+        const pol = h.polizaData; // {numero, fechaInicio, planId, moneda} si ya se capturó
+        const planId = pol ? pol.planId : (p.planRecomendado || p.planes[0]);
+        const planObj = PLANES.find(pl => pl.id === planId);
+        const guiaEnviada = !!h.guiaEnviada;
+        return `
+          <tr>
+            <td><div class="nm">${escapeHtml(p.cliente.nombre || "(sin nombre)")}</div><div class="meta">${escapeHtml(p.cliente.email || p.cliente.telefono || "sin contacto")}</div></td>
+            <td><span class="vig-plan">${escapeHtml(planObj ? planObj.nombre : "—")}</span></td>
+            <td>${pol ? `<span class="vig-poliza">${escapeHtml(pol.numero)}</span>` : `<span class="vig-poliza sin">por capturar</span>`}</td>
+            <td><span class="fecha">${pol ? pol.fechaInicio : "—"}</span></td>
+            <td><span class="vig-guia ${guiaEnviada ? 'enviada' : 'pendiente'}">${guiaEnviada ? 'Enviada' + (h.guiaEnviadaAt ? ' ' + h.guiaEnviadaAt.slice(0,10) : '') : 'Pendiente'}</span></td>
+            <td><div class="hist-actions">
+              <button class="guia ${guiaEnviada ? 'reenviar' : ''}" data-action="enviar-guia" data-id="${h.id}">📚 ${guiaEnviada ? 'Reenviar guía' : 'Enviar guía'}</button>
+            </div></td>
+          </tr>
+        `;
+      }).join('');
+
+      body.innerHTML = header + `
+        <table class="hist-table">
+          <thead><tr><th>Cliente</th><th>Plan</th><th>N.º Póliza</th><th>Emisión</th><th>Guía</th><th>Acciones</th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+      `;
+    }
+
+    function bindVigentesEvents(){
+      const body = document.getElementById('vigentes-body');
+      if(!body || body.dataset.bound) return;
+      body.dataset.bound = "1";
+      body.addEventListener('click', e => {
+        const btn = e.target.closest('[data-action]');
+        if(!btn) return;
+        if(btn.dataset.action === 'enviar-guia'){
+          const h = historial.find(x => x.id === btn.dataset.id);
+          if(h) openGuiaModal(h);
+        }
+      });
+    }
+
+    // Persiste datos de póliza emitida + link Condiciones Particulares + marca guía enviada
+    function guardarDatosGuia(id, polizaData, linkCP){
+      const h = historial.find(x => x.id === id);
+      if(!h) return;
+      h.polizaData = polizaData;
+      h.linkCP = linkCP || "";
+      h.guiaEnviada = true;
+      h.guiaEnviadaAt = new Date().toISOString();
+      h.updatedAt = new Date().toISOString();
+      saveHistorial();
+      renderPolizasVigentes();
+      updateTabCount();
+    }
+
+    // Modal: capturar datos de la póliza emitida + generar y compartir el link a la guía de reclamos
+    function openGuiaModal(h){
+      const p = h.payload;
+      const planesCotizados = p.planes || [];
+      const pol = h.polizaData || {};
+      const planRecId = pol.planId || p.planRecomendado || planesCotizados[0];
+      const monedaDefault = pol.moneda || p.monedaInicial || "CRC";
+      const fechaDefault = pol.fechaInicio || new Date().toISOString().slice(0,10);
+      const numeroDefault = pol.numero || "";
+      const linkCPDefault = h.linkCP || "";
+
+      const optionsPlan = PLANES.map(pl => {
+        const cotizado = planesCotizados.includes(pl.id);
+        const esRec = pl.id === planRecId;
+        const marca = esRec ? "★ " : (cotizado ? "· " : "");
+        const tag   = esRec ? " (recomendado)" : (cotizado ? " (cotizado)" : "");
+        return `<option value="${pl.id}" ${esRec?'selected':''}>${marca}${pl.nombre} · ${pl.ambito}${tag}</option>`;
+      }).join('');
+
+      const tel = String(p.cliente.telefono || "").replace(/\D/g,'');
+
+      const html = `
+        <div class="aseg-modal-bg open" id="guia-modal-bg">
+          <div class="aseg-modal" style="width:540px;max-width:95vw;max-height:92vh;overflow-y:auto;">
+            <h3>Enviar guía de reclamos</h3>
+            <p style="font-size:12.5px;color:var(--ink-3);margin-bottom:14px;line-height:1.55;">Genera el link personalizado de <strong>${escapeHtml(p.cliente.nombre || "el cliente")}</strong> con sus datos de póliza y documentos. Lo puede compartir por WhatsApp, copiarlo o enviarlo por correo.</p>
+            <div class="row two-col">
+              <div><label>N.º de póliza</label><input id="gm-numero" placeholder="ej. 01-101-0123456" value="${escapeAttr(numeroDefault)}" autofocus></div>
+              <div><label>Vigencia desde</label><input id="gm-fecha" type="date" value="${escapeAttr(fechaDefault)}"></div>
+            </div>
+            <div class="row"><label>Plan emitido <span style="color:var(--ink-3);font-weight:400;text-transform:none;letter-spacing:0">(puede diferir del cotizado)</span></label>
+              <select id="gm-plan">${optionsPlan}</select>
+            </div>
+            <div class="row"><label>Moneda de la póliza</label>
+              <select id="gm-moneda">
+                <option value="CRC" ${monedaDefault==='CRC'?'selected':''}>Colones</option>
+                <option value="USD" ${monedaDefault==='USD'?'selected':''}>Dólares</option>
+              </select>
+            </div>
+            <div class="row"><label>Link Condiciones Particulares <span style="color:var(--ink-3);font-weight:400;text-transform:none;letter-spacing:0">(opcional)</span></label>
+              <input id="gm-linkcp" placeholder="https://drive.google.com/file/d/..." value="${escapeAttr(linkCPDefault)}">
+              <small style="font-size:11px;color:var(--ink-3);line-height:1.5;margin-top:4px;display:block;">Suba el PDF que envía el INS a Google Drive, genere un link de solo lectura y péguelo aquí. La tarjeta "Condiciones Particulares" de la guía quedará descargable para el cliente.</small>
+            </div>
+            <div class="row"><label>Link que recibirá el cliente</label>
+              <textarea id="gm-preview" readonly style="width:100%;min-height:62px;padding:9px 11px;border:1px solid var(--line);border-radius:4px;font-family:'IBM Plex Mono';font-size:11px;color:var(--ins-teal-deep);background:var(--cream);resize:vertical;line-height:1.5;"></textarea>
+            </div>
+            <div class="actions" style="flex-wrap:wrap;gap:8px;">
+              <button class="btn btn-secondary" data-action="cerrar-guia">Cerrar</button>
+              <button class="btn btn-secondary" data-action="copiar-guia">📋 Copiar link</button>
+              ${tel ? `<button class="btn btn-secondary" data-action="wa-guia">💬 WhatsApp</button>` : ""}
+              <button class="btn btn-primary" data-action="correo-guia">✉️ Enviar por correo</button>
+            </div>
+          </div>
+        </div>
+      `;
+      document.body.insertAdjacentHTML('beforeend', html);
+      const bg = document.getElementById('guia-modal-bg');
+      const $ = id => document.getElementById(id);
+      const val = id => ($(id) ? $(id).value.trim() : "");
+
+      function construirLink(){
+        const numero = val('gm-numero');
+        const fecha  = val('gm-fecha');
+        if(!numero || !fecha) return null;
+        const planId = val('gm-plan');
+        const moneda = val('gm-moneda');
+        const linkCP = val('gm-linkcp');
+        const plan = PLANES.find(pl => pl.id === planId) || PLANES[0];
+        const sumaTxt = moneda === "USD"
+          ? "USD " + plan.sumaUSD.toLocaleString("en-US")
+          : "₡" + String(plan.sumaCRC).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        const a = agenteActual || {};
+        const payloadGuia = {
+          v: 1,
+          nombre: p.cliente.nombre || "",
+          plan: plan.nombre,
+          poliza: numero,
+          vigencia: vigenciaTexto(fecha),
+          suma: sumaTxt,
+          linkCP: linkCP || "",
+          agente: {
+            nombre: a.nombre || "Agente INS",
+            lic: "Licencia SUGESE " + (a.licencia || "08-1318") + " · Seguros Digitales SDI",
+            wa: "506" + String(a.whatsapp || "").replace(/\D/g,'')
+          }
+        };
+        return buildLinkGuia(payloadGuia);
+      }
+
+      function refrescarPreview(){
+        const link = construirLink();
+        $('gm-preview').value = link || "(complete el N.º de póliza y la fecha para generar el link)";
+        return link;
+      }
+      ['gm-numero','gm-fecha','gm-plan','gm-moneda','gm-linkcp'].forEach(id => {
+        const el = $(id);
+        if(el){ el.addEventListener('input', refrescarPreview); el.addEventListener('change', refrescarPreview); }
+      });
+      refrescarPreview();
+
+      function persistir(linkCP){
+        const polizaData = {
+          numero: val('gm-numero'),
+          fechaInicio: val('gm-fecha'),
+          planId: val('gm-plan'),
+          moneda: val('gm-moneda')
+        };
+        guardarDatosGuia(h.id, polizaData, linkCP);
+      }
+
+      bg.addEventListener('click', e => {
+        const action = e.target.dataset.action;
+        if(e.target === bg || action === 'cerrar-guia'){ bg.remove(); return; }
+        if(!action) return;
+
+        const link = construirLink();
+        if(!link){ alert('Complete el N.º de póliza y la fecha de vigencia para generar el link.'); return; }
+        const linkCP = val('gm-linkcp');
+
+        if(action === 'copiar-guia'){
+          persistir(linkCP);
+          if(navigator.clipboard && navigator.clipboard.writeText){
+            navigator.clipboard.writeText(link).then(
+              () => { alert('Link copiado y guía marcada como enviada.'); bg.remove(); },
+              () => { prompt('Copie manualmente el link:', link); bg.remove(); }
+            );
+          } else {
+            prompt('Copie manualmente el link:', link);
+            bg.remove();
+          }
+        }
+        if(action === 'wa-guia'){
+          const tel2 = String(p.cliente.telefono || "").replace(/\D/g,'');
+          const msg = "Hola " + (p.cliente.nombre || "") + ", su póliza Vital 360 ya está vigente. Aquí su guía de uso y reclamos, con todos los pasos y documentos:\n" + link;
+          const wa = "https://web.whatsapp.com/send/?phone=506" + tel2 + "&text=" + encodeURIComponent(msg);
+          persistir(linkCP);
+          window.open(wa, '_blank');
+          bg.remove();
+        }
+        if(action === 'correo-guia'){
+          const subject = "Su guía de uso y reclamos · Vital 360";
+          const cuerpo = "Estimado(a) " + (p.cliente.nombre || "") + ",\n\nSu póliza Vital 360 ya está vigente. En el siguiente enlace encontrará su guía de uso y reclamos, con los pasos para cada situación y los documentos que pueda necesitar:\n\n" + link + "\n\nGuárdelo en favoritos para tenerlo siempre a mano.\n\nQuedo atento a cualquier consulta.\n" + ((agenteActual && agenteActual.nombre) || "");
+          const to = (p.cliente.email || "");
+          const gmailUrl = "https://mail.google.com/mail/?view=cm&fs=1&to=" + encodeURIComponent(to) + "&su=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(cuerpo);
+          persistir(linkCP);
+          window.open(gmailUrl, '_blank');
+          bg.remove();
+        }
+      });
     }
 
     function renderHistorial(){
@@ -2495,6 +2777,7 @@
       document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
       document.querySelectorAll('[data-tab-panel]').forEach(p => p.classList.toggle('hidden', p.dataset.tabPanel !== tab));
       if(tab === "historial") renderHistorial();
+      if(tab === "vigentes"){ renderPolizasVigentes(); bindVigentesEvents(); }
     }
 
     function bindTabsEvents(){

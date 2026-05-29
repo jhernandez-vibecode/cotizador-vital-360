@@ -578,23 +578,23 @@
     <div class="hero-card">
       <div class="hero-field">
         <label>Asegurado</label>
-        <value>Carlos Rodríguez M.</value>
+        <value id="g-asegurado">Carlos Rodríguez M.</value>
       </div>
       <div class="hero-field">
         <label>Plan</label>
-        <value>Platinum 1</value>
+        <value id="g-plan">Platinum 1</value>
       </div>
       <div class="hero-field">
         <label>N.º Póliza</label>
-        <value>VT-2025-001234</value>
+        <value id="g-poliza">VT-2025-001234</value>
       </div>
       <div class="hero-field">
         <label>Vigencia</label>
-        <value>01 jun 2025 – 31 may 2026</value>
+        <value id="g-vigencia">01 jun 2025 – 31 may 2026</value>
       </div>
       <div class="hero-field span2">
         <label>Suma asegurada</label>
-        <value>USD 100,000 · ₡65,000,000</value>
+        <value id="g-suma">USD 100,000 · ₡65,000,000</value>
       </div>
     </div>
     <p class="hero-note">Esta guía es su referencia personal. Guárdela en favoritos para tenerla siempre a mano.</p>
@@ -925,12 +925,12 @@
   <div class="section-label">Documentos de su póliza</div>
   <div class="docs-grid">
 
-    <!-- 1 · Condiciones Particulares — el documento personalizado del cliente (link Drive del agente) -->
-    <a href="#" class="doc-card featured" id="doc-particulares">
+    <!-- 1 · Condiciones Particulares — el documento personalizado del cliente (link Drive del agente, vía ?p=) -->
+    <a href="#" class="doc-card featured" id="doc-particulares" target="_blank" rel="noopener">
       <div class="doc-card-icon" style="background:var(--ins-teal);color:#fff;">🪪</div>
       <div class="doc-card-name">Condiciones Particulares</div>
-      <div class="doc-card-desc">Su contrato personalizado: coberturas, montos y vigencia específicos de su póliza.</div>
-      <span class="doc-card-badge" style="background:var(--ins-teal);color:#fff;">Su póliza</span>
+      <div class="doc-card-desc" id="doc-particulares-desc">Su contrato personalizado: coberturas, montos y vigencia específicos de su póliza.</div>
+      <span class="doc-card-badge" id="doc-particulares-badge" style="background:var(--ins-teal);color:#fff;">Su póliza</span>
     </a>
 
     <!-- 2 · Condiciones Generales — contrato estándar del producto -->
@@ -1050,10 +1050,10 @@
       <div class="agent-avatar">👨‍💼</div>
       <div class="agent-info">
         <div class="agent-label">Su agente INS</div>
-        <div class="agent-name">Juan Carlos Hernández</div>
-        <div class="agent-lic">Licencia SUGESE 08-1318 · Seguros Digitales SDI</div>
+        <div class="agent-name" id="g-agente-nombre">Juan Carlos Hernández</div>
+        <div class="agent-lic" id="g-agente-lic">Licencia SUGESE 08-1318 · Seguros Digitales SDI</div>
       </div>
-      <a href="https://web.whatsapp.com/send/?phone=50688221348" class="agent-cta" target="_blank">
+      <a href="https://web.whatsapp.com/send/?phone=50688221348" class="agent-cta" id="g-agente-wa" target="_blank">
         💬 WhatsApp
       </a>
     </div>
@@ -1092,6 +1092,64 @@
       }, 50);
     }
   }
+
+  // ── Personalización vía ?p=BASE64URL (mismo esquema base64url que el cotizador) ──
+  function decodeP(b64url){
+    try {
+      let b64 = b64url.replace(/-/g,'+').replace(/_/g,'/');
+      while(b64.length % 4) b64 += '=';
+      return JSON.parse(decodeURIComponent(escape(atob(b64))));
+    } catch(e){ console.error('[guia] payload inválido', e); return null; }
+  }
+
+  // Pone la tarjeta Condiciones Particulares en estado "sin documento" (gris, no clickeable)
+  function cpSinDocumento(msg){
+    const cp = document.getElementById('doc-particulares');
+    if(!cp) return;
+    cp.classList.remove('featured');
+    cp.removeAttribute('href');
+    cp.removeAttribute('target');
+    cp.style.opacity = '.55';
+    cp.style.cursor = 'default';
+    const ico = cp.querySelector('.doc-card-icon');
+    if(ico){ ico.style.background = '#F0F0F0'; ico.style.color = '#888'; }
+    const desc = document.getElementById('doc-particulares-desc');
+    if(desc) desc.textContent = msg;
+    const badge = document.getElementById('doc-particulares-badge');
+    if(badge){ badge.style.background = '#F0F0F0'; badge.style.color = '#888'; badge.textContent = 'Del INS'; }
+  }
+
+  function personalizar(){
+    const p = new URLSearchParams(location.search).get('p');
+    // Sin ?p= → modo demo: Condiciones Particulares aún no disponibles
+    if(!p){ cpSinDocumento('Su contrato personalizado. Lo entrega el INS al emitir la póliza.'); return; }
+
+    const d = decodeP(p);
+    if(!d){ cpSinDocumento('Su contrato personalizado. Solicítelas a su agente.'); return; }
+
+    const set = (id, val) => { const el = document.getElementById(id); if(el && val) el.textContent = val; };
+    set('g-asegurado', d.nombre);
+    set('g-plan',      d.plan);
+    set('g-poliza',    d.poliza);
+    set('g-vigencia',  d.vigencia);
+    set('g-suma',      d.suma);
+
+    if(d.agente){
+      set('g-agente-nombre', d.agente.nombre);
+      set('g-agente-lic',    d.agente.lic);
+      const wa = document.getElementById('g-agente-wa');
+      if(wa && d.agente.wa) wa.href = 'https://web.whatsapp.com/send/?phone=' + String(d.agente.wa).replace(/\D/g,'');
+    }
+
+    // Condiciones Particulares: activa con el link Drive, o gris si el agente no lo cargó
+    if(d.linkCP){
+      const cp = document.getElementById('doc-particulares');
+      if(cp) cp.href = d.linkCP;
+    } else {
+      cpSinDocumento('Su contrato personalizado. Solicítelas a su agente.');
+    }
+  }
+  personalizar();
 </script>
 
 </body>
