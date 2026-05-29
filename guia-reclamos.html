@@ -1,0 +1,1098 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Guía de Reclamos · Vital 360 INS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Serif:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ins-teal:      #1F5C6B;
+      --ins-teal-deep: #143F4A;
+      --ins-teal-soft: #E3EEF1;
+      --ins-teal-line: #C7DBE0;
+      --ins-coral:     #E36B43;
+      --ins-coral-soft:#FCE6DC;
+      --ins-coral-deep:#B94F2B;
+      --ins-gold:      #C18A2C;
+      --ins-gold-soft: #FDF3E0;
+      --cream:         #F7F1E4;
+      --cream-2:       #EFE8D5;
+      --paper:         #FFFFFF;
+      --ink:           #0E2127;
+      --ink-2:         #34464D;
+      --ink-3:         #6A7A80;
+      --line:          #D7DCDE;
+      --line-2:        #EBEDEE;
+      --green-ok:      #19A65A;
+      --green-soft:    #E4F7EE;
+      --navy:          #1A2E44;
+      --navy-soft:     #E8EDF3;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: "IBM Plex Sans", sans-serif;
+      background: #F2F4F5;
+      color: var(--ink);
+      font-size: 14px;
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+    }
+    .serif  { font-family: "IBM Plex Serif", serif; }
+    .mono   { font-family: "IBM Plex Mono", monospace; }
+
+    /* ── HEADER ─────────────────────────────────────────── */
+    .top-bar {
+      background: var(--ins-teal-deep);
+      color: #fff;
+      padding: 0 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 52px;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      box-shadow: 0 2px 8px rgba(0,0,0,.25);
+    }
+    .top-bar-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .top-bar-brand img { height: 26px; filter: brightness(0) invert(1); }
+    .top-bar-title {
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      color: rgba(255,255,255,.9);
+    }
+    .top-bar-title span {
+      color: rgba(255,255,255,.5);
+      font-weight: 400;
+      margin-left: 6px;
+    }
+    .top-bar-sos {
+      background: var(--ins-coral);
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      padding: 7px 12px;
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+    }
+    .top-bar-sos:hover { background: var(--ins-coral-deep); }
+
+    /* ── HERO PÓLIZA ────────────────────────────────────── */
+    .hero {
+      background: linear-gradient(135deg, var(--ins-teal) 0%, var(--ins-teal-deep) 100%);
+      color: #fff;
+      padding: 28px 20px 24px;
+    }
+    .hero-eyebrow {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.6);
+      margin-bottom: 6px;
+    }
+    .hero-title {
+      font-family: "IBM Plex Serif", serif;
+      font-size: 22px;
+      font-weight: 500;
+      line-height: 1.2;
+      margin-bottom: 16px;
+    }
+    .hero-card {
+      background: rgba(255,255,255,.1);
+      border: 1px solid rgba(255,255,255,.2);
+      border-radius: 8px;
+      padding: 14px 16px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px 20px;
+      max-width: 480px;
+    }
+    .hero-field label {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.55);
+      display: block;
+      margin-bottom: 2px;
+    }
+    .hero-field value {
+      font-size: 13.5px;
+      font-weight: 500;
+      color: #fff;
+      font-family: "IBM Plex Mono", monospace;
+    }
+    .hero-field.span2 { grid-column: span 2; }
+    .hero-note {
+      margin-top: 14px;
+      font-size: 11.5px;
+      color: rgba(255,255,255,.55);
+      line-height: 1.5;
+    }
+
+    /* ── LAYOUT ─────────────────────────────────────────── */
+    .page { max-width: 680px; margin: 0 auto; padding: 0 0 60px; }
+
+    /* ── SECTION HEADER ─────────────────────────────────── */
+    .section-label {
+      padding: 22px 20px 10px;
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--ink-3);
+    }
+
+    /* ── ESCENARIOS ──────────────────────────────────────── */
+    .scenarios { padding: 0 12px; display: flex; flex-direction: column; gap: 8px; }
+
+    .scenario-card {
+      background: var(--paper);
+      border: 1.5px solid var(--line);
+      border-radius: 10px;
+      overflow: hidden;
+      transition: border-color .2s;
+    }
+    .scenario-card.open { border-color: var(--ins-teal); }
+
+    .scenario-trigger {
+      width: 100%;
+      background: none;
+      border: none;
+      padding: 16px 18px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      cursor: pointer;
+      text-align: left;
+      font-family: inherit;
+    }
+    .scenario-trigger:hover { background: var(--line-2); }
+    .scenario-card.open .scenario-trigger { background: var(--ins-teal-soft); }
+
+    .scenario-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+    .scenario-text { flex: 1; }
+    .scenario-name {
+      font-size: 14.5px;
+      font-weight: 600;
+      color: var(--ink);
+      line-height: 1.2;
+      margin-bottom: 2px;
+    }
+    .scenario-sub {
+      font-size: 12px;
+      color: var(--ink-3);
+      line-height: 1.4;
+    }
+    .scenario-arrow {
+      font-size: 18px;
+      color: var(--ink-3);
+      transition: transform .25s;
+      flex-shrink: 0;
+    }
+    .scenario-card.open .scenario-arrow { transform: rotate(90deg); color: var(--ins-teal); }
+
+    .scenario-body {
+      display: none;
+      padding: 0 18px 18px;
+      border-top: 1px solid var(--ins-teal-line);
+    }
+    .scenario-card.open .scenario-body { display: block; }
+
+    /* Steps */
+    .steps { margin: 14px 0; display: flex; flex-direction: column; gap: 12px; }
+    .step { display: flex; gap: 12px; align-items: flex-start; }
+    .step-num {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--ins-teal);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .step-content {}
+    .step-content strong {
+      font-size: 13.5px;
+      font-weight: 600;
+      display: block;
+      margin-bottom: 2px;
+    }
+    .step-content p {
+      font-size: 12.5px;
+      color: var(--ink-2);
+      line-height: 1.5;
+    }
+
+    /* Alert boxes */
+    .alert {
+      border-radius: 6px;
+      padding: 10px 14px;
+      font-size: 12.5px;
+      line-height: 1.5;
+      margin: 10px 0;
+      display: flex;
+      gap: 8px;
+    }
+    .alert-icon { flex-shrink: 0; font-size: 15px; margin-top: 1px; }
+    .alert-warn  { background: #FFF8E1; border: 1px solid #F0C040; color: #7A5000; }
+    .alert-info  { background: var(--ins-teal-soft); border: 1px solid var(--ins-teal-line); color: var(--ins-teal-deep); }
+    .alert-ok    { background: var(--green-soft); border: 1px solid #A3D9BE; color: #0D5A31; }
+    .alert-red   { background: #FDE8E8; border: 1px solid #F4A0A0; color: #8B1A1A; }
+
+    /* CTA buttons in steps */
+    .cta-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+    .cta-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 14px;
+      border-radius: 6px;
+      font-family: inherit;
+      font-size: 12.5px;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1.5px solid;
+      text-decoration: none;
+    }
+    .cta-teal  { background: var(--ins-teal);    color: #fff; border-color: var(--ins-teal); }
+    .cta-teal:hover { background: var(--ins-teal-deep); border-color: var(--ins-teal-deep); }
+    .cta-coral { background: var(--ins-coral);   color: #fff; border-color: var(--ins-coral); }
+    .cta-coral:hover { background: var(--ins-coral-deep); border-color: var(--ins-coral-deep); }
+    .cta-outline-teal { background: var(--paper); color: var(--ins-teal); border-color: var(--ins-teal-line); }
+    .cta-outline-teal:hover { background: var(--ins-teal-soft); }
+    .cta-green { background: #128C7E; color: #fff; border-color: #128C7E; }
+    .cta-green:hover { background: #0A6B5F; border-color: #0A6B5F; }
+    .cta-navy  { background: var(--navy);  color: #fff; border-color: var(--navy); }
+    .cta-navy:hover { background: #0E1F30; border-color: #0E1F30; }
+    .cta-gold  { background: var(--ins-gold); color: #fff; border-color: var(--ins-gold); }
+
+    /* Docs attached to step */
+    .step-docs { margin-top: 8px; display: flex; flex-wrap: wrap; gap: 6px; }
+    .doc-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: var(--cream);
+      border: 1px solid var(--cream-2);
+      border-radius: 20px;
+      padding: 5px 10px;
+      font-size: 11.5px;
+      font-weight: 500;
+      color: var(--ink-2);
+      text-decoration: none;
+    }
+    .doc-pill:hover { background: var(--cream-2); color: var(--ink); }
+    .doc-pill-icon { font-size: 13px; }
+
+    /* ── DOCUMENTOS ──────────────────────────────────────── */
+    .docs-grid {
+      padding: 0 12px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .doc-card {
+      background: var(--paper);
+      border: 1.5px solid var(--line);
+      border-radius: 10px;
+      padding: 14px 14px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      text-decoration: none;
+      color: inherit;
+      transition: border-color .18s, box-shadow .18s;
+    }
+    .doc-card:hover { border-color: var(--ins-teal); box-shadow: 0 2px 12px rgba(31,92,107,.12); }
+    .doc-card.featured { border-width: 2px; border-color: var(--ins-teal); background: linear-gradient(180deg, var(--ins-teal-soft) 0%, var(--paper) 55%); }
+    .doc-card.featured:hover { box-shadow: 0 3px 16px rgba(31,92,107,.18); }
+    .doc-card-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      margin-bottom: 2px;
+    }
+    .doc-card-name {
+      font-size: 12.5px;
+      font-weight: 600;
+      line-height: 1.3;
+      color: var(--ink);
+    }
+    .doc-card-desc {
+      font-size: 11px;
+      color: var(--ink-3);
+      line-height: 1.4;
+    }
+    .doc-card-badge {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      padding: 2px 7px;
+      border-radius: 10px;
+      align-self: flex-start;
+      margin-top: 2px;
+    }
+
+    /* ── CONTACTOS CLAVE ─────────────────────────────────── */
+    .contacts-list { padding: 0 12px; display: flex; flex-direction: column; gap: 6px; }
+    .contact-row {
+      background: var(--paper);
+      border: 1.5px solid var(--line);
+      border-radius: 8px;
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .contact-icon {
+      font-size: 20px;
+      width: 36px;
+      flex-shrink: 0;
+      text-align: center;
+    }
+    .contact-info { flex: 1; }
+    .contact-label { font-size: 11px; font-weight: 600; color: var(--ink-3); letter-spacing: .04em; text-transform: uppercase; }
+    .contact-value { font-size: 14px; font-weight: 600; color: var(--ink); font-family: "IBM Plex Mono", monospace; }
+    .contact-desc  { font-size: 11.5px; color: var(--ink-3); }
+    .contact-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 600;
+      text-decoration: none;
+      border: 1.5px solid;
+      flex-shrink: 0;
+    }
+    .cc-teal  { color: var(--ins-teal); border-color: var(--ins-teal-line); background: var(--paper); }
+    .cc-teal:hover { background: var(--ins-teal-soft); }
+    .cc-green { color: #128C7E; border-color: #A3D9BE; background: var(--paper); }
+    .cc-green:hover { background: var(--green-soft); }
+
+    /* ── AGENTE ──────────────────────────────────────────── */
+    .agent-card {
+      margin: 0 12px;
+      background: var(--ins-teal-deep);
+      border-radius: 10px;
+      padding: 16px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      color: #fff;
+    }
+    .agent-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .agent-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.15);
+      border: 2px solid rgba(255,255,255,.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      flex-shrink: 0;
+    }
+    .agent-seal {
+      border-top: 1px solid rgba(255,255,255,.15);
+      padding-top: 13px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+    }
+    .agent-seal span { font-size: 10px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: rgba(255,255,255,.5); }
+    .agent-seal img { height: 22px; width: auto; display: block; filter: brightness(0) invert(1); }
+    .agent-info { flex: 1; }
+    .agent-label { font-size: 10.5px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: rgba(255,255,255,.5); }
+    .agent-name  { font-size: 15px; font-weight: 600; margin: 2px 0; }
+    .agent-lic   { font-size: 11.5px; color: rgba(255,255,255,.6); }
+    .agent-cta {
+      background: rgba(255,255,255,.12);
+      border: 1.5px solid rgba(255,255,255,.25);
+      color: #fff;
+      border-radius: 6px;
+      padding: 9px 12px;
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+      flex-shrink: 0;
+    }
+    .agent-cta:hover { background: rgba(255,255,255,.2); }
+
+    /* ── FOOTER ──────────────────────────────────────────── */
+    .footer {
+      margin-top: 24px;
+      padding: 20px;
+      text-align: center;
+      font-size: 11px;
+      color: var(--ink-3);
+      line-height: 1.7;
+      border-top: 1px solid var(--line);
+    }
+    .footer strong { color: var(--ink-2); }
+
+    /* ── DIVIDER ────────────────────────────────────────── */
+    .spacer { height: 20px; }
+
+    /* ── MOBILE responsive ──────────────────────────────── */
+    @media (max-width: 420px) {
+      .hero-card { grid-template-columns: 1fr; }
+      .hero-field.span2 { grid-column: span 1; }
+      .docs-grid { grid-template-columns: 1fr; }
+      .hero-title { font-size: 19px; }
+    }
+
+    /* ── BADGE NOCODE ───────────────────────────────────── */
+    .badge-nocode {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: var(--green-soft);
+      border: 1px solid #A3D9BE;
+      color: #0D5A31;
+      border-radius: 20px;
+      padding: 3px 10px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+    .badge-warn {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: #FFF8E1;
+      border: 1px solid #F0C040;
+      color: #7A5000;
+      border-radius: 20px;
+      padding: 3px 10px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+    .badge-int {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: var(--navy-soft);
+      border: 1px solid #BBC8D8;
+      color: var(--navy);
+      border-radius: 20px;
+      padding: 3px 10px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    /* Separator in steps */
+    .step-sep {
+      border: none;
+      border-top: 1px dashed var(--line);
+      margin: 10px 0;
+    }
+
+    /* phone number display */
+    .phone-block {
+      background: var(--navy-soft);
+      border: 1px solid #BBC8D8;
+      border-radius: 6px;
+      padding: 10px 14px;
+      margin: 8px 0;
+    }
+    .phone-block .ph-label { font-size: 10.5px; font-weight: 600; color: var(--navy); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 4px; }
+    .phone-block .ph-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+    .phone-block .ph-num { font-family: "IBM Plex Mono"; font-size: 15px; font-weight: 600; color: var(--navy); }
+    .phone-block .ph-zone { font-size: 11.5px; color: var(--ink-3); }
+
+    /* International phone table */
+    .int-phones { width: 100%; border-collapse: collapse; font-size: 12px; margin: 8px 0; }
+    .int-phones th { background: var(--navy); color: #fff; padding: 7px 10px; text-align: left; font-size: 11px; font-weight: 600; }
+    .int-phones td { padding: 7px 10px; border-bottom: 1px solid var(--line); color: var(--ink-2); }
+    .int-phones tr:last-child td { border-bottom: none; }
+    .int-phones td:first-child { font-weight: 600; color: var(--ink); }
+    .int-phones td a { color: var(--ins-teal); text-decoration: none; font-family: "IBM Plex Mono"; }
+  </style>
+</head>
+<body>
+
+<!-- ══ TOP BAR ══════════════════════════════════════════════ -->
+<div class="top-bar">
+  <div class="top-bar-brand">
+    <img src="https://cotizador.appsegurosdigitales.com/img/ins-logo.png" alt="INS">
+    <div class="top-bar-title">Vital 360 <span>· Guía de Reclamos</span></div>
+  </div>
+  <a href="tel:8008353467" class="top-bar-sos">🆘 800-TELE-INS</a>
+</div>
+
+<div class="page">
+
+  <!-- ══ HERO PÓLIZA ════════════════════════════════════════ -->
+  <div class="hero">
+    <div class="hero-eyebrow">Su seguro de salud</div>
+    <h1 class="hero-title serif">Guía de uso y reclamos<br>Vital 360</h1>
+    <div class="hero-card">
+      <div class="hero-field">
+        <label>Asegurado</label>
+        <value>Carlos Rodríguez M.</value>
+      </div>
+      <div class="hero-field">
+        <label>Plan</label>
+        <value>Platinum 1</value>
+      </div>
+      <div class="hero-field">
+        <label>N.º Póliza</label>
+        <value>VT-2025-001234</value>
+      </div>
+      <div class="hero-field">
+        <label>Vigencia</label>
+        <value>01 jun 2025 – 31 may 2026</value>
+      </div>
+      <div class="hero-field span2">
+        <label>Suma asegurada</label>
+        <value>USD 100,000 · ₡65,000,000</value>
+      </div>
+    </div>
+    <p class="hero-note">Esta guía es su referencia personal. Guárdela en favoritos para tenerla siempre a mano.</p>
+  </div>
+
+  <!-- ══ ESCENARIOS ══════════════════════════════════════════ -->
+  <div class="section-label">¿Qué tipo de situación tiene?</div>
+  <div class="scenarios">
+
+    <!-- 1. MEDICINA VIRTUAL -->
+    <div class="scenario-card" id="sc1">
+      <button class="scenario-trigger" onclick="toggle('sc1')">
+        <div class="scenario-icon" style="background:#E4F7EE;">💻</div>
+        <div class="scenario-text">
+          <div class="scenario-name">Medicina Virtual (gratis, sin trámite)</div>
+          <div class="scenario-sub">Consulta desde su teléfono · sin costo · sin deducible</div>
+        </div>
+        <span class="scenario-arrow">›</span>
+      </button>
+      <div class="scenario-body">
+        <div class="alert alert-ok">
+          <span class="alert-icon">✅</span>
+          <span><strong>No necesita hacer ningún reclamo.</strong> La consulta es 100 % cubierta y no genera cobro alguno.</span>
+        </div>
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-content">
+              <strong>Descargue la App INS Móvil</strong>
+              <p>Disponible en App Store y Google Play. Busque "INS Móvil" (desarrollador: Grupo INS).</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-content">
+              <strong>Ingrese a "Servicios de Salud → Medicina Virtual"</strong>
+              <p>Disponible todos los días del año, de <strong>6:00 a.m. a 10:00 p.m.</strong> Para menores de edad debe estar presente un adulto.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-content">
+              <strong>El médico virtual puede:</strong>
+              <p>Emitir recetas, derivarlo a la red médica INS, y coordinar envío de medicamentos a domicilio (vía red autorizada).</p>
+            </div>
+          </div>
+        </div>
+        <div class="cta-row">
+          <a href="https://play.google.com/store/apps/details?id=com.grupoins.insmovil" class="cta-btn cta-teal" target="_blank">📱 App Android</a>
+          <a href="https://apps.apple.com/cr/app/ins-m%C3%B3vil/id1489381174" class="cta-btn cta-teal" target="_blank">📱 App iOS</a>
+          <a href="docs/medicina-virtual-360.pdf" class="cta-btn cta-outline-teal" download>📄 Guía Medicina Virtual</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. CONSULTA AMBULATORIA -->
+    <div class="scenario-card" id="sc2">
+      <button class="scenario-trigger" onclick="toggle('sc2')">
+        <div class="scenario-icon" style="background:var(--ins-teal-soft);">🏥</div>
+        <div class="scenario-text">
+          <div class="scenario-name">Consulta, urgencia o exámenes en Costa Rica</div>
+          <div class="scenario-sub">Reembolso hasta 60 días después · usted paga primero</div>
+        </div>
+        <span class="scenario-arrow">›</span>
+      </button>
+      <div class="scenario-body">
+        <div class="alert alert-info">
+          <span class="alert-icon">ℹ️</span>
+          <span>En consultas ambulatorias <strong>usted paga primero</strong> y luego el INS le reembolsa la parte cubierta. El trámite se realiza directamente con el INS.</span>
+        </div>
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-content">
+              <strong>Guarde todos los comprobantes</strong>
+              <p>Facturas electrónicas canceladas (con archivo XML), recetas, resultados de exámenes y orden médica. <strong>Sin factura electrónica no hay reembolso.</strong></p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-content">
+              <strong>Complete los dos formularios</strong>
+              <p>Solicitud de Beneficios (usted llena la Parte A) y Autorización de Expediente. El médico tratante debe firmar la Parte B de la solicitud con diagnóstico y detalle de costos.</p>
+              <div class="step-docs">
+                <a href="docs/solicitud-beneficios.pdf" class="doc-pill" download><span class="doc-pill-icon">📋</span> Solicitud de Beneficios</a>
+                <a href="docs/autorizacion-expedientes.pdf" class="doc-pill" download><span class="doc-pill-icon">📋</span> Autorización Expediente</a>
+              </div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-content">
+              <strong>Envíe todo al INS por correo electrónico</strong>
+              <p>Adjunte los formularios completados + facturas + recetas. El INS tiene <strong>30 días naturales</strong> para resolver.</p>
+            </div>
+          </div>
+        </div>
+        <div class="alert alert-warn">
+          <span class="alert-icon">⏱️</span>
+          <span><strong>Plazo límite: 60 días naturales</strong> desde el inicio del tratamiento. Después de ese plazo el INS puede rechazar el reclamo.</span>
+        </div>
+        <div class="cta-row">
+          <a href="mailto:clientescgsp@grupoins.com?subject=Reclamo Vital 360 - Póliza VT-2025-001234" class="cta-btn cta-teal">✉️ clientescgsp@grupoins.com</a>
+          <a href="tel:8008353467" class="cta-btn cta-outline-teal">📞 800-TELE-INS</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. HOSPITALIZACIÓN PROGRAMADA -->
+    <div class="scenario-card" id="sc3">
+      <button class="scenario-trigger" onclick="toggle('sc3')">
+        <div class="scenario-icon" style="background:var(--ins-coral-soft);">🏨</div>
+        <div class="scenario-text">
+          <div class="scenario-name">Hospitalización o cirugía programada</div>
+          <div class="scenario-sub">Pre-autorización obligatoria · INS paga directo al hospital</div>
+        </div>
+        <span class="scenario-arrow">›</span>
+      </button>
+      <div class="scenario-body">
+        <div class="alert alert-red">
+          <span class="alert-icon">⚠️</span>
+          <span><strong>Solicite la pre-autorización ANTES de ingresar.</strong> Sin ella, el INS puede cubrir solo una parte o rechazar el caso.</span>
+        </div>
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-content">
+              <strong>Descargue y lleve el formulario al médico tratante</strong>
+              <p><strong>Usted llena la Parte I</strong> (datos personales y póliza). El médico completa las Partes II y III con el diagnóstico, procedimiento y firma.</p>
+              <div class="step-docs">
+                <a href="docs/solicitud-preautorizacion.pdf" class="doc-pill" download><span class="doc-pill-icon">📋</span> Solicitud de Pre-autorización</a>
+              </div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-content">
+              <strong>Envíe el formulario completo al INS con 5 días hábiles de anticipación</strong>
+              <p>Adjunte también los respaldos que llevaron al diagnóstico: rayos X, laboratorios, ultrasonidos, audiometrías, etc.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-content">
+              <strong>El INS autoriza y coordina con el hospital</strong>
+              <p>Una vez autorizado, el INS paga directamente al centro médico. Usted solo paga su deducible anual + coaseguro (10 %) + gastos no cubiertos.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">4</div>
+            <div class="step-content">
+              <strong>Consulte la Red Médica INS</strong>
+              <p>Para hospitales y clínicas afiliadas donde el pago es directo y el trámite es más ágil.</p>
+              <div class="step-docs">
+                <a href="docs/red-medica.pdf" class="doc-pill" download><span class="doc-pill-icon">🏥</span> Red Médica INS</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="cta-row">
+          <a href="mailto:autorizacionesins@grupoins.com?subject=Pre-autorización Vital 360 - Póliza VT-2025-001234" class="cta-btn cta-teal">✉️ autorizacionesins@grupoins.com</a>
+          <a href="tel:8008353467" class="cta-btn cta-outline-teal">📞 800-TELE-INS</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. EMERGENCIA EN CR -->
+    <div class="scenario-card" id="sc4">
+      <button class="scenario-trigger" onclick="toggle('sc4')">
+        <div class="scenario-icon" style="background:#FDE8E8;">🚨</div>
+        <div class="scenario-text">
+          <div class="scenario-name">Emergencia o accidente en Costa Rica</div>
+          <div class="scenario-sub">Atiéndase primero · coordine con INS después</div>
+        </div>
+        <span class="scenario-arrow">›</span>
+      </button>
+      <div class="scenario-body">
+        <div class="alert alert-ok">
+          <span class="alert-icon">🛡️</span>
+          <span><strong>En una emergencia real: atiéndase primero.</strong> El INS acepta que no pudo tramitar antes. Tiene 24 horas para notificar si fue al extranjero; en CR el plazo es 60 días para el reclamo.</span>
+        </div>
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-content">
+              <strong>Acuda al servicio de emergencias más cercano</strong>
+              <p>Si es un proveedor de la red INS, el hospital coordinará directamente. Si no es de la red, usted paga y tramita reembolso.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-content">
+              <strong>Guarde todos los comprobantes del evento</strong>
+              <p>Si fue accidente de tránsito: también necesita copia de licencia + parte oficial de tránsito con resultado de alcoholemia.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-content">
+              <strong>Tramite el reembolso dentro de 60 días</strong>
+              <p>Mismos formularios que una consulta ambulatoria: Solicitud de Beneficios + Autorización de Expediente + facturas electrónicas.</p>
+              <div class="step-docs">
+                <a href="docs/solicitud-beneficios.pdf" class="doc-pill" download><span class="doc-pill-icon">📋</span> Solicitud de Beneficios</a>
+                <a href="docs/autorizacion-expedientes.pdf" class="doc-pill" download><span class="doc-pill-icon">📋</span> Autorización Expediente</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="cta-row">
+          <a href="mailto:clientescgsp@grupoins.com" class="cta-btn cta-teal">✉️ Reclamo al INS</a>
+          <a href="tel:8008353467" class="cta-btn cta-outline-teal">📞 800-TELE-INS</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. EMERGENCIA EN EL EXTRANJERO -->
+    <div class="scenario-card" id="sc5">
+      <button class="scenario-trigger" onclick="toggle('sc5')">
+        <div class="scenario-icon" style="background:var(--navy-soft);">✈️</div>
+        <div class="scenario-text">
+          <div class="scenario-name">Emergencia en el extranjero</div>
+          <div class="scenario-sub">Solo planes Regional e Internacional · llamar ANTES de gastar</div>
+        </div>
+        <span class="scenario-arrow">›</span>
+      </button>
+      <div class="scenario-body">
+        <div class="alert alert-red">
+          <span class="alert-icon">🌍</span>
+          <span><strong>LLAME ANTES de incurrir en cualquier gasto.</strong> Si el INS no autorizó la atención, puede rechazar o reducir el reembolso. Solo si es imposible comunicarse tiene 24 horas para avisar.</span>
+        </div>
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-content">
+              <strong>Llame a la Unidad de Asistencia Internacional del INS</strong>
+              <p>Disponible 24/7 los 365 días del año. Tenga a mano: nombre completo, número de póliza, plan contratado, número de pasaporte.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="phone-block">
+          <div class="ph-label">Números de emergencia internacional</div>
+          <table class="int-phones">
+            <thead><tr><th>Zona</th><th>Número</th></tr></thead>
+            <tbody>
+              <tr><td>USA y Canadá</td><td><a href="tel:18448650804">1-844-865-0804</a> · <a href="tel:14072647118">+1 407 264-7118</a></td></tr>
+              <tr><td>España</td><td><a href="tel:900995484">900-995-484</a> · <a href="tel:34911895152">+34 91 189-5152</a></td></tr>
+              <tr><td>Resto del mundo</td><td><a href="tel:13055908016">+1 305 590-8016</a> · <a href="tel:34915934227">+34 91 593-4227</a></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-content">
+              <strong>El INS coordina y paga directamente</strong>
+              <p>Si llamó antes, el INS gestiona: hospital, traslado sanitario, repatriación, y regreso del acompañante si la hospitalización supera 5 días.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-content">
+              <strong>Cobertura máxima Asistencia Viajero: USD 10,000 por viaje</strong>
+              <p>Deducible USD 75 por viaje. Traslados sanitarios: sin límite. Hospitalización máx. 60 días + 10 días si ya inició.</p>
+              <div class="step-docs">
+                <a href="docs/asistencia-viajero-360.pdf" class="doc-pill" download><span class="doc-pill-icon">✈️</span> Guía Asistencia Viajero</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="cta-row">
+          <a href="mailto:insinternacional@grupoins.com" class="cta-btn cta-navy">✉️ insinternacional@grupoins.com</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. ACCIDENTE DENTAL -->
+    <div class="scenario-card" id="sc6">
+      <button class="scenario-trigger" onclick="toggle('sc6')">
+        <div class="scenario-icon" style="background:var(--ins-gold-soft);">🦷</div>
+        <div class="scenario-text">
+          <div class="scenario-name">Accidente dental</div>
+          <div class="scenario-sub">Solo cubre accidentes, no enfermedades dentales</div>
+        </div>
+        <span class="scenario-arrow">›</span>
+      </button>
+      <div class="scenario-body">
+        <div class="alert alert-warn">
+          <span class="alert-icon">ℹ️</span>
+          <span>La cobertura dental <strong>solo aplica para accidentes</strong> que afecten piezas sanas. Caries, enfermedades periodontales u odontología de rutina no están cubiertas.</span>
+        </div>
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-content">
+              <strong>Documente el accidente antes del tratamiento</strong>
+              <p>Es imprescindible tener una <strong>radiografía previa al tratamiento</strong> que muestre la fractura. Sin ella el INS no puede validar que era una pieza sana.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-content">
+              <strong>Complete el expediente dental completo</strong>
+              <p>Solicitud de Beneficios + ficha odontológica completa + radiografía previa al tratamiento + radiografía posterior al tratamiento + facturas electrónicas.</p>
+              <div class="step-docs">
+                <a href="docs/solicitud-beneficios.pdf" class="doc-pill" download><span class="doc-pill-icon">📋</span> Solicitud de Beneficios</a>
+                <a href="docs/cobertura-dental-360.pdf" class="doc-pill" download><span class="doc-pill-icon">🦷</span> Guía Cobertura Dental</a>
+              </div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-content">
+              <strong>Envíe todo al INS dentro de 60 días</strong>
+            </div>
+          </div>
+        </div>
+        <div class="cta-row">
+          <a href="mailto:clientescgsp@grupoins.com" class="cta-btn cta-teal">✉️ Reclamo al INS</a>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /scenarios -->
+
+  <!-- ══ DOCUMENTOS ══════════════════════════════════════════ -->
+  <div class="section-label">Documentos de su póliza</div>
+  <div class="docs-grid">
+
+    <!-- 1 · Condiciones Particulares — el documento personalizado del cliente (link Drive del agente) -->
+    <a href="#" class="doc-card featured" id="doc-particulares">
+      <div class="doc-card-icon" style="background:var(--ins-teal);color:#fff;">🪪</div>
+      <div class="doc-card-name">Condiciones Particulares</div>
+      <div class="doc-card-desc">Su contrato personalizado: coberturas, montos y vigencia específicos de su póliza.</div>
+      <span class="doc-card-badge" style="background:var(--ins-teal);color:#fff;">Su póliza</span>
+    </a>
+
+    <!-- 2 · Condiciones Generales — contrato estándar del producto -->
+    <a href="docs/condiciones-generales.pdf" class="doc-card" download>
+      <div class="doc-card-icon" style="background:var(--ins-teal-soft);">📖</div>
+      <div class="doc-card-name">Condiciones Generales</div>
+      <div class="doc-card-desc">Contrato completo del seguro Vital 360 INS</div>
+      <span class="doc-card-badge" style="background:var(--ins-teal-soft);color:var(--ins-teal-deep);">Contrato</span>
+    </a>
+
+    <!-- ── Anexos · Formularios de reclamo ── -->
+    <a href="docs/solicitud-beneficios.pdf" class="doc-card" download>
+      <div class="doc-card-icon" style="background:var(--ins-coral-soft);">📋</div>
+      <div class="doc-card-name">Solicitud de Beneficios</div>
+      <div class="doc-card-desc">Formulario para todo reclamo de gastos médicos</div>
+      <span class="doc-card-badge" style="background:var(--ins-coral-soft);color:var(--ins-coral-deep);">Reclamos</span>
+    </a>
+
+    <a href="docs/solicitud-preautorizacion.pdf" class="doc-card" download>
+      <div class="doc-card-icon" style="background:var(--ins-coral-soft);">🏨</div>
+      <div class="doc-card-name">Solicitud de Pre-autorización</div>
+      <div class="doc-card-desc">Para hospitalizaciones y cirugías programadas. Parte I: usted · Partes II y III: su médico.</div>
+      <span class="doc-card-badge" style="background:var(--ins-coral-soft);color:var(--ins-coral-deep);">Hospitalización</span>
+    </a>
+
+    <!-- ── Anexos · Servicios y proveedores ── -->
+    <a href="docs/red-medica.pdf" class="doc-card" download>
+      <div class="doc-card-icon" style="background:var(--green-soft);">🏥</div>
+      <div class="doc-card-name">Red Médica INS</div>
+      <div class="doc-card-desc">Hospitales y clínicas con pago directo</div>
+      <span class="doc-card-badge" style="background:var(--green-soft);color:#0D5A31;">Proveedores</span>
+    </a>
+
+    <a href="docs/asistencia-viajero-360.pdf" class="doc-card" download>
+      <div class="doc-card-icon" style="background:var(--navy-soft);">✈️</div>
+      <div class="doc-card-name">Asistencia al Viajero</div>
+      <div class="doc-card-desc">Cobertura y contactos para emergencias en el extranjero</div>
+      <span class="doc-card-badge" style="background:var(--navy-soft);color:var(--navy);">Internacional</span>
+    </a>
+
+    <a href="docs/medicina-virtual-360.pdf" class="doc-card" download>
+      <div class="doc-card-icon" style="background:var(--green-soft);">💻</div>
+      <div class="doc-card-name">Medicina Virtual 360</div>
+      <div class="doc-card-desc">Guía de uso del servicio de telemedicina INS</div>
+      <span class="doc-card-badge" style="background:var(--green-soft);color:#0D5A31;">Sin costo</span>
+    </a>
+
+    <a href="docs/cobertura-dental-360.pdf" class="doc-card" download>
+      <div class="doc-card-icon" style="background:var(--ins-gold-soft);">🦷</div>
+      <div class="doc-card-name">Cobertura Dental 360</div>
+      <div class="doc-card-desc">Detalle de cobertura por accidente dental</div>
+      <span class="doc-card-badge" style="background:var(--ins-gold-soft);color:#7A5000;">Accidentes</span>
+    </a>
+
+  </div>
+
+  <!-- ══ CONTACTOS CLAVE ══════════════════════════════════════ -->
+  <div class="section-label">Contactos clave INS</div>
+  <div class="contacts-list">
+
+    <div class="contact-row">
+      <div class="contact-icon">📞</div>
+      <div class="contact-info">
+        <div class="contact-label">Línea gratuita</div>
+        <div class="contact-value">800-TELE-INS</div>
+        <div class="contact-desc">800-835-3467 · Consultas generales y estado de trámites</div>
+      </div>
+      <a href="tel:8008353467" class="contact-cta cc-teal">Llamar</a>
+    </div>
+
+    <div class="contact-row">
+      <div class="contact-icon">✉️</div>
+      <div class="contact-info">
+        <div class="contact-label">Reclamos y reembolsos</div>
+        <div class="contact-value" style="font-size:12px;">clientescgsp@grupoins.com</div>
+        <div class="contact-desc">Centro de Gestión de Seguros Personales</div>
+      </div>
+      <a href="mailto:clientescgsp@grupoins.com" class="contact-cta cc-teal">Correo</a>
+    </div>
+
+    <div class="contact-row">
+      <div class="contact-icon">🏥</div>
+      <div class="contact-info">
+        <div class="contact-label">Pre-autorizaciones</div>
+        <div class="contact-value" style="font-size:12px;">autorizacionesins@grupoins.com</div>
+        <div class="contact-desc">Hospitalización programada · mínimo 5 días hábiles antes</div>
+      </div>
+      <a href="mailto:autorizacionesins@grupoins.com" class="contact-cta cc-teal">Correo</a>
+    </div>
+
+    <div class="contact-row">
+      <div class="contact-icon">✉️</div>
+      <div class="contact-info">
+        <div class="contact-label">Consultas generales</div>
+        <div class="contact-value" style="font-size:12px;">contactenos@grupoins.com</div>
+        <div class="contact-desc">Dudas sobre su póliza, coberturas o trámites</div>
+      </div>
+      <a href="mailto:contactenos@grupoins.com" class="contact-cta cc-teal">Correo</a>
+    </div>
+
+    <div class="contact-row">
+      <div class="contact-icon">🌍</div>
+      <div class="contact-info">
+        <div class="contact-label">Emergencias internacionales</div>
+        <div class="contact-value" style="font-size:12px;">insinternacional@grupoins.com</div>
+        <div class="contact-desc">24/7 · +1 407 264-7118 · +34 91 189-5152</div>
+      </div>
+      <a href="mailto:insinternacional@grupoins.com" class="contact-cta cc-teal">Correo</a>
+    </div>
+
+  </div>
+
+  <!-- ══ AGENTE ══════════════════════════════════════════════ -->
+  <div class="spacer"></div>
+  <div class="agent-card">
+    <div class="agent-row">
+      <div class="agent-avatar">👨‍💼</div>
+      <div class="agent-info">
+        <div class="agent-label">Su agente INS</div>
+        <div class="agent-name">Juan Carlos Hernández</div>
+        <div class="agent-lic">Licencia SUGESE 08-1318 · Seguros Digitales SDI</div>
+      </div>
+      <a href="https://web.whatsapp.com/send/?phone=50688221348" class="agent-cta" target="_blank">
+        💬 WhatsApp
+      </a>
+    </div>
+    <div class="agent-seal">
+      <span>Asegurado por</span>
+      <img src="https://cotizador.appsegurosdigitales.com/img/ins-logo.png" alt="INS">
+    </div>
+  </div>
+
+  <!-- ══ FOOTER ══════════════════════════════════════════════ -->
+  <div class="footer">
+    <strong>Seguros Digitales SDI</strong> · Propiedad intelectual de Juan Carlos Hernández Rojas<br>
+    Agente Autorizado INS · Licencia SUGESE 08-1318<br>
+    <br>
+    Este seguro está regulado por <strong>SUGESE</strong> bajo norma P20-76-A01-1097 V3.<br>
+    Para quejas ante SUGESE: <a href="tel:22431074" style="color:var(--ins-teal);">2243-1074</a> · Para apelaciones: Contraloría de Servicios INS<br>
+    <br>
+    La guía es de carácter informativo. Las Condiciones Generales y Particulares de su póliza son el documento vinculante.
+  </div>
+
+</div><!-- /page -->
+
+<script>
+  function toggle(id) {
+    const card = document.getElementById(id);
+    const wasOpen = card.classList.contains('open');
+    // Cerrar todos
+    document.querySelectorAll('.scenario-card.open').forEach(c => c.classList.remove('open'));
+    // Abrir el clickeado si estaba cerrado
+    if (!wasOpen) {
+      card.classList.add('open');
+      // Scroll suave al card si está fuera de vista
+      setTimeout(() => {
+        const rect = card.getBoundingClientRect();
+        if (rect.top < 60) card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 50);
+    }
+  }
+</script>
+
+</body>
+</html>
