@@ -1141,8 +1141,9 @@
       if(wa && d.agente.wa) wa.href = 'https://web.whatsapp.com/send/?phone=' + String(d.agente.wa).replace(/\D/g,'');
     }
 
-    // Condiciones Particulares: activa con el link Drive, o gris si el agente no lo cargó
-    if(d.linkCP){
+    // Condiciones Particulares: activa con el link Drive, o gris si el agente no lo cargó.
+    // Solo se aceptan URLs http(s) — neutraliza javascript:/data: en payloads fabricados.
+    if(d.linkCP && /^https?:\/\//i.test(d.linkCP)){
       const cp = document.getElementById('doc-particulares');
       if(cp) cp.href = d.linkCP;
     } else {
