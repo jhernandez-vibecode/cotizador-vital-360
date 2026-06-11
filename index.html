@@ -300,8 +300,6 @@
     .send-r .btn-wa:hover{background:var(--ins-coral-deep)}
     .send-r .btn-mail{background:var(--ins-teal);color:#fff;border:1px solid var(--ins-teal)}
     .send-r .btn-mail:hover{background:var(--ins-teal-deep);border-color:var(--ins-teal-deep)}
-    .send-r .btn-poliza{background:rgba(193,138,44,.15);color:#FFE9B0;border:1px solid var(--ins-gold);margin-top:8px}
-    .send-r .btn-poliza:hover{background:rgba(193,138,44,.3);color:#fff}
     .send-r .btn-preview{background:rgba(255,255,255,.08);color:#fff;border:1px solid rgba(255,255,255,.18)}
     .send-r .btn-copy{background:transparent;color:rgba(255,255,255,.7);border:1px solid rgba(255,255,255,.15);font-size:12px}
     .send-r button:disabled{opacity:.4;cursor:not-allowed}
@@ -891,7 +889,13 @@
     // Reglas extraídas de la Guía de Suscripción Vital 360 (INS 15/05/2024)
     // =====================================================================
 
-    function calcularDocumentos(asegurados, planIdRecomendado){
+    // planesContratados puede ser un id (string) o el array de planes cotizados.
+    // El arraigo (Guía de Suscripción INS, sección E) se exige solo para planes
+    // Internacionales: si CUALQUIER plan cotizado es internacional y hay un
+    // extranjero temporal/pasaporte, se muestra el requisito (al elegir ese plan
+    // lo necesitará). En Local/Regional basta el pasaporte, no aplica arraigo.
+    function calcularDocumentos(asegurados, planesContratados){
+      const planesArr = Array.isArray(planesContratados) ? planesContratados : [planesContratados];
       const docs = {
         base: [
           { id: "solicitud",        nombre: "Solicitud de Seguro Vital 360",     archivo: "docs/solicitud-vital-360.pdf",       desc: "Formulario principal del titular y dependientes. Vigencia 60 días." },
@@ -943,7 +947,7 @@
       }
 
       // Disparador 3: plan internacional + extranjero sin residencia permanente
-      const esInternacional = ID_PLAN_INTERNACIONAL.includes(planIdRecomendado);
+      const esInternacional = planesArr.some(id => ID_PLAN_INTERNACIONAL.includes(id));
       const extranjeros = asegurados.filter(a => a.nacionalidad === "extranjero_residente_temporal" || a.nacionalidad === "extranjero_pasaporte");
       if(esInternacional && extranjeros.length){
         docs.disparadores.push({
@@ -1091,7 +1095,7 @@
         return `<span class="aseg-chip ${isTit?'titular':''}" data-idx="${i}">
            <span class="ico">${inicialDe(a.nombre)}</span>
            <span>${escapeHtml(a.nombre || '(sin nombre)')}${isTit?' · titular':''}</span>
-           <span class="age">${a.edad}</span>
+           <span class="age">${escapeHtml(a.edad)}</span>
            <button class="x" data-action="del" data-idx="${i}" title="Quitar">×</button>
          </span>`;
       }).join('');
@@ -1981,7 +1985,7 @@
     // - Si no, usa state actual (caso legacy: desde Paso 3).
     // El selector "Plan contratado" expone los 7 planes — el cliente puede haber
     // comprado un plan distinto al cotizado originalmente.
-    function openPolizaCaptureModal({ cliEmail, payloadOverride } = {}){
+    function openPolizaCaptureModal({ cliEmail, payloadOverride, registroId } = {}){
       const usaOverride = !!payloadOverride;
       const planesCotizados = usaOverride
         ? (payloadOverride.planes || [])
@@ -2052,6 +2056,9 @@
           base.planRecomendado = planId;
           base.monedaInicial = moneda;
           const polizaData = { numero, fechaInicio: fecha, planId, moneda };
+          // Persistir los datos de la póliza en el historial para que la pestaña
+          // "Pólizas vigentes" los refleje (N.º póliza + emisión + plan emitido).
+          if(registroId) guardarDatosPoliza(registroId, polizaData);
           const htmlEmail = buildEmailPolizaVigente(base, polizaData);
           openEmailPolizaPreviewModal({ to: cliEmail, html: htmlEmail, payload: base, polizaData });
         }
@@ -2506,6 +2513,20 @@
       });
     }
 
+    // Persiste solo los datos de la póliza emitida (N.º, fecha, plan, moneda) en el
+    // registro del historial, SIN marcar la guía como enviada. Lo usa el flujo de
+    // correo "Póliza vigente" para que la pestaña Pólizas vigentes muestre el N.º
+    // de póliza en vez de "por capturar". La guía web mantiene su estado aparte.
+    function guardarDatosPoliza(id, polizaData){
+      const h = historial.find(x => x.id === id);
+      if(!h) return;
+      h.polizaData = polizaData;
+      h.updatedAt = new Date().toISOString();
+      saveHistorial();
+      renderPolizasVigentes();
+      updateTabCount();
+    }
+
     // Persiste datos de póliza emitida + link Condiciones Particulares + marca guía enviada
     function guardarDatosGuia(id, polizaData, linkCP){
       const h = historial.find(x => x.id === id);
@@ -2768,7 +2789,7 @@
             alert('Esta cotización no tiene email del cliente registrado. Reábrala (✎ Editar), agregue el email del titular y vuelva a Aceptar.');
             return;
           }
-          openPolizaCaptureModal({ cliEmail, payloadOverride: h.payload });
+          openPolizaCaptureModal({ cliEmail, payloadOverride: h.payload, registroId: h.id });
         }
         if(action === 'copy'){
           const h = historial.find(x => x.id === id);
@@ -2852,7 +2873,7 @@
         const rel = a.parentesco === "titular" ? "Titular" :
                     a.parentesco === "conyuge" ? "Cónyuge" :
                     a.parentesco === "hijo"    ? "Hijo/a" : "Otro";
-        return `<div class="row"><span>${rel}</span><span class="v">${escapeHtml(a.nombre)}, ${a.edad} a.</span></div>`;
+        return `<div class="row"><span>${rel}</span><span class="v">${escapeHtml(a.nombre)}, ${escapeHtml(a.edad)} a.</span></div>`;
       }).join('');
 
       document.getElementById('cli-hero').innerHTML = `
@@ -2865,7 +2886,7 @@
               <span class="sep"></span>
               <span class="who">Cotización preparada por ${escapeHtml(p.agente.nombre)} · Agente INS</span>
             </div>
-            <div class="r">Cotización N.º ${escapeHtml(p.id)} · ${p.fecha} · vigencia ${p.vigenciaDias} días</div>
+            <div class="r">Cotización N.º ${escapeHtml(p.id)} · ${escapeHtml(p.fecha)} · vigencia ${escapeHtml(p.vigenciaDias)} días</div>
           </div>
         </div>
         <div class="hero-body">
@@ -3042,8 +3063,9 @@
 
     function renderClienteDocs(){
       const p = cli.payload;
-      const planRec = p.planRecomendado || p.planes[0];
-      const docs = calcularDocumentos(p.asegurados, planRec);
+      // Arraigo se evalúa contra TODOS los planes cotizados (no solo el recomendado):
+      // si el cliente elige cualquier plan internacional, necesitará el requisito.
+      const docs = calcularDocumentos(p.asegurados, p.planes);
 
       const baseItems = docs.base.map(d => `
         <div class="doc-c">
@@ -3207,7 +3229,7 @@
       const a = cli.payload.agente;
       return `
         <section class="fine">
-          <strong>Información importante.</strong> Esta cotización es de carácter informativo y se basa en las tarifas oficiales del Instituto Nacional de Seguros vigentes a la fecha indicada. Mantiene vigencia por ${cli.payload.vigenciaDias} días naturales. Las primas mostradas <strong>no incluyen el impuesto al valor agregado (IVA 2 %, tarifa especial para seguros de personas, Ley 9635 de Costa Rica)</strong>. La aceptación final del riesgo y la emisión de la póliza corresponden al INS conforme a la Ley Reguladora del Contrato de Seguros y al producto registrado bajo norma SUGESE P20-76-A01-1097 V3.
+          <strong>Información importante.</strong> Esta cotización es de carácter informativo y se basa en las tarifas oficiales del Instituto Nacional de Seguros vigentes a la fecha indicada. Mantiene vigencia por ${escapeHtml(cli.payload.vigenciaDias)} días naturales. Las primas mostradas <strong>no incluyen el impuesto al valor agregado (IVA 2 %, tarifa especial para seguros de personas, Ley 9635 de Costa Rica)</strong>. La aceptación final del riesgo y la emisión de la póliza corresponden al INS conforme a la Ley Reguladora del Contrato de Seguros y al producto registrado bajo norma SUGESE P20-76-A01-1097 V3.
         </section>
         <footer class="sdi-foot">
           <div class="sdi-mark">
@@ -3436,6 +3458,14 @@
       console.assert(ids1.includes("telesuscripcion"), '[smoke] debe incluir telesuscripcion');
       console.assert(ids1.includes("bateria-71plus"),  '[smoke] debe incluir bateria-71plus');
       console.assert(ids1.includes("arraigo"),         '[smoke] debe incluir arraigo');
+
+      // Arraigo con array de planes: dispara si CUALQUIER cotizado es internacional,
+      // aunque el recomendado/primero sea local (Guía de Suscripción INS, sección E).
+      const famExt = [{nombre:"Hans", parentesco:"titular", edad:40, nacionalidad:"extranjero_pasaporte"}];
+      const docsLocal = calcularDocumentos(famExt, ["esencial1","esencial2"]);
+      console.assert(!docsLocal.disparadores.some(d => d.id === "arraigo"), '[smoke] plan solo local NO dispara arraigo');
+      const docsMix = calcularDocumentos(famExt, ["esencial1","platinum2"]);
+      console.assert(docsMix.disparadores.some(d => d.id === "arraigo"), '[smoke] internacional entre cotizados SÍ dispara arraigo');
 
       // Sección 4 · payload
       const sample = { id:"0001", cliente:{nombre:"Test"}, asegurados:fam0, planes:["pro1"], moneda:"CRC" };
