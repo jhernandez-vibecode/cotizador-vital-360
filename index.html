@@ -2284,12 +2284,22 @@
     }
 
     // Preview + envío del correo "Guía de uso y reclamos" (HTML con botón).
-    // Permite adjuntar PDF (Condiciones Particulares, documentos de emisión).
-    function openEmailGuiaPreviewModal({ to, html, subject, link }){
+    // Recibe los adjuntos seleccionados en el modal anterior (openGuiaModal) y
+    // los muestra como confirmación; el envío directo por Gmail los incluye.
+    function openEmailGuiaPreviewModal({ to, html, subject, link, attachments }){
+      attachments = attachments || [];
       const gmailComposeUrl = "https://mail.google.com/mail/?view=cm&fs=1"
         + "&to=" + encodeURIComponent(to)
         + "&su=" + encodeURIComponent(subject)
         + "&body=" + encodeURIComponent("Su póliza Vital 360 ya está vigente. Abra su guía de uso y reclamos aquí:\n\n" + link);
+
+      const totalAdj = attachments.reduce((s, a) => s + (a.size || 0), 0);
+      const adjResumen = attachments.length
+        ? `<div class="email-modal-hint" style="background:#EAF5F1;border-color:#B7D7CC;">
+             <strong>📎 ${attachments.length} ${attachments.length === 1 ? 'archivo adjunto' : 'archivos adjuntos'}</strong> (${_fmtPeso(totalAdj)}): ${attachments.map(a => _escEmail(a.filename)).join(' · ')}.
+             <span style="color:var(--ink-3);"> Se incluyen al enviar desde Gmail. Para cambiarlos, cierre y vuelva al paso anterior.</span>
+           </div>`
+        : '';
 
       const wrap = document.createElement('div');
       wrap.className = 'email-modal-bg';
@@ -2307,6 +2317,7 @@
           <div class="email-modal-hint">
             El cliente recibe un <strong>botón limpio</strong> que abre su guía; ya no ve el link largo. Recomendado: <strong>Enviar ahora desde Gmail</strong> (es la única opción que incluye los adjuntos). "Abrir Gmail manualmente" envía solo el link como texto, sin botón ni adjuntos.
           </div>
+          ${adjResumen}
           <div class="email-modal-actions">
             <button class="btn btn-primary" data-action="send-direct">🚀 Enviar ahora desde Gmail</button>
             <button class="btn btn-secondary" data-action="copy-html">📋 Copiar HTML</button>
@@ -2318,17 +2329,14 @@
         </div>
       `;
       document.body.appendChild(wrap);
-      const adjCtrl = setupAdjuntosControl(wrap.querySelector('.email-modal'));
       wrap.addEventListener('click', e => {
         const action = e.target.dataset.action;
         if(e.target === wrap || action === 'cancel-email-modal'){ wrap.remove(); return; }
         if(action === 'send-direct'){
-          if(!adjCtrl.isReady()){ alert('Espere a que terminen de cargar los archivos adjuntos antes de enviar.'); return; }
-          if(adjCtrl.overLimit()){ alert('Los adjuntos superan los 25 MB que admite Gmail. Quite alguno antes de enviar.'); return; }
-          enviarEmailDirecto({ to, subject, html, attachments: adjCtrl.get(), btnEl: e.target, wrapEl: wrap });
+          enviarEmailDirecto({ to, subject, html, attachments, btnEl: e.target, wrapEl: wrap });
         }
         if(action === 'open-gmail-manual'){
-          if(adjCtrl.count() > 0 && !confirm('Atención: "Abrir Gmail manualmente" NO adjunta los PDF ni el botón; solo envía el link como texto. Para incluir los adjuntos use "Enviar ahora desde Gmail".\n\n¿Abrir Gmail de todos modos (sin adjuntos)?')) return;
+          if(attachments.length > 0 && !confirm('Atención: "Abrir Gmail manualmente" NO adjunta los PDF ni el botón; solo envía el link como texto. Para incluir los adjuntos use "Enviar ahora desde Gmail".\n\n¿Abrir Gmail de todos modos (sin adjuntos)?')) return;
           window.open(gmailComposeUrl, '_blank');
         }
         if(action === 'copy-html'){
@@ -2576,9 +2584,11 @@
       return bytes + ' B';
     }
 
-    // Inserta el control de adjuntos dentro de un modal de correo, encima de
-    // los botones de acción. Devuelve { get(), count(), overLimit(), isReady() }.
-    function setupAdjuntosControl(modalEl){
+    // Inserta el control de adjuntos dentro de un modal, encima de un anchor.
+    // opts: { anchorSelector, sendBtnSelector, heading } — defaults para los
+    // modales de correo. Devuelve { get(), count(), overLimit(), isReady() }.
+    function setupAdjuntosControl(modalEl, opts){
+      opts = opts || {};
       const MAX_TOTAL = 25 * 1024 * 1024; // límite práctico Gmail (25 MB)
       const adjuntos = []; // { filename, mimeType, base64, size }
       let leyendo = 0;     // lecturas de FileReader en curso
@@ -2587,6 +2597,7 @@
       box.className = 'adjuntos-box';
       box.style.cssText = 'padding:11px 18px;border-top:1px solid #EBEDEE;background:#FAFBFB;';
       box.innerHTML = `
+        ${opts.heading ? `<p style="margin:0 0 8px;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-3);">${opts.heading}</p>` : ''}
         <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
           <button type="button" class="btn btn-secondary" data-adj="pick" style="margin:0;">➕ Adjuntar PDF</button>
           <span data-adj="resumen" style="font-size:12px;color:var(--ink-3);line-height:1.4;">Sin archivos adjuntos</span>
@@ -2594,7 +2605,8 @@
         </div>
         <div data-adj="lista" style="margin-top:8px;display:flex;flex-direction:column;gap:5px;"></div>
       `;
-      const anchor = modalEl.querySelector('.email-modal-actions') || modalEl.querySelector('.email-modal-preview');
+      const anchor = (opts.anchorSelector ? modalEl.querySelector(opts.anchorSelector) : null)
+        || modalEl.querySelector('.email-modal-actions') || modalEl.querySelector('.email-modal-preview');
       if(anchor) anchor.parentNode.insertBefore(box, anchor);
       else modalEl.appendChild(box);
 
@@ -2603,7 +2615,7 @@
       const resumen = box.querySelector('[data-adj="resumen"]');
       // Botón de envío del modal: se bloquea mientras hay lecturas en curso para
       // evitar enviar el correo sin un adjunto que todavía no terminó de leerse.
-      const sendBtn      = modalEl.querySelector('[data-action="send-direct"]');
+      const sendBtn      = modalEl.querySelector(opts.sendBtnSelector || '[data-action="send-direct"]');
       const sendBtnLabel = sendBtn ? sendBtn.textContent : '';
 
       function totalBytes(){ return adjuntos.reduce((s, a) => s + a.size, 0); }
@@ -3068,6 +3080,15 @@
         guardarDatosGuia(h.id, polizaData, linkCP);
       }
 
+      // Adjuntos del correo: selector aquí mismo (Condiciones Particulares,
+      // documentos de emisión). Solo aplica al envío por correo; bloquea ese
+      // botón mientras se leen los PDF.
+      const adjCtrl = setupAdjuntosControl(bg, {
+        anchorSelector: '.actions',
+        sendBtnSelector: '[data-action="correo-guia"]',
+        heading: '📎 Adjuntar al correo (PDF — opcional)'
+      });
+
       bg.addEventListener('click', e => {
         const action = e.target.dataset.action;
         if(e.target === bg || action === 'cerrar-guia'){ bg.remove(); return; }
@@ -3103,13 +3124,16 @@
             alert('Este cliente no tiene correo guardado. Agréguelo en el modal del titular (pestaña Cotizador) para poder enviarle la guía por correo.');
             return;
           }
+          if(!adjCtrl.isReady()){ alert('Espere a que terminen de cargar los archivos adjuntos antes de enviar.'); return; }
+          if(adjCtrl.overLimit()){ alert('Los adjuntos superan los 25 MB que admite Gmail. Quite alguno antes de enviar.'); return; }
+          const attachments = adjCtrl.get(); // capturar antes de remover el modal
           const planSel = PLANES.find(pl => pl.id === val('gm-plan'));
           const pol = { numero: val('gm-numero'), fecha: val('gm-fecha'), planNombre: planSel ? planSel.nombre : "" };
           const html = buildEmailGuiaReclamos(p, link, pol);
           const subject = "Su guía de uso y reclamos · Vital 360";
           persistir(linkCP);
           bg.remove();
-          openEmailGuiaPreviewModal({ to, html, subject, link });
+          openEmailGuiaPreviewModal({ to, html, subject, link, attachments });
         }
       });
     }
