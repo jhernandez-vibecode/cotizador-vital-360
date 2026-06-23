@@ -1687,6 +1687,140 @@
         .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
     }
 
+    // Fecha YYYY-MM-DD → "DD de <mes> de YYYY" (sin Date() para evitar TZ shift)
+    function _fechaLargaEmail(iso){
+      const m = String(iso || "").match(/^(\d{4})-(\d{2})-(\d{2})/);
+      if(!m) return iso || "";
+      const meses = ["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
+      return parseInt(m[3],10) + " de " + meses[parseInt(m[2],10)-1] + " de " + m[1];
+    }
+
+    // =====================================================================
+    // Correo "Su guía de uso y reclamos" — versión HTML con botón.
+    // Reemplaza el correo de texto plano que mostraba el link crudo.
+    // El cliente ve un botón limpio; la URL larga queda oculta en el <a>.
+    // pol = { numero, fecha, planNombre }
+    // =====================================================================
+    function buildEmailGuiaReclamos(payload, link, pol){
+      const a = (payload && payload.agente) || agenteActual || { nombre:"Agente INS", whatsapp:"", email:"", licencia:"08-1318" };
+      const cliNom = (payload && payload.cliente && payload.cliente.nombre) || "estimado/a cliente";
+      pol = pol || {};
+      const vigDesde = pol.fecha ? _fechaLargaEmail(pol.fecha) : "";
+
+      return `<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Su guía de uso y reclamos · Vital 360</title>
+</head>
+<body style="margin:0;padding:0;background:#f5f5f5;font-family:Arial,Helvetica,sans-serif;color:#0E2127;">
+  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#f5f5f5;padding:24px 0;">
+    <tr>
+      <td align="center">
+        <table width="600" cellpadding="0" cellspacing="0" border="0" style="background:#ffffff;border-radius:8px;overflow:hidden;max-width:600px;box-shadow:0 4px 20px rgba(14,33,39,0.08);">
+
+          <!-- 1. HEADER navy con logo INS -->
+          <tr>
+            <td bgcolor="#143F4A" style="background:#143F4A;padding:26px 28px;text-align:center;">
+              <img src="${LOGO_INS_URL}" alt="INS" height="40" style="display:inline-block;height:40px;margin-bottom:10px;filter:brightness(0) invert(1);" />
+              <h1 style="margin:0;font-family:Georgia,'Times New Roman',serif;font-size:22px;font-weight:500;color:#ffffff;letter-spacing:-0.01em;">Su póliza Vital 360 está vigente</h1>
+              <p style="margin:6px 0 0;font-size:12px;color:#C7DBE0;">Guía de uso y reclamos · INS Costa Rica</p>
+            </td>
+          </tr>
+
+          <!-- 2. SALUDO -->
+          <tr>
+            <td style="padding:28px 28px 4px;">
+              <p style="margin:0;font-size:16px;color:#0E2127;"><strong>Hola ${_escEmail(cliNom)},</strong></p>
+            </td>
+          </tr>
+
+          <!-- 3. INTRO -->
+          <tr>
+            <td style="padding:14px 28px 0;">
+              <p style="margin:0 0 14px;font-size:14px;line-height:1.6;color:#34464D;">
+                ¡Felicidades! Su póliza Vital 360 del INS ya quedó <strong>emitida y vigente</strong>. Le preparé una <strong>guía digital</strong> con los pasos para cada situación &mdash; consultas, hospitalización, reembolsos y emergencias &mdash; junto con los teléfonos y documentos que pueda necesitar.
+              </p>
+            </td>
+          </tr>
+
+          ${(pol.numero || pol.planNombre || vigDesde) ? `
+          <!-- 4. Mini-tarjeta de póliza -->
+          <tr>
+            <td style="padding:6px 28px 4px;">
+              <table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#E3EEF1" style="background:#E3EEF1;border:1px solid #C7DBE0;border-radius:6px;">
+                <tr><td style="padding:14px 18px;">
+                  ${pol.numero ? `<p style="margin:0 0 6px;font-size:13px;color:#34464D;"><span style="display:inline-block;width:130px;color:#6A7A80;font-size:11px;text-transform:uppercase;letter-spacing:0.05em;">N.&ordm; de póliza</span><strong style="color:#0E2127;">${_escEmail(pol.numero)}</strong></p>` : ""}
+                  ${pol.planNombre ? `<p style="margin:0 0 6px;font-size:13px;color:#34464D;"><span style="display:inline-block;width:130px;color:#6A7A80;font-size:11px;text-transform:uppercase;letter-spacing:0.05em;">Plan contratado</span><strong style="color:#0E2127;">${_escEmail(pol.planNombre)}</strong></p>` : ""}
+                  ${vigDesde ? `<p style="margin:0;font-size:13px;color:#34464D;"><span style="display:inline-block;width:130px;color:#6A7A80;font-size:11px;text-transform:uppercase;letter-spacing:0.05em;">Vigente desde</span><strong style="color:#0E2127;">${_escEmail(vigDesde)}</strong></p>` : ""}
+                </td></tr>
+              </table>
+            </td>
+          </tr>` : ""}
+
+          <!-- 5. CTA principal -->
+          <tr>
+            <td align="center" style="padding:20px 28px 22px;">
+              <a href="${link}" style="display:inline-block;background:#1F5C6B;color:#ffffff;text-decoration:none;border-radius:6px;padding:15px 30px;font-weight:bold;font-size:15px;font-family:Arial,Helvetica,sans-serif;">ABRIR MI GUÍA DE USO Y RECLAMOS &rarr;</a>
+              <p style="margin:12px 0 0;font-size:11.5px;color:#6A7A80;font-style:italic;line-height:1.55;">Guárdela en favoritos para tenerla siempre a mano. No necesita contraseña.</p>
+            </td>
+          </tr>
+
+          <!-- 6. Qué encontrará en la guía -->
+          <tr>
+            <td style="padding:30px 28px 12px;border-top:1px solid #EBEDEE;">
+              <p style="margin:0 0 16px;font-size:11px;font-weight:bold;color:#143F4A;letter-spacing:0.06em;text-transform:uppercase;">En su guía encontrará</p>
+              <ul style="margin:0;padding:0 0 0 22px;font-size:13.5px;color:#34464D;line-height:2;">
+                <li style="padding:3px 0;">Qué hacer paso a paso en consulta, hospitalización, urgencias y emergencias fuera del país</li>
+                <li style="padding:3px 0;">Cómo y a dónde solicitar reembolsos, con los plazos del INS</li>
+                <li style="padding:3px 0;">Teléfonos y correos clave del INS, siempre a mano</li>
+                <li style="padding:3px 0;">Los documentos y formularios listos para descargar cuando los necesite</li>
+                <li style="padding:3px 0;">Sus derechos como asegurado bajo la Ley 8956</li>
+              </ul>
+            </td>
+          </tr>
+
+          <!-- 7. Cierre -->
+          <tr>
+            <td style="padding:30px 28px 24px;">
+              <p style="margin:0 0 14px;font-size:14.5px;color:#34464D;line-height:1.7;">Cualquier duda me escribe directo, con toda confianza. Estoy para acompañarlo cuando lo necesite.</p>
+              <p style="margin:0;font-size:14px;color:#0E2127;font-style:italic;font-weight:500;">&mdash; ${_escEmail(a.nombre)}</p>
+            </td>
+          </tr>
+
+          <!-- 8. FOOTER navy -->
+          <tr>
+            <td bgcolor="#143F4A" style="background:#143F4A;padding:24px 24px 20px;text-align:center;color:#ffffff;">
+              <table cellpadding="0" cellspacing="0" border="0" align="center" style="margin:0 auto 16px;">
+                <tr>
+                  <td valign="middle" style="font-family:Georgia,'Times New Roman',serif;font-weight:500;font-size:22px;letter-spacing:-0.01em;color:#ffffff;line-height:1;">Seguros&nbsp;Digitales</td>
+                  <td valign="middle" style="padding-left:12px;">
+                    <table cellpadding="0" cellspacing="0" border="0">
+                      <tr><td bgcolor="#ffffff" style="background:#ffffff;height:3px;width:20px;line-height:3px;font-size:0;">&nbsp;</td></tr>
+                      <tr><td style="height:3px;line-height:3px;font-size:0;">&nbsp;</td></tr>
+                      <tr><td bgcolor="#ffffff" style="background:#ffffff;height:3px;width:20px;line-height:3px;font-size:0;">&nbsp;</td></tr>
+                      <tr><td style="height:3px;line-height:3px;font-size:0;">&nbsp;</td></tr>
+                      <tr><td bgcolor="#ffffff" style="background:#ffffff;height:3px;width:20px;line-height:3px;font-size:0;">&nbsp;</td></tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+              <p style="margin:0;font-size:14px;font-weight:bold;color:#ffffff;">${_escEmail(a.nombre)}</p>
+              <p style="margin:4px 0 0;font-size:11px;color:#C7DBE0;">Agente autorizado INS · Lic. SUGESE ${_escEmail(a.licencia || '08-1318')} · WhatsApp ${_escEmail(a.whatsapp)}${a.email ? " · " + _escEmail(a.email) : ""}</p>
+              <p style="margin:14px 0 0;font-size:10.5px;color:#94aab0;font-style:italic;line-height:1.55;">La guía es de carácter informativo. Las Condiciones Generales y Particulares de su póliza son el documento vinculante. Producto Vital 360 registrado bajo norma SUGESE P20-76-A01-1097 V3.</p>
+              <p style="margin:10px 0 0;font-size:10px;color:#6A7A80;">Esta guía pertenece a <strong style="color:#ffffff;font-weight:600;">Seguros Digitales SDI&reg;</strong> · &copy; 2026 Propiedad intelectual de ${_escEmail(a.nombre)}</p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>`;
+    }
+
     // =====================================================================
     // Plantilla 2 · "Su póliza Vital 360 está vigente" + guía de reclamos
     // Autocontenida (sin link externo): el cliente la archiva para consulta.
@@ -2129,6 +2263,56 @@
           const a = document.createElement('a');
           a.href = url; a.download = `poliza-vital360-${polizaData.numero}.eml`; a.click();
           URL.revokeObjectURL(url);
+        }
+      });
+    }
+
+    // Preview + envío del correo "Guía de uso y reclamos" (HTML con botón).
+    // Versión liviana: no lleva adjuntos (todo vive en la guía web).
+    function openEmailGuiaPreviewModal({ to, html, subject, link }){
+      const gmailComposeUrl = "https://mail.google.com/mail/?view=cm&fs=1"
+        + "&to=" + encodeURIComponent(to)
+        + "&su=" + encodeURIComponent(subject)
+        + "&body=" + encodeURIComponent("Su póliza Vital 360 ya está vigente. Abra su guía de uso y reclamos aquí:\n\n" + link);
+
+      const wrap = document.createElement('div');
+      wrap.className = 'email-modal-bg';
+      wrap.id = 'email-modal-bg';
+      wrap.innerHTML = `
+        <div class="email-modal">
+          <div class="email-modal-h">
+            <div>
+              <h3>Correo: guía de uso y reclamos</h3>
+              <p class="sub">Destinatario: <strong>${_escEmail(to)}</strong></p>
+              <p class="sub" style="margin-top:4px;">Asunto: <em>${_escEmail(subject)}</em></p>
+            </div>
+            <button class="x" data-action="cancel-email-modal" title="Cerrar">×</button>
+          </div>
+          <div class="email-modal-hint">
+            El cliente recibe un <strong>botón limpio</strong> que abre su guía; ya no ve el link largo. Recomendado: <strong>Enviar ahora desde Gmail</strong>. La opción "Abrir Gmail manualmente" envía el link como texto (sin botón).
+          </div>
+          <div class="email-modal-actions">
+            <button class="btn btn-primary" data-action="send-direct">🚀 Enviar ahora desde Gmail</button>
+            <button class="btn btn-secondary" data-action="copy-html">📋 Copiar HTML</button>
+            <a class="btn btn-secondary" href="${gmailComposeUrl}" target="_blank">✉ Abrir Gmail manualmente</a>
+          </div>
+          <div class="email-modal-preview">
+            <iframe srcdoc="${escapeAttr(html)}" sandbox="" loading="lazy"></iframe>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(wrap);
+      wrap.addEventListener('click', e => {
+        const action = e.target.dataset.action;
+        if(e.target === wrap || action === 'cancel-email-modal'){ wrap.remove(); return; }
+        if(action === 'send-direct'){
+          enviarEmailDirecto({ to, subject, html, btnEl: e.target });
+        }
+        if(action === 'copy-html'){
+          navigator.clipboard.writeText(html).then(
+            () => { e.target.textContent = "✓ HTML copiado"; setTimeout(() => { e.target.textContent = "📋 Copiar HTML"; }, 2200); },
+            () => alert('No se pudo copiar.')
+          );
         }
       });
     }
@@ -2681,13 +2865,18 @@
           bg.remove();
         }
         if(action === 'correo-guia'){
+          const to = (p.cliente.email || "").trim();
+          if(!to){
+            alert('Este cliente no tiene correo guardado. Agréguelo en el modal del titular (pestaña Cotizador) para poder enviarle la guía por correo.');
+            return;
+          }
+          const planSel = PLANES.find(pl => pl.id === val('gm-plan'));
+          const pol = { numero: val('gm-numero'), fecha: val('gm-fecha'), planNombre: planSel ? planSel.nombre : "" };
+          const html = buildEmailGuiaReclamos(p, link, pol);
           const subject = "Su guía de uso y reclamos · Vital 360";
-          const cuerpo = "Estimado(a) " + (p.cliente.nombre || "") + ",\n\nSu póliza Vital 360 ya está vigente. En el siguiente enlace encontrará su guía de uso y reclamos, con los pasos para cada situación y los documentos que pueda necesitar:\n\n" + link + "\n\nGuárdelo en favoritos para tenerlo siempre a mano.\n\nQuedo atento a cualquier consulta.\n" + ((agenteActual && agenteActual.nombre) || "");
-          const to = (p.cliente.email || "");
-          const gmailUrl = "https://mail.google.com/mail/?view=cm&fs=1&to=" + encodeURIComponent(to) + "&su=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(cuerpo);
           persistir(linkCP);
-          window.open(gmailUrl, '_blank');
           bg.remove();
+          openEmailGuiaPreviewModal({ to, html, subject, link });
         }
       });
     }
