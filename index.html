@@ -2225,15 +2225,15 @@
             </div>
             <button class="x" data-action="cancel-email-modal" title="Cerrar">×</button>
           </div>
-          <div class="email-modal-hint" style="background:#FFF4D6;border-color:#E8C97A;">
-            <strong>⚠ Adjuntar antes de enviar (en orden):</strong>
-            <ol style="margin:6px 0 0;padding-left:22px;line-height:1.7;">${adjuntosHtml}</ol>
-            <p style="margin:8px 0 0;color:#7A5B0E;">El cliente recibe la guía de reclamos en el cuerpo del correo; los formularios van como archivos para que los llene cuando los necesite.</p>
+          <div class="email-modal-hint">
+            <strong>📎 Adjunte los documentos del cliente</strong> con <strong>➕ Adjuntar PDF</strong> (abajo) antes de enviar: las Condiciones Particulares y demás documentos de emisión que le pasó el INS. Se mandan dentro del mismo correo.
+            <p style="margin:8px 0 0;color:var(--ink-3);">¿Necesita los formularios en blanco del INS? Descárguelos aquí:</p>
+            <ul style="margin:4px 0 0;padding-left:22px;line-height:1.7;">${adjuntosHtml}</ul>
           </div>
           <div class="email-modal-actions">
             <button class="btn btn-primary" data-action="send-direct">🚀 Enviar ahora desde Gmail</button>
             <button class="btn btn-secondary" data-action="copy-html">📋 Copiar HTML</button>
-            <a class="btn btn-secondary" href="${gmailComposeUrl}" target="_blank">✉ Abrir Gmail manualmente</a>
+            <button class="btn btn-secondary" data-action="open-gmail-manual">✉ Abrir Gmail manualmente</button>
             <button class="btn btn-secondary" data-action="download-eml">💾 Descargar .eml</button>
           </div>
           <div class="email-modal-preview">
@@ -2242,13 +2242,20 @@
         </div>
       `;
       document.body.appendChild(wrap);
+      const adjCtrl = setupAdjuntosControl(wrap.querySelector('.email-modal'));
       wrap.addEventListener('click', e => {
         if(e.target === wrap || e.target.dataset.action === 'cancel-email-modal'){
           wrap.remove();
           return;
         }
         if(e.target.dataset.action === 'send-direct'){
-          enviarEmailDirecto({ to, subject, html, btnEl: e.target });
+          if(!adjCtrl.isReady()){ alert('Espere a que terminen de cargar los archivos adjuntos antes de enviar.'); return; }
+          if(adjCtrl.overLimit()){ alert('Los adjuntos superan los 25 MB que admite Gmail. Quite alguno antes de enviar.'); return; }
+          enviarEmailDirecto({ to, subject, html, attachments: adjCtrl.get(), btnEl: e.target, wrapEl: wrap });
+        }
+        if(e.target.dataset.action === 'open-gmail-manual'){
+          if(adjCtrl.count() > 0 && !confirm('Atención: "Abrir Gmail manualmente" NO adjunta los PDF; tendría que agregarlos a mano en Gmail. Para que se envíen automáticamente use "Enviar ahora desde Gmail".\n\n¿Abrir Gmail de todos modos (sin adjuntos)?')) return;
+          window.open(gmailComposeUrl, '_blank');
         }
         if(e.target.dataset.action === 'copy-html'){
           navigator.clipboard.writeText(html).then(
@@ -2257,7 +2264,16 @@
           );
         }
         if(e.target.dataset.action === 'download-eml'){
-          const eml = `To: ${to}\r\nSubject: ${subject}\r\nMIME-Version: 1.0\r\nContent-Type: text/html; charset=UTF-8\r\n\r\n${html}`;
+          // Si hay adjuntos, el .eml descargado los incluye (multipart/mixed),
+          // para que abra completo en Outlook/Apple Mail.
+          const att = adjCtrl.get();
+          let eml;
+          if(att.length){
+            const from = (agenteActual && agenteActual.email) ? ('"' + agenteActual.nombre + '" <' + agenteActual.email + '>') : to;
+            eml = buildRawMimeMultipart({ to, from, subject, html, attachments: att });
+          } else {
+            eml = `To: ${to}\r\nSubject: ${subject}\r\nMIME-Version: 1.0\r\nContent-Type: text/html; charset=UTF-8\r\n\r\n${html}`;
+          }
           const blob = new Blob([eml], { type: 'message/rfc822' });
           const url = URL.createObjectURL(blob);
           const a = document.createElement('a');
@@ -2268,7 +2284,7 @@
     }
 
     // Preview + envío del correo "Guía de uso y reclamos" (HTML con botón).
-    // Versión liviana: no lleva adjuntos (todo vive en la guía web).
+    // Permite adjuntar PDF (Condiciones Particulares, documentos de emisión).
     function openEmailGuiaPreviewModal({ to, html, subject, link }){
       const gmailComposeUrl = "https://mail.google.com/mail/?view=cm&fs=1"
         + "&to=" + encodeURIComponent(to)
@@ -2289,12 +2305,12 @@
             <button class="x" data-action="cancel-email-modal" title="Cerrar">×</button>
           </div>
           <div class="email-modal-hint">
-            El cliente recibe un <strong>botón limpio</strong> que abre su guía; ya no ve el link largo. Recomendado: <strong>Enviar ahora desde Gmail</strong>. La opción "Abrir Gmail manualmente" envía el link como texto (sin botón).
+            El cliente recibe un <strong>botón limpio</strong> que abre su guía; ya no ve el link largo. Recomendado: <strong>Enviar ahora desde Gmail</strong> (es la única opción que incluye los adjuntos). "Abrir Gmail manualmente" envía solo el link como texto, sin botón ni adjuntos.
           </div>
           <div class="email-modal-actions">
             <button class="btn btn-primary" data-action="send-direct">🚀 Enviar ahora desde Gmail</button>
             <button class="btn btn-secondary" data-action="copy-html">📋 Copiar HTML</button>
-            <a class="btn btn-secondary" href="${gmailComposeUrl}" target="_blank">✉ Abrir Gmail manualmente</a>
+            <button class="btn btn-secondary" data-action="open-gmail-manual">✉ Abrir Gmail manualmente</button>
           </div>
           <div class="email-modal-preview">
             <iframe srcdoc="${escapeAttr(html)}" sandbox="" loading="lazy"></iframe>
@@ -2302,11 +2318,18 @@
         </div>
       `;
       document.body.appendChild(wrap);
+      const adjCtrl = setupAdjuntosControl(wrap.querySelector('.email-modal'));
       wrap.addEventListener('click', e => {
         const action = e.target.dataset.action;
         if(e.target === wrap || action === 'cancel-email-modal'){ wrap.remove(); return; }
         if(action === 'send-direct'){
-          enviarEmailDirecto({ to, subject, html, btnEl: e.target });
+          if(!adjCtrl.isReady()){ alert('Espere a que terminen de cargar los archivos adjuntos antes de enviar.'); return; }
+          if(adjCtrl.overLimit()){ alert('Los adjuntos superan los 25 MB que admite Gmail. Quite alguno antes de enviar.'); return; }
+          enviarEmailDirecto({ to, subject, html, attachments: adjCtrl.get(), btnEl: e.target, wrapEl: wrap });
+        }
+        if(action === 'open-gmail-manual'){
+          if(adjCtrl.count() > 0 && !confirm('Atención: "Abrir Gmail manualmente" NO adjunta los PDF ni el botón; solo envía el link como texto. Para incluir los adjuntos use "Enviar ahora desde Gmail".\n\n¿Abrir Gmail de todos modos (sin adjuntos)?')) return;
+          window.open(gmailComposeUrl, '_blank');
         }
         if(action === 'copy-html'){
           navigator.clipboard.writeText(html).then(
@@ -2389,9 +2412,10 @@
         'Subject: '      + sub64             + CRLF +
         'MIME-Version: 1.0'                  + CRLF +
         'Content-Type: text/html; charset=UTF-8' + CRLF +
-        'Content-Transfer-Encoding: 7bit'    + CRLF +
+        'Content-Transfer-Encoding: base64'  + CRLF +
+        'Content-Disposition: inline'        + CRLF +
         CRLF +
-        html;
+        _chunk76(btoa(unescape(encodeURIComponent(html))));
       return _base64UrlEncode(message);
     }
 
@@ -2413,8 +2437,87 @@
       return '=?UTF-8?B?' + btoa(unescape(encodeURIComponent(name))) + '?= ' + email;
     }
 
+    // Inserta CRLF cada 76 caracteres (RFC 2045) en un string base64.
+    function _chunk76(b64){
+      return b64.replace(/.{1,76}/g, '$&\r\n').replace(/\r\n$/, '');
+    }
+
+    // Codifica el nombre de archivo para los headers name= / filename=.
+    // ASCII → quoted-string (escapando \ y "); con acentos/ñ → RFC 2231.
+    function _encodeFilenameParams(name){
+      let safe = String(name == null ? 'documento.pdf' : name).replace(/[\r\n]+/g, ' ').trim();
+      if(!safe) safe = 'documento.pdf';
+      // Cap defensivo de longitud preservando la extensión (cabeceras acotadas).
+      if(safe.length > 200){
+        const dot = safe.lastIndexOf('.');
+        const ext = (dot > 0 && safe.length - dot <= 8) ? safe.slice(dot) : '';
+        safe = safe.slice(0, 200 - ext.length) + ext;
+      }
+      if(/^[\x20-\x7E]*$/.test(safe)){
+        const q = safe.replace(/([\\"])/g, '\\$1'); // quoted-pair correcto para \ y "
+        return { ct: 'name="' + q + '"', cd: 'filename="' + q + '"' };
+      }
+      // RFC 2231 ext-value: encodeURIComponent deja crudos ' ( ) * → percent-encode.
+      const enc = encodeURIComponent(safe).replace(/['()*]/g, c => '%' + c.charCodeAt(0).toString(16).toUpperCase());
+      return { ct: "name*=UTF-8''" + enc, cd: "filename*=UTF-8''" + enc };
+    }
+
+    // Saneamiento del media-type (evita inyección de cabeceras vía CRLF y tipos inválidos).
+    function _sanitizeMimeType(mt){
+      const s = String(mt || '').replace(/[\r\n]/g, '').trim();
+      return /^[\w.+-]+\/[\w.+-]+$/.test(s) ? s : 'application/octet-stream';
+    }
+
+    // Arma el STRING MIME multipart/mixed: cuerpo HTML + N adjuntos en base64.
+    // attachments: [{ filename, mimeType, base64, size }]
+    // Todo queda en ASCII (HTML y adjuntos van en base64). Lo usan tanto el
+    // envío por Gmail API (vía base64url) como la descarga de .eml.
+    function buildRawMimeMultipart({ to, from, subject, html, attachments }){
+      const CRLF = '\r\n';
+      // El prefijo '=_Vital360_' (con '_' y '=') no puede aparecer al inicio de
+      // una línea base64, por lo que el boundary nunca colisiona con el contenido.
+      const boundary = '=_Vital360_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 11);
+      const sub64    = _encodeRFC2047(subject);
+      const fromEnc  = _encodeFromHeader(from);
+      const htmlB64  = _chunk76(btoa(unescape(encodeURIComponent(html))));
+
+      let message =
+        'From: '            + fromEnc + CRLF +
+        'To: '              + to      + CRLF +
+        'Subject: '         + sub64   + CRLF +
+        'MIME-Version: 1.0' + CRLF +
+        'Content-Type: multipart/mixed; boundary="' + boundary + '"' + CRLF +
+        CRLF +
+        'Mensaje en formato MIME de varias partes.' + CRLF +
+        CRLF +
+        '--' + boundary + CRLF +
+        'Content-Type: text/html; charset=UTF-8' + CRLF +
+        'Content-Transfer-Encoding: base64'      + CRLF +
+        'Content-Disposition: inline'            + CRLF +
+        CRLF +
+        htmlB64 + CRLF + CRLF;
+
+      (attachments || []).forEach(att => {
+        const fp = _encodeFilenameParams(att.filename);
+        message +=
+          '--' + boundary + CRLF +
+          'Content-Type: ' + _sanitizeMimeType(att.mimeType) + '; ' + fp.ct + CRLF +
+          'Content-Transfer-Encoding: base64'              + CRLF +
+          'Content-Disposition: attachment; ' + fp.cd       + CRLF +
+          CRLF +
+          _chunk76(att.base64) + CRLF + CRLF;
+      });
+
+      message += '--' + boundary + '--' + CRLF;
+      return message;
+    }
+
+    function buildMimeVital360WithAttachments(args){
+      return _base64UrlEncode(buildRawMimeMultipart(args));
+    }
+
     // Acción principal: arma MIME, obtiene token (popup si necesario) y envía.
-    async function enviarEmailDirecto({ to, subject, html, btnEl }){
+    async function enviarEmailDirecto({ to, subject, html, attachments, btnEl, wrapEl }){
       const oauthSinSetup = GOOGLE_CLIENT_ID.startsWith('REEMPLAZAR');
       if(oauthSinSetup){
         alert('Para enviar directo desde Gmail, primero configurá el Google OAuth Client ID en index.html y agregale el scope gmail.send en Google Cloud Console.');
@@ -2424,17 +2527,21 @@
         alert('Sesión Gmail no inicializada. Vuelva a entrar.');
         return;
       }
+      const nAdj = (attachments && attachments.length) || 0;
       const originalText = btnEl ? btnEl.textContent : '';
       if(btnEl){ btnEl.disabled = true; btnEl.textContent = '⏳ Conectando con Gmail…'; }
       try {
         await getGmailToken();
-        if(btnEl) btnEl.textContent = '✉ Enviando…';
+        if(btnEl) btnEl.textContent = nAdj ? ('✉ Enviando con ' + nAdj + (nAdj === 1 ? ' adjunto…' : ' adjuntos…')) : '✉ Enviando…';
         const from = '"' + agenteActual.nombre + '" <' + agenteActual.email + '>';
-        const raw = buildMimeVital360({ to, from, subject, html });
+        const raw = nAdj
+          ? buildMimeVital360WithAttachments({ to, from, subject, html, attachments })
+          : buildMimeVital360({ to, from, subject, html });
         const resp = await sendGmailRaw(raw);
         if(btnEl){ btnEl.textContent = '✓ Enviado · ID ' + (resp.id || 'ok'); btnEl.classList.add('ok'); }
-        // Cerrar el modal después de 1.5s
+        // Cerrar el modal después de 1.5s (usa la referencia capturada, no el id duplicado)
         setTimeout(() => {
+          if(wrapEl && wrapEl.remove) { wrapEl.remove(); return; }
           const bg = document.getElementById('email-modal-bg');
           if(bg) bg.remove();
         }, 1500);
@@ -2443,6 +2550,132 @@
         alert('No se pudo enviar: ' + e.message);
         if(btnEl){ btnEl.disabled = false; btnEl.textContent = originalText; }
       }
+    }
+
+    // =====================================================================
+    // Adjuntos de correo · selector de archivos (PDF) desde la computadora
+    // =====================================================================
+
+    // Lee un File como base64 (sin el prefijo data:...;base64,).
+    function _leerArchivoBase64(file){
+      return new Promise((resolve, reject) => {
+        const r = new FileReader();
+        r.onload = () => {
+          const res = String(r.result || '');
+          const comma = res.indexOf(',');
+          resolve(comma >= 0 ? res.slice(comma + 1) : res);
+        };
+        r.onerror = () => reject(r.error || new Error('No se pudo leer ' + file.name));
+        r.readAsDataURL(file);
+      });
+    }
+
+    function _fmtPeso(bytes){
+      if(bytes >= 1048576) return (bytes / 1048576).toFixed(1) + ' MB';
+      if(bytes >= 1024)    return Math.round(bytes / 1024) + ' KB';
+      return bytes + ' B';
+    }
+
+    // Inserta el control de adjuntos dentro de un modal de correo, encima de
+    // los botones de acción. Devuelve { get(), count(), overLimit(), isReady() }.
+    function setupAdjuntosControl(modalEl){
+      const MAX_TOTAL = 25 * 1024 * 1024; // límite práctico Gmail (25 MB)
+      const adjuntos = []; // { filename, mimeType, base64, size }
+      let leyendo = 0;     // lecturas de FileReader en curso
+
+      const box = document.createElement('div');
+      box.className = 'adjuntos-box';
+      box.style.cssText = 'padding:11px 18px;border-top:1px solid #EBEDEE;background:#FAFBFB;';
+      box.innerHTML = `
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+          <button type="button" class="btn btn-secondary" data-adj="pick" style="margin:0;">➕ Adjuntar PDF</button>
+          <span data-adj="resumen" style="font-size:12px;color:var(--ink-3);line-height:1.4;">Sin archivos adjuntos</span>
+          <input type="file" data-adj="input" accept="application/pdf,.pdf" multiple style="display:none;">
+        </div>
+        <div data-adj="lista" style="margin-top:8px;display:flex;flex-direction:column;gap:5px;"></div>
+      `;
+      const anchor = modalEl.querySelector('.email-modal-actions') || modalEl.querySelector('.email-modal-preview');
+      if(anchor) anchor.parentNode.insertBefore(box, anchor);
+      else modalEl.appendChild(box);
+
+      const input   = box.querySelector('[data-adj="input"]');
+      const lista   = box.querySelector('[data-adj="lista"]');
+      const resumen = box.querySelector('[data-adj="resumen"]');
+      // Botón de envío del modal: se bloquea mientras hay lecturas en curso para
+      // evitar enviar el correo sin un adjunto que todavía no terminó de leerse.
+      const sendBtn      = modalEl.querySelector('[data-action="send-direct"]');
+      const sendBtnLabel = sendBtn ? sendBtn.textContent : '';
+
+      function totalBytes(){ return adjuntos.reduce((s, a) => s + a.size, 0); }
+
+      function syncSendBtn(){
+        if(!sendBtn) return;
+        sendBtn.disabled = leyendo > 0;
+        sendBtn.textContent = leyendo > 0 ? '⏳ Cargando adjuntos…' : sendBtnLabel;
+      }
+
+      function render(){
+        if(leyendo > 0){
+          resumen.innerHTML = '⏳ Leyendo ' + leyendo + (leyendo === 1 ? ' archivo…' : ' archivos…');
+          resumen.style.color = 'var(--ins-teal-deep)';
+        } else if(!adjuntos.length){
+          resumen.textContent = 'Sin archivos adjuntos';
+          resumen.style.color = 'var(--ink-3)';
+        } else {
+          const total = totalBytes();
+          const over  = total > MAX_TOTAL;
+          resumen.innerHTML = adjuntos.length + (adjuntos.length === 1 ? ' archivo · ' : ' archivos · ') + _fmtPeso(total)
+            + (over ? ' <strong style="color:#C0392B;">· supera 25 MB, quite alguno</strong>' : '');
+          resumen.style.color = over ? '#C0392B' : 'var(--ins-teal-deep)';
+        }
+        lista.innerHTML = adjuntos.map((a, i) =>
+          `<div style="display:flex;align-items:center;gap:8px;font-size:12px;background:#fff;border:1px solid var(--line);border-radius:4px;padding:5px 9px;">
+            <span style="flex:1;min-width:0;color:#0E2127;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">📄 ${escapeHtml(a.filename)}</span>
+            <span style="color:var(--ink-3);font-family:'IBM Plex Mono';white-space:nowrap;">${_fmtPeso(a.size)}</span>
+            <button type="button" data-adj-del="${i}" title="Quitar" style="border:0;background:none;color:#C0392B;cursor:pointer;font-size:16px;line-height:1;padding:0 2px;">×</button>
+          </div>`
+        ).join('');
+      }
+
+      box.addEventListener('click', e => {
+        if(e.target.closest('[data-adj="pick"]')){ input.click(); return; }
+        const delBtn = e.target.closest('[data-adj-del]');
+        if(delBtn){ adjuntos.splice(parseInt(delBtn.dataset.adjDel, 10), 1); render(); }
+      });
+
+      input.addEventListener('change', async () => {
+        const files = Array.from(input.files || []);
+        input.value = ''; // permite re-seleccionar el mismo archivo
+        for(const f of files){
+          // Coherencia de tipo: cualquier .pdf se manda como application/pdf
+          // (no dependemos de f.type, que puede llegar vacío o genérico).
+          const mime = /\.pdf$/i.test(f.name) ? 'application/pdf' : (f.type || 'application/octet-stream');
+          // Guard de tamaño ANTES de leer: no materializamos en memoria algo que
+          // de todos modos no se podría enviar.
+          if(f.size > MAX_TOTAL || (totalBytes() + f.size) > MAX_TOTAL){
+            alert('"' + f.name + '" (' + _fmtPeso(f.size) + ') haría superar el límite de 25 MB de Gmail. No se adjuntó.');
+            continue;
+          }
+          leyendo++; syncSendBtn(); render();
+          try {
+            const base64 = await _leerArchivoBase64(f);
+            adjuntos.push({ filename: f.name, mimeType: mime, base64, size: f.size });
+          } catch(err){
+            alert('No se pudo adjuntar ' + f.name + ': ' + err.message);
+          } finally {
+            leyendo--; syncSendBtn();
+          }
+          render();
+        }
+      });
+
+      render();
+      return {
+        get: () => adjuntos.slice(),
+        count: () => adjuntos.length,
+        overLimit: () => totalBytes() > MAX_TOTAL,
+        isReady: () => leyendo === 0
+      };
     }
 
     function openEmailPreviewModal({ to, html, payload }){
