@@ -624,7 +624,7 @@
     // Fuente: folletos oficiales INS — Coberturas y Planes, Primas Anuales
     // =====================================================================
 
-    const TARIFAS_VERSION = "INS-2026-mayo";
+    const TARIFAS_VERSION = "INS-2026";
 
     // Los 7 planes, ordenados por ámbito
     const PLANES = [
@@ -646,39 +646,39 @@
     ];
 
     // Tabla de primas anuales USD — primas[rango][plan_id]
-    // Fuente: Primas.pdf · folleto oficial INS dólares
+    // Fuente: docs/Primas en Dolares 2026.pdf · tabla oficial INS 2026 (con centavos exactos)
     const PRIMAS_USD = {
-      "0-25":  { esencial1: 334,   esencial2: 353,   pro1: 445,   pro2: 682,   platinum1: 855,   platinum2: 1174, deluxe: 1176 },
-      "26-29": { esencial1: 478,   esencial2: 504,   pro1: 632,   pro2: 968,   platinum1: 1035,  platinum2: 1421, deluxe: 1541 },
-      "30-34": { esencial1: 568,   esencial2: 599,   pro1: 758,   pro2: 1114,  platinum1: 1190,  platinum2: 1492, deluxe: 1618 },
-      "35-39": { esencial1: 675,   esencial2: 712,   pro1: 910,   pro2: 1270,  platinum1: 1356,  platinum2: 1521, deluxe: 1666 },
-      "40-44": { esencial1: 731,   esencial2: 771,   pro1: 1001,  pro2: 1384,  platinum1: 1492,  platinum2: 1613, deluxe: 1799 },
-      "45-49": { esencial1: 836,   esencial2: 882,   pro1: 1151,  pro2: 1508,  platinum1: 1641,  platinum2: 1726, deluxe: 1925 },
-      "50-54": { esencial1: 965,   esencial2: 1018,  pro1: 1347,  pro2: 1644,  platinum1: 1772,  platinum2: 1898, deluxe: 2060 },
-      "55-59": { esencial1: 1153,  esencial2: 1216,  pro1: 1616,  pro2: 1792,  platinum1: 1914,  platinum2: 2088, deluxe: 2349 },
-      "60-64": { esencial1: 1436,  esencial2: 1513,  pro1: 2020,  pro2: 2330,  platinum1: 2469,  platinum2: 2547, deluxe: 2818 },
-      "65-69": { esencial1: 1859,  esencial2: 1959,  pro1: 2626,  pro2: 2889,  platinum1: 3013,  platinum2: 3133, deluxe: 3664 },
-      "70-75": { esencial1: 2425,  esencial2: 2554,  pro1: 3677,  pro2: 4045,  platinum1: 4127,  platinum2: 4386, deluxe: 4946 },
-      "76-80": { esencial1: 3404,  esencial2: 3586,  pro1: 5515,  pro2: 5865,  platinum1: 5943,  platinum2: 6229, deluxe: 6430 },
-      "81+":   { esencial1: 4775,  esencial2: 5029,  pro1: 8272,  pro2: 8797,  platinum1: 8855,  platinum2: 9281, deluxe: 9645 }
+      "0-25":  { esencial1: 384.10,   esencial2: 405.95,   pro1: 489.50,   pro2: 750.20,   platinum1: 940.50,   platinum2: 1350.10,  deluxe: 1352.40 },
+      "26-29": { esencial1: 549.70,   esencial2: 579.60,   pro1: 695.20,   pro2: 1064.80,  platinum1: 1138.50,  platinum2: 1634.15,  deluxe: 1772.15 },
+      "30-34": { esencial1: 653.20,   esencial2: 688.85,   pro1: 833.80,   pro2: 1225.40,  platinum1: 1309.00,  platinum2: 1715.80,  deluxe: 1860.70 },
+      "35-39": { esencial1: 776.25,   esencial2: 818.80,   pro1: 1001.00,  pro2: 1397.00,  platinum1: 1491.60,  platinum2: 1749.15,  deluxe: 1915.90 },
+      "40-44": { esencial1: 840.65,   esencial2: 886.65,   pro1: 1101.10,  pro2: 1522.40,  platinum1: 1641.20,  platinum2: 1854.95,  deluxe: 2068.85 },
+      "45-49": { esencial1: 961.40,   esencial2: 1014.30,  pro1: 1266.10,  pro2: 1658.80,  platinum1: 1805.10,  platinum2: 1984.90,  deluxe: 2213.75 },
+      "50-54": { esencial1: 1109.75,  esencial2: 1170.70,  pro1: 1481.70,  pro2: 1808.40,  platinum1: 1949.20,  platinum2: 2182.70,  deluxe: 2369.00 },
+      "55-59": { esencial1: 1325.95,  esencial2: 1398.40,  pro1: 1777.60,  pro2: 1971.20,  platinum1: 2105.40,  platinum2: 2401.20,  deluxe: 2701.35 },
+      "60-64": { esencial1: 1651.40,  esencial2: 1739.95,  pro1: 2222.00,  pro2: 2563.00,  platinum1: 2715.90,  platinum2: 2929.05,  deluxe: 3240.70 },
+      "65-69": { esencial1: 2137.85,  esencial2: 2252.85,  pro1: 2888.60,  pro2: 3177.90,  platinum1: 3314.30,  platinum2: 3602.95,  deluxe: 4213.60 },
+      "70-75": { esencial1: 2788.75,  esencial2: 2937.10,  pro1: 4044.70,  pro2: 4449.50,  platinum1: 4539.70,  platinum2: 5043.90,  deluxe: 5687.90 },
+      "76-80": { esencial1: 3914.60,  esencial2: 4123.90,  pro1: 6066.50,  pro2: 6451.50,  platinum1: 6537.30,  platinum2: 7163.35,  deluxe: 7394.50 },
+      "81+":   { esencial1: 5491.25,  esencial2: 5783.35,  pro1: 9099.20,  pro2: 9676.70,  platinum1: 9740.50,  platinum2: 10673.15, deluxe: 11091.75 }
     };
 
     // Tabla de primas anuales CRC — primas[rango][plan_id]
-    // Fuente: Primas.pdf · folleto oficial INS colones
+    // Fuente: docs/Primas en Colones 2026.pdf · tabla oficial INS 2026
     const PRIMAS_CRC = {
-      "0-25":  { esencial1: 183868,  esencial2: 194304,  pro1: 244750,  pro2: 375100,   platinum1: 470250,   platinum2: 645700,   deluxe: 646800 },
-      "26-29": { esencial1: 262745,  esencial2: 277356,  pro1: 347545,  pro2: 532642,   platinum1: 569003,   platinum2: 781297,   deluxe: 847308 },
-      "30-34": { esencial1: 312438,  esencial2: 329679,  pro1: 417054,  pro2: 612538,   platinum1: 654353,   platinum2: 820362,   deluxe: 889673 },
-      "35-39": { esencial1: 371076,  esencial2: 391420,  pro1: 500465,  pro2: 698294,   platinum1: 745962,   platinum2: 836769,   deluxe: 916364 },
-      "40-44": { esencial1: 401828,  esencial2: 423800,  pro1: 550511,  pro2: 761140,   platinum1: 820559,   platinum2: 886975,   deluxe: 989673 },
-      "45-49": { esencial1: 459950,  esencial2: 484998,  pro1: 633088,  pro2: 829643,   platinum1: 902614,   platinum2: 949063,   deluxe: 1058950 },
-      "50-54": { esencial1: 530941,  esencial2: 559746,  pro1: 740713,  pro2: 904311,   platinum1: 974824,   platinum2: 1043970,  deluxe: 1133076 },
-      "55-59": { esencial1: 634352,  esencial2: 668630,  pro1: 888856,  pro2: 985698,   platinum1: 1052809,  platinum2: 1148367,  deluxe: 1291707 },
-      "60-64": { esencial1: 789794,  esencial2: 832299,  pro1: 1111069, pro2: 1281408,  platinum1: 1358124,  platinum2: 1401008,  deluxe: 1550048 },
-      "65-69": { esencial1: 1022699, esencial2: 1077530, pro1: 1444390, pro2: 1588946,  platinum1: 1656911,  platinum2: 1723239,  deluxe: 2015063 },
-      "70-75": { esencial1: 1333506, esencial2: 1404787, pro1: 2022146, pro2: 2224524,  platinum1: 2269969,  platinum2: 2412535,  deluxe: 2720335 },
-      "76-80": { esencial1: 1872239, esencial2: 1972033, pro1: 3033219, pro2: 3225560,  platinum1: 3268755,  platinum2: 3425800,  deluxe: 3536435 },
-      "81+":   { esencial1: 2626466, esencial2: 2766176, pro1: 4549829, pro2: 4838340,  platinum1: 4870445,  platinum2: 5104442,  deluxe: 5304653 }
+      "0-25":  { esencial1: 211448,  esencial2: 223449,  pro1: 269225,  pro2: 412610,   platinum1: 517275,   platinum2: 742555,   deluxe: 743820 },
+      "26-29": { esencial1: 302156,  esencial2: 318959,  pro1: 382299,  pro2: 585906,   platinum1: 625903,   platinum2: 898491,   deluxe: 974404 },
+      "30-34": { esencial1: 359303,  esencial2: 379130,  pro1: 458759,  pro2: 673791,   platinum1: 719788,   platinum2: 943416,   deluxe: 1023123 },
+      "35-39": { esencial1: 426737,  esencial2: 450133,  pro1: 550511,  pro2: 768123,   platinum1: 820558,   platinum2: 962284,   deluxe: 1053818 },
+      "40-44": { esencial1: 462102,  esencial2: 487370,  pro1: 605562,  pro2: 837254,   platinum1: 902614,   platinum2: 1020021,  deluxe: 1138123 },
+      "45-49": { esencial1: 528942,  esencial2: 557747,  pro1: 696396,  pro2: 912607,   platinum1: 992875,   platinum2: 1091422,  deluxe: 1217792 },
+      "50-54": { esencial1: 610582,  esencial2: 643707,  pro1: 814784,  pro2: 994742,   platinum1: 1072306,  platinum2: 1200565,  deluxe: 1303037 },
+      "55-59": { esencial1: 729504,  esencial2: 768924,  pro1: 977741,  pro2: 1084267,  platinum1: 1158089,  platinum2: 1320622,  deluxe: 1485463 },
+      "60-64": { esencial1: 908263,  esencial2: 957143,  pro1: 1222175, pro2: 1409548,  platinum1: 1493936,  platinum2: 1611159,  deluxe: 1782555 },
+      "65-69": { esencial1: 1176103, esencial2: 1239159, pro1: 1588829, pro2: 1747840,  platinum1: 1822602,  platinum2: 1981724,  deluxe: 2317322 },
+      "70-75": { esencial1: 1533531, esencial2: 1615505, pro1: 2224360, pro2: 2446976,  platinum1: 2496965,  platinum2: 2774415,  deluxe: 3128385 },
+      "76-80": { esencial1: 2153074, esencial2: 2267837, pro1: 3336540, pro2: 3548116,  platinum1: 3595630,  platinum2: 3939670,  deluxe: 4066900 },
+      "81+":   { esencial1: 3020435, esencial2: 3181102, pro1: 5004811, pro2: 5322174,  platinum1: 5357489,  platinum2: 5870108,  deluxe: 6100350 }
     };
 
     // Coberturas por plan — sublímites en USD y CRC. 'NA' = no aplica.
@@ -3844,8 +3844,8 @@
       console.assert(RANGOS_EDAD.length === 13, '[smoke] RANGOS_EDAD debe tener 13 elementos');
       console.assert(Object.keys(PRIMAS_USD).length === 13, '[smoke] PRIMAS_USD debe tener 13 rangos');
       console.assert(Object.keys(PRIMAS_CRC).length === 13, '[smoke] PRIMAS_CRC debe tener 13 rangos');
-      console.assert(PRIMAS_USD["40-44"].pro1 === 1001, '[smoke] prima USD 40-44 Pro 1 debe ser 1001');
-      console.assert(PRIMAS_CRC["40-44"].pro1 === 550511, '[smoke] prima CRC 40-44 Pro 1 debe ser 550511');
+      console.assert(PRIMAS_USD["40-44"].pro1 === 1101.10, '[smoke] prima USD 40-44 Pro 1 debe ser 1101.10');
+      console.assert(PRIMAS_CRC["40-44"].pro1 === 605562, '[smoke] prima CRC 40-44 Pro 1 debe ser 605562');
       console.assert(RECARGOS.semestral.CRC === 0.05, '[smoke] recargo semestral CRC = 5 %');
       console.assert(IVA_PCT === 0.02, '[smoke] IVA = 2 %');
       console.assert(!RECARGOS.mensual, '[smoke] NO debe existir RECARGOS.mensual');
@@ -3859,17 +3859,17 @@
       console.assert(rangoEdad(85) === "81+",   '[smoke] rangoEdad(85)');
 
       // Sección 2 · primaIndividual
-      console.assert(primaIndividual("pro1","USD",42) === 1001,   '[smoke] primaIndividual USD 42 pro1');
-      console.assert(primaIndividual("pro1","CRC",42) === 550511, '[smoke] primaIndividual CRC 42 pro1');
+      console.assert(primaIndividual("pro1","USD",42) === 1101.10, '[smoke] primaIndividual USD 42 pro1');
+      console.assert(primaIndividual("pro1","CRC",42) === 605562,  '[smoke] primaIndividual CRC 42 pro1');
 
       // Sección 2 · primaFamiliar (familia ejemplo del spec: 42, 39, 12, 8)
       const familia = [{edad:42},{edad:39},{edad:12},{edad:8}];
       const familiarPro1USD = primaFamiliar("pro1","USD",familia);
       const familiarPro1CRC = primaFamiliar("pro1","CRC",familia);
-      // 1001 + 910 + 445 + 445 = 2801 USD
-      console.assert(familiarPro1USD === 2801, '[smoke] familia 42·39·12·8 pro1 USD = 2801, got ' + familiarPro1USD);
-      // 550511 + 500465 + 244750 + 244750 = 1540476 CRC
-      console.assert(familiarPro1CRC === 1540476, '[smoke] familia 42·39·12·8 pro1 CRC = 1540476, got ' + familiarPro1CRC);
+      // 1101.10 + 1001.00 + 489.50 + 489.50 = 3081.10 USD (tolerancia por suma de decimales)
+      console.assert(Math.abs(familiarPro1USD - 3081.10) < 0.005, '[smoke] familia 42·39·12·8 pro1 USD = 3081.10, got ' + familiarPro1USD);
+      // 605562 + 550511 + 269225 + 269225 = 1694523 CRC
+      console.assert(familiarPro1CRC === 1694523, '[smoke] familia 42·39·12·8 pro1 CRC = 1694523, got ' + familiarPro1CRC);
 
       // Sección 2 · recargos
       const totSem = totalConRecargo("semestral","CRC",1000000);
