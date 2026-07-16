@@ -154,6 +154,19 @@
     .hist-filter button{padding:6px 12px;background:transparent;border:1px solid var(--line);color:var(--ink-2);border-radius:4px;font-family:inherit;font-size:12.5px;cursor:pointer;font-weight:500}
     .hist-filter button.on{background:var(--ins-teal);color:#fff;border-color:var(--ins-teal)}
     .hist-empty{padding:80px 40px;text-align:center;color:var(--ink-3);font-family:"IBM Plex Serif";font-size:16px;font-style:italic;background:var(--paper);border:1px dashed var(--line);border-radius:8px}
+
+    /* Banda de respaldo / recuperación del historial */
+    .hist-backup{display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap;padding:14px 18px;margin-bottom:18px;background:var(--cream);border:1px solid var(--line);border-left:3px solid var(--ins-gold);border-radius:0 6px 6px 0}
+    .hist-backup .hb-txt{font-size:12px;color:var(--ink-2);line-height:1.55;max-width:74ch}
+    .hist-backup .hb-txt strong{display:block;color:var(--ink);font-weight:600;font-size:12.5px;margin-bottom:2px}
+    .hist-backup .hb-btns{display:flex;gap:8px;flex-wrap:wrap;flex-shrink:0}
+    .hist-backup button{padding:8px 13px;border:1px solid var(--line);background:var(--paper);color:var(--ink-2);border-radius:4px;font-family:inherit;font-size:12.5px;font-weight:600;cursor:pointer;white-space:nowrap}
+    .hist-backup button:hover{border-color:var(--ink-3);color:var(--ink)}
+    .hist-backup button:disabled{opacity:.55;cursor:progress}
+    .hist-backup .hb-exp{background:var(--ins-gold);color:#fff;border-color:var(--ins-gold)}
+    .hist-backup .hb-exp:hover{background:#A67120;border-color:#A67120;color:#fff}
+    .hist-backup .hb-rec{background:var(--ins-teal);color:#fff;border-color:var(--ins-teal)}
+    .hist-backup .hb-rec:hover{background:var(--ins-teal-deep);border-color:var(--ins-teal-deep);color:#fff}
     .hist-table{width:100%;border-collapse:collapse;background:var(--paper);border:1px solid var(--line);border-radius:6px;overflow:hidden;font-size:13px}
     .hist-table thead th{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-3);padding:11px 14px;text-align:left;background:var(--cream);border-bottom:1px solid var(--line);white-space:nowrap}
     .hist-table tbody td{padding:13px 14px;border-bottom:1px solid var(--line-2);vertical-align:middle}
@@ -823,6 +836,15 @@
     // Gmail API — para envío directo desde el browser (mismo patrón que cotizador-autos)
     const GMAIL_SCOPE    = "https://www.googleapis.com/auth/gmail.send";
     const GMAIL_SEND_URL = "https://gmail.googleapis.com/gmail/v1/users/me/messages/send";
+
+    // Gmail API — solo lectura, para reconstruir el historial desde los correos enviados.
+    // Scope pedido por AUTORIZACIÓN INCREMENTAL: la app opera siempre con gmail.send; este
+    // permiso se solicita únicamente cuando el agente pulsa "Recuperar desde Gmail", y no
+    // se guarda ni se reutiliza para nada más.
+    const GMAIL_READ_SCOPE = "https://www.googleapis.com/auth/gmail.readonly";
+    const GMAIL_LIST_URL   = "https://gmail.googleapis.com/gmail/v1/users/me/messages";
+    // Los 3 asuntos que emite la app contienen "Vital 360", por eso basta un solo query.
+    const GMAIL_QUERY_REC  = 'in:sent subject:"Vital 360"';
 
     // =====================================================================
     // Sección 2: Cálculos de prima
@@ -2389,6 +2411,47 @@
 
     function clearGmailToken(){ _gmailAccessToken = null; }
 
+    // ---- Token de SOLO LECTURA (autorización incremental) --------------------
+    // Cliente OAuth aparte, con su propio scope. Nunca se pide al iniciar sesión:
+    // solo cuando el agente ejecuta la recuperación del historial. El token vive en
+    // memoria y se descarta al terminar (ver recuperarDesdeGmail).
+    let _gmailReadTokenClient = null;
+
+    function getGmailReadToken(){
+      if(!window.google || !google.accounts || !google.accounts.oauth2){
+        return Promise.reject(new Error('Google Identity Services no está cargado.'));
+      }
+      if(!_gmailReadTokenClient){
+        _gmailReadTokenClient = google.accounts.oauth2.initTokenClient({
+          client_id: GOOGLE_CLIENT_ID,
+          scope:     GMAIL_READ_SCOPE,
+          callback:  function(){}
+        });
+      }
+      return new Promise(function(resolve, reject){
+        _gmailReadTokenClient.callback = function(response){
+          if(response.error){
+            reject(new Error('OAuth: ' + response.error + (response.error_description ? ' — ' + response.error_description : '')));
+            return;
+          }
+          resolve(response.access_token);
+        };
+        try {
+          // prompt 'consent' — el permiso de lectura debe concederse conscientemente.
+          _gmailReadTokenClient.requestAccessToken({ prompt: 'consent' });
+        } catch(e){ reject(e); }
+      });
+    }
+
+    // Revoca el token de lectura apenas termina la recuperación: no queda vigente.
+    function revocarTokenLectura(token){
+      try {
+        if(token && window.google && google.accounts && google.accounts.oauth2){
+          google.accounts.oauth2.revoke(token, function(){});
+        }
+      } catch(e){ console.warn('[vital360] no se pudo revocar el token de lectura', e); }
+    }
+
     async function sendGmailRaw(raw){
       if(!_gmailAccessToken) throw new Error('Falta token Gmail');
       const response = await fetch(GMAIL_SEND_URL, {
@@ -3138,6 +3201,323 @@
       });
     }
 
+    // =====================================================================
+    // Sección 9c: Respaldo y recuperación del historial
+    // =====================================================================
+    // El historial vive en localStorage y cualquier limpiador de disco lo borra
+    // sin aviso (CCleaner, "borrar datos de navegación"). Dos vías lo devuelven:
+    //   1. Exportar/Importar JSON — respaldo manual.
+    //   2. Recuperar desde Gmail — los correos enviados SON el respaldo real: el
+    //      link ?c= lleva el payload completo de la cotización y el ?p= de la guía
+    //      lleva los datos de la póliza emitida.
+
+    function _b64urlAtexto(s){
+      let b64 = String(s || "").replace(/-/g,'+').replace(/_/g,'/');
+      while(b64.length % 4) b64 += '=';
+      const bin = atob(b64);
+      const bytes = new Uint8Array(bin.length);
+      for(let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+      return new TextDecoder('utf-8').decode(bytes);
+    }
+
+    // Busca en el árbol MIME la primera parte de un tipo dado.
+    function _gmailParte(part, mime){
+      if(!part) return "";
+      if(part.mimeType === mime && part.body && part.body.data) return _b64urlAtexto(part.body.data);
+      if(Array.isArray(part.parts)){
+        for(const sub of part.parts){
+          const found = _gmailParte(sub, mime);
+          if(found) return found;
+        }
+      }
+      return "";
+    }
+
+    // Devuelve el cuerpo del mensaje priorizando HTML sobre texto plano.
+    // Ojo: en un multipart/alternative el text/plain va ANTES que el text/html, así que
+    // hay que barrer el árbol entero buscando HTML antes de conformarse con el plano —
+    // si no, en los correos con PDF adjunto se pierde el link ?c= y no se recupera nada.
+    function _gmailCuerpo(part){
+      return _gmailParte(part, 'text/html') || _gmailParte(part, 'text/plain');
+    }
+
+    function _gmailHeader(msg, nombre){
+      const hs = (msg.payload && msg.payload.headers) || [];
+      const h = hs.find(x => String(x.name).toLowerCase() === nombre.toLowerCase());
+      return h ? h.value : "";
+    }
+
+    async function _gmailFetch(url, token){
+      const r = await fetch(url, { headers: { 'Authorization': 'Bearer ' + token } });
+      if(!r.ok){
+        const t = await r.text();
+        if(r.status === 403) throw new Error('Gmail denegó el acceso de lectura (403). ¿Se concedió el permiso?\n\n' + t);
+        throw new Error('Gmail API ' + r.status + ': ' + t);
+      }
+      return await r.json();
+    }
+
+    // Lista los IDs de los correos enviados de Vital 360 (paginado, tope de seguridad).
+    async function _gmailListarEnviados(token, onProgress){
+      const ids = [];
+      let pageToken = null, vueltas = 0;
+      do {
+        const url = GMAIL_LIST_URL + '?q=' + encodeURIComponent(GMAIL_QUERY_REC) +
+                    '&maxResults=100' + (pageToken ? '&pageToken=' + encodeURIComponent(pageToken) : '');
+        const data = await _gmailFetch(url, token);
+        (data.messages || []).forEach(m => ids.push(m.id));
+        pageToken = data.nextPageToken || null;
+        vueltas++;
+        if(onProgress) onProgress('Buscando correos… ' + ids.length + ' encontrados');
+      } while(pageToken && vueltas < 20); // 20 páginas = 2000 correos
+      if(pageToken) console.warn('[vital360] hay más de 2000 correos; se recuperaron los 2000 más recientes');
+      return ids;
+    }
+
+    // Misma abreviatura de mes que fmtFechaEs — es el formato que la app escribió en los correos.
+    const _MESES_ES = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+
+    // Revierte vigenciaTexto: "15 jul 2026 – 14 jul 2027" -> "2026-07-15" (fecha de inicio).
+    // Tolera el mes completo ("julio") comparando solo las 3 primeras letras.
+    function _parseVigenciaInicio(txt){
+      const m = /(\d{1,2})\s+([a-zA-Z]{3,})\s+(\d{4})/.exec(String(txt || ""));
+      if(!m) return "";
+      const mes = _MESES_ES.indexOf(m[2].slice(0,3).toLowerCase());
+      if(mes === -1) return "";
+      return m[3] + '-' + String(mes + 1).padStart(2,'0') + '-' + String(Number(m[1])).padStart(2,'0');
+    }
+
+    function _normNombre(s){
+      return String(s || "").normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/\s+/g,' ').trim();
+    }
+
+    // Reconstruye el historial leyendo los correos enviados.
+    async function recuperarDesdeGmail(btnEl){
+      if(!agenteActual){ alert('Debe iniciar sesión primero.'); return; }
+      const ok = confirm(
+        'RECUPERAR HISTORIAL DESDE GMAIL\n\n' +
+        'Se leerán sus correos ENVIADOS cuyo asunto contenga "Vital 360" para reconstruir las ' +
+        'cotizaciones y pólizas perdidas.\n\n' +
+        'Google le pedirá permiso de lectura de Gmail: se usa solo para esta búsqueda y el permiso ' +
+        'se revoca automáticamente al terminar.\n\n' +
+        'Lo que ya está en el historial NO se toca ni se sobrescribe.\n\n¿Continuar?'
+      );
+      if(!ok) return;
+
+      const txtOrig = btnEl ? btnEl.textContent : "";
+      const paso = msg => { if(btnEl) btnEl.textContent = msg; };
+      if(btnEl) btnEl.disabled = true;
+      let token = null;
+
+      try {
+        paso('Pidiendo permiso…');
+        token = await getGmailReadToken();
+
+        paso('Buscando correos…');
+        const ids = await _gmailListarEnviados(token, paso);
+        if(ids.length === 0){
+          alert('No se encontraron correos enviados con "Vital 360" en el asunto.\n\nSi usó otra cuenta de Gmail para enviarlos, inicie sesión con esa cuenta.');
+          return;
+        }
+
+        const cotizaciones = new Map();  // id -> registro reconstruido
+        const guiasPorNombre = new Map();// nombre normalizado -> datos de póliza
+        const polizaPorEmail = new Map();// email -> nº de póliza (plantilla autocontenida)
+        let leidos = 0;
+
+        for(const id of ids){
+          leidos++;
+          if(leidos % 5 === 0 || leidos === ids.length) paso('Leyendo ' + leidos + '/' + ids.length + '…');
+          let msg;
+          try { msg = await _gmailFetch(GMAIL_LIST_URL + '/' + id + '?format=full', token); }
+          catch(e){ console.warn('[vital360] no se pudo leer el mensaje', id, e); continue; }
+
+          const fechaCorreo = msg.internalDate ? new Date(Number(msg.internalDate)).toISOString() : new Date().toISOString();
+          const cuerpo = _gmailCuerpo(msg.payload).replace(/&amp;/g, '&');
+          const subject = _gmailHeader(msg, 'Subject');
+          const para = (_gmailHeader(msg, 'To').match(/[^\s<>,;]+@[^\s<>,;]+/) || [""])[0].toLowerCase();
+
+          // --- Cotizaciones: link ?c= con el payload completo ---
+          for(const m of cuerpo.matchAll(/(https?:\/\/[^\s"'<>]*[?&]c=([A-Za-z0-9_\-]{20,}))/g)){
+            const payload = decodePayload(m[2]);
+            if(!payload || !payload.cliente || !Array.isArray(payload.asegurados) || !Array.isArray(payload.planes)) continue;
+            if(!payload.id) continue;
+            const prev = cotizaciones.get(payload.id);
+            // Si el mismo id aparece en varios correos, gana el más reciente.
+            if(prev && prev.updatedAt >= fechaCorreo) continue;
+            let fechaIso = fechaCorreo;
+            if(/^\d{4}-\d{2}-\d{2}$/.test(payload.fecha || "")){
+              const d = new Date(payload.fecha + 'T12:00:00Z');
+              if(!isNaN(d)) fechaIso = d.toISOString();
+            }
+            cotizaciones.set(payload.id, {
+              id: payload.id,
+              fecha: fechaIso,
+              agenteEmail: agenteActual.email,
+              payload,
+              link: m[1],
+              estado: 'pendiente',
+              updatedAt: fechaCorreo,
+              recuperado: true
+            });
+          }
+
+          // --- Guías: link ?p= con los datos de la póliza emitida ---
+          for(const m of cuerpo.matchAll(/https?:\/\/[^\s"'<>]*[?&]p=([A-Za-z0-9_\-]{20,})/g)){
+            const g = decodePayload(m[1]);
+            if(!g || !g.poliza) continue;
+            const planObj = PLANES.find(pl => pl.nombre === g.plan);
+            guiasPorNombre.set(_normNombre(g.nombre), {
+              polizaData: {
+                numero:      g.poliza,
+                fechaInicio: _parseVigenciaInicio(g.vigencia),
+                planId:      planObj ? planObj.id : null,
+                moneda:      /^\s*USD/i.test(g.suma || "") ? 'USD' : 'CRC'
+              },
+              linkCP: g.linkCP || "",
+              at: fechaCorreo
+            });
+          }
+
+          // --- Correo de póliza vigente (autocontenido): el nº va en el asunto ---
+          const mp = /N\.º\s*([^\s·]+)/.exec(subject || "");
+          if(mp && /vigente/i.test(subject) && para) polizaPorEmail.set(para, { numero: mp[1], at: fechaCorreo });
+        }
+
+        // ---- Fusionar con lo que ya existe (sin pisar nada) ----
+        const idsExistentes = new Set(historial.map(h => h.id));
+        const clavesExistentes = new Set(historial.map(h =>
+          _normNombre(h.payload && h.payload.cliente && h.payload.cliente.nombre) + '|' +
+          String((h.payload && h.payload.cliente && h.payload.cliente.cedula) || "").trim()
+        ));
+
+        const nuevos = [];
+        for(const reg of cotizaciones.values()){
+          const clave = _normNombre(reg.payload.cliente.nombre) + '|' + String(reg.payload.cliente.cedula || "").trim();
+          if(clavesExistentes.has(clave)) continue;      // ya lo tiene: no duplicar
+          if(idsExistentes.has(reg.id)){                 // choque de N.º con otro cliente: renumerar
+            let nuevo;
+            do { nuevo = "0" + Math.floor(Math.random() * 9000 + 1000); } while(idsExistentes.has(nuevo));
+            reg.id = nuevo;
+            reg.payload = Object.assign({}, reg.payload, { id: nuevo });
+            reg.link = buildLinkCliente(reg.payload);
+          }
+          idsExistentes.add(reg.id);
+          clavesExistentes.add(clave);
+
+          // ¿Se le envió guía o póliza? Entonces la cotización fue aceptada.
+          const guia = guiasPorNombre.get(_normNombre(reg.payload.cliente.nombre));
+          const pol  = polizaPorEmail.get(String(reg.payload.cliente.email || "").toLowerCase());
+          if(guia){
+            reg.estado = 'aceptada';
+            reg.polizaData = guia.polizaData;
+            if(!reg.polizaData.planId) reg.polizaData.planId = reg.payload.planRecomendado || reg.payload.planes[0];
+            if(guia.linkCP) reg.linkCP = guia.linkCP;
+            reg.guiaEnviada = true;
+            reg.guiaEnviadaAt = guia.at;
+          } else if(pol){
+            reg.estado = 'aceptada';
+            reg.polizaData = {
+              numero: pol.numero,
+              fechaInicio: "",
+              planId: reg.payload.planRecomendado || reg.payload.planes[0],
+              moneda: reg.payload.monedaInicial || 'CRC'
+            };
+          }
+          nuevos.push(reg);
+        }
+
+        if(nuevos.length === 0){
+          alert('Se revisaron ' + ids.length + ' correos y no hay nada nuevo que recuperar:\n' +
+                'todas las cotizaciones encontradas ya están en su historial.');
+          return;
+        }
+
+        const aceptadas = nuevos.filter(r => r.estado === 'aceptada').length;
+        const listado = nuevos.slice(0, 12).map(r =>
+          '  · ' + (r.fecha || "").slice(0,10) + '  ' + (r.payload.cliente.nombre || '(sin nombre)') +
+          (r.estado === 'aceptada' ? '   [póliza ' + (r.polizaData ? r.polizaData.numero : '') + ']' : '')
+        ).join('\n');
+
+        const aplicar = confirm(
+          'RECUPERADAS ' + nuevos.length + ' COTIZACIONES\n' +
+          (aceptadas ? aceptadas + ' de ellas con póliza emitida.\n' : '') + '\n' +
+          listado + (nuevos.length > 12 ? '\n  … y ' + (nuevos.length - 12) + ' más' : '') +
+          '\n\n¿Agregarlas al historial?'
+        );
+        if(!aplicar) return;
+
+        historial = historial.concat(nuevos);
+        saveHistorial();
+        renderHistorial();
+        if(typeof renderPolizasVigentes === 'function') renderPolizasVigentes();
+        updateTabCount();
+        alert('Listo: ' + nuevos.length + ' cotizaciones restauradas' + (aceptadas ? ' (' + aceptadas + ' con póliza)' : '') +
+              '.\n\nDescargue ahora un respaldo con "⬇ Respaldar" para no depender de esto otra vez.');
+
+      } catch(e){
+        console.error('[vital360] recuperación falló', e);
+        alert('No se pudo recuperar el historial:\n\n' + e.message);
+      } finally {
+        if(token) revocarTokenLectura(token);   // el permiso de lectura no queda vigente
+        if(btnEl){ btnEl.disabled = false; btnEl.textContent = txtOrig; }
+      }
+    }
+
+    // ---- Respaldo manual: exportar / importar JSON ----
+    function exportarRespaldo(){
+      if(historial.length === 0){ alert('No hay cotizaciones que respaldar.'); return; }
+      const data = {
+        app: 'cotizador-vital-360',
+        version: 1,
+        exportadoEl: new Date().toISOString(),
+        agente: agenteActual ? agenteActual.email : "",
+        historial: historial
+      };
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'vital360-respaldo-' + new Date().toISOString().slice(0,10) + '.json';
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }
+
+    function importarRespaldo(file){
+      const reader = new FileReader();
+      reader.onload = () => {
+        let data;
+        try { data = JSON.parse(reader.result); }
+        catch(e){ alert('El archivo no es un respaldo válido (no es JSON).'); return; }
+        const lista = Array.isArray(data) ? data : (data && Array.isArray(data.historial) ? data.historial : null);
+        if(!lista){ alert('El archivo no contiene un historial de Vital 360.'); return; }
+
+        const idsExistentes = new Set(historial.map(h => h.id));
+        const claves = new Set(historial.map(h =>
+          _normNombre(h.payload && h.payload.cliente && h.payload.cliente.nombre) + '|' +
+          String((h.payload && h.payload.cliente && h.payload.cliente.cedula) || "").trim()
+        ));
+        const nuevos = [];
+        for(const reg of lista){
+          if(!reg || !reg.id || !reg.payload || !reg.payload.cliente) continue;
+          const clave = _normNombre(reg.payload.cliente.nombre) + '|' + String(reg.payload.cliente.cedula || "").trim();
+          if(claves.has(clave) || idsExistentes.has(reg.id)) continue;
+          idsExistentes.add(reg.id); claves.add(clave);
+          nuevos.push(reg);
+        }
+        if(nuevos.length === 0){ alert('El respaldo no trae nada nuevo: ya está todo en el historial.'); return; }
+        if(!confirm('El respaldo trae ' + nuevos.length + ' cotizaciones que no están en el historial.\n\n¿Agregarlas?')) return;
+        historial = historial.concat(nuevos);
+        saveHistorial();
+        renderHistorial();
+        if(typeof renderPolizasVigentes === 'function') renderPolizasVigentes();
+        updateTabCount();
+        alert('Listo: ' + nuevos.length + ' cotizaciones importadas.');
+      };
+      reader.onerror = () => alert('No se pudo leer el archivo.');
+      reader.readAsText(file);
+    }
+
     function renderHistorial(){
       const body = document.getElementById('historial-body');
       if(!body) return;
@@ -3148,12 +3528,24 @@
         <div class="hist-h">
           <div>
             <h2>Mis cotizaciones</h2>
-            <div class="sub">${historial.length} totales · ${cotizacionesActivas().length} activas · respaldo solo en este navegador</div>
+            <div class="sub">${historial.length} totales · ${cotizacionesActivas().length} activas · guardadas solo en este navegador</div>
           </div>
           <div class="hist-filter">
             <span>Ver:</span>
             <button class="${histFiltro==='activas'?'on':''}" data-action="filter" data-filtro="activas">Activas</button>
             <button class="${histFiltro==='todas'?'on':''}"   data-action="filter" data-filtro="todas">Todas (incluye eliminadas)</button>
+          </div>
+        </div>
+        <div class="hist-backup">
+          <div class="hb-txt">
+            <strong>Respaldo</strong>
+            Un limpiador de disco o "borrar datos de navegación" elimina este historial sin aviso.
+            Descargue el archivo cada cierto tiempo: es lo único que no depende del navegador.
+          </div>
+          <div class="hb-btns">
+            <button class="hb-exp" data-action="exportar">⬇ Respaldar</button>
+            <button data-action="importar">⬆ Importar</button>
+            <button class="hb-rec" data-action="recuperar-gmail">✉ Recuperar desde Gmail</button>
           </div>
         </div>
       `;
@@ -3218,6 +3610,16 @@
         const id = btn.dataset.id;
         const action = btn.dataset.action;
         if(action === 'filter'){ histFiltro = btn.dataset.filtro; renderHistorial(); }
+        if(action === 'exportar') exportarRespaldo();
+        if(action === 'recuperar-gmail') recuperarDesdeGmail(btn);
+        if(action === 'importar'){
+          // input efímero: no ensucia el DOM ni acumula listeners entre renders
+          const inp = document.createElement('input');
+          inp.type = 'file';
+          inp.accept = 'application/json,.json';
+          inp.addEventListener('change', () => { if(inp.files && inp.files[0]) importarRespaldo(inp.files[0]); });
+          inp.click();
+        }
         if(action === 'aceptar') marcarEstado(id, "aceptada");
         if(action === 'pendiente') marcarEstado(id, "pendiente");
         if(action === 'eliminar'){
