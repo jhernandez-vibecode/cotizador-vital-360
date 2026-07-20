@@ -68,6 +68,37 @@
     .email-modal-preview{flex:1;overflow:hidden;background:#f0f1f2;padding:14px}
     .email-modal-preview iframe{width:100%;height:100%;border:1px solid var(--line);border-radius:4px;background:#fff;min-height:400px}
 
+    /* === Tuerca de ajustes: perfil editable del agente === */
+    .mh-right{display:flex;align-items:center;gap:10px}
+    .mh-gear{width:36px;height:36px;border-radius:50%;border:1px solid var(--line);background:var(--paper);color:var(--ins-teal);font-size:17px;line-height:1;cursor:pointer;display:grid;place-items:center;transition:transform .25s ease,background .15s ease}
+    .mh-gear:hover{background:var(--cream);transform:rotate(35deg)}
+    .set-card{background:var(--paper);border-radius:10px;width:460px;max-width:95vw;max-height:92vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 18px 50px -20px rgba(14,33,39,.55)}
+    .set-card .set-h{padding:18px 22px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:flex-start;gap:14px}
+    .set-card .set-h h3{font-family:"IBM Plex Serif",serif;font-size:19px;font-weight:500;margin-bottom:3px}
+    .set-card .set-h .sub{font-size:12px;color:var(--ink-3);line-height:1.5}
+    .set-card .set-h .x{background:none;border:none;font-size:24px;line-height:1;color:var(--ink-3);cursor:pointer;padding:0 0 0 10px}
+    .set-card .set-h .x:hover{color:var(--ink)}
+    .set-body{padding:20px 22px;overflow:auto}
+    .set-field{margin-bottom:15px}
+    .set-field label{display:block;font-size:11.5px;font-weight:600;color:var(--ink-2);letter-spacing:.02em;margin-bottom:5px}
+    .set-field label .req{color:var(--ins-coral-deep)}
+    .set-field input{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:6px;font-family:inherit;font-size:14px;color:var(--ink);background:var(--paper)}
+    .set-field input:focus{outline:none;border-color:var(--ins-teal);box-shadow:0 0 0 3px rgba(31,92,107,.12)}
+    .set-field .hint{font-size:11px;color:var(--ink-3);margin-top:4px;line-height:1.4}
+    .set-field .set-err{color:#B23A2E;font-size:11.5px;margin-top:5px;display:none}
+    .set-field.invalid input{border-color:#B23A2E}
+    .set-field.invalid .set-err{display:block}
+    .set-readonly{background:var(--cream);border:1px solid var(--line);border-radius:6px;padding:9px 12px;font-size:13px;color:var(--ink-2);font-family:"IBM Plex Mono";word-break:break-all}
+    .set-foot{padding:14px 22px;border-top:1px solid var(--line);background:var(--cream);display:flex;justify-content:flex-end;gap:8px}
+    .set-foot .btn-guardar{background:var(--ins-teal);color:#fff;border:none;padding:10px 22px;border-radius:6px;font-family:inherit;font-size:13.5px;font-weight:600;cursor:pointer}
+    .set-foot .btn-guardar:hover{background:#17414c}
+    .v360-toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%) translateY(12px);background:var(--ins-teal);color:#fff;padding:11px 20px;border-radius:8px;font-size:13px;font-weight:500;box-shadow:0 10px 30px -8px rgba(14,33,39,.5);opacity:0;pointer-events:none;transition:opacity .25s ease,transform .25s ease;z-index:90}
+    .v360-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+    .set-nudge{max-width:1480px;margin:0 auto;padding:10px 32px;display:flex;align-items:center;gap:12px;background:#FFF4D6;border-bottom:1px solid #E8C97A;font-size:12.5px;color:#7A5B0E}
+    .set-nudge b{font-weight:600}
+    .set-nudge .go{margin-left:auto;background:var(--ins-gold);color:#fff;border:none;cursor:pointer;font-family:inherit;font-size:12px;font-weight:600;padding:6px 12px;border-radius:5px;white-space:nowrap}
+    .set-nudge .dismiss{background:transparent;color:#7A5B0E;border:none;cursor:pointer;font-family:inherit;font-size:12px;font-weight:600;padding:6px 4px;text-decoration:underline;white-space:nowrap}
+
     /* Tooltip de cobertura — funciona en hover (desktop) y tap (mobile) */
     .has-tip{position:relative;display:inline-flex;align-items:center;gap:6px;cursor:help;border-bottom:1px dotted var(--ink-3);outline:none}
     .has-tip .tip-ico{display:inline-grid;place-items:center;width:14px;height:14px;border-radius:50%;background:var(--ins-teal-soft);color:var(--ins-teal-deep);font-family:"IBM Plex Serif",serif;font-style:italic;font-size:10px;font-weight:600;flex-shrink:0;line-height:1}
@@ -568,12 +599,20 @@
             <div class="b">Seguros Digitales · 100 años INS</div>
           </div>
         </div>
-        <div class="mh-user" id="mh-user">
-          <span class="av" id="mh-user-av">··</span>
-          <span id="mh-user-name">Sin sesión</span>
+        <div class="mh-right">
+          <button class="mh-gear" id="btnSettings" type="button" title="Configurar mis datos de agente" aria-label="Configurar mis datos de agente" hidden>⚙</button>
+          <div class="mh-user" id="mh-user">
+            <span class="av" id="mh-user-av">··</span>
+            <span id="mh-user-name">Sin sesión</span>
+          </div>
         </div>
       </div>
     </header>
+    <div class="set-nudge" id="set-nudge" hidden>
+      <span>👋 <b>Configurá tus datos de agente</b> — tu nombre, WhatsApp y licencia aparecen en la cotización y en los correos que recibe el cliente.</span>
+      <button class="go" type="button" id="nudge-go">Configurar ahora</button>
+      <button class="dismiss" type="button" id="nudge-dismiss">Ahora no</button>
+    </div>
     <nav class="tabs-agente">
       <button class="tab-btn active" data-tab="cotizador">Cotizador</button>
       <button class="tab-btn"        data-tab="historial">Mis cotizaciones <span class="tab-count" id="tab-count">0</span></button>
@@ -1097,6 +1136,179 @@
     function isAuthorized(email){
       if(!email) return false;
       return Object.prototype.hasOwnProperty.call(AGENTES, String(email).toLowerCase());
+    }
+
+    // =====================================================================
+    // Perfil editable del agente (⚙ tuerca de ajustes)
+    // Se guarda en localStorage POR CUENTA (vital360.perfil.<email>) y se
+    // superpone sobre agenteActual — la fuente que alimenta cotización,
+    // correos, WhatsApp, hero y footer del cliente. El correo (identidad
+    // Gmail/OAuth) NO es editable: se toma siempre de AGENTES.
+    // =====================================================================
+    const PERFIL_KEY_PREFIX = "vital360.perfil.";
+    const PERFIL_CAMPOS = ["nombre", "whatsapp", "licencia"];
+
+    function _perfilKey(email){ return PERFIL_KEY_PREFIX + String(email || "").toLowerCase(); }
+    function _nudgeKey(){ return "vital360.nudgeCerrado." + String((agenteActual && agenteActual.email) || "").toLowerCase(); }
+    let _headerSuffix = ""; // recuerda "· MODO PRUEBA"/"(dev)" entre refrescos del header
+
+    function cargarPerfilAgente(email){
+      try{
+        const raw = localStorage.getItem(_perfilKey(email));
+        if(!raw) return null;
+        const p = JSON.parse(raw);
+        return (p && typeof p === "object") ? p : null;
+      }catch(e){ return null; }
+    }
+    function guardarPerfilAgente(email, perfil){
+      localStorage.setItem(_perfilKey(email), JSON.stringify(perfil));
+    }
+    // Superpone el perfil guardado sobre agenteActual (solo campos no vacíos).
+    function aplicarPerfilOverlay(){
+      if(!agenteActual || !agenteActual.email) return;
+      const p = cargarPerfilAgente(agenteActual.email);
+      if(!p) return;
+      PERFIL_CAMPOS.forEach(k => {
+        const v = (p[k] == null ? "" : String(p[k])).trim();
+        if(v) agenteActual[k] = v;
+      });
+    }
+    function tienePerfilGuardado(){
+      return !!(agenteActual && cargarPerfilAgente(agenteActual.email));
+    }
+
+    // Refresca la píldora del header (avatar + nombre) desde agenteActual,
+    // revela y engancha (una sola vez) el botón ⚙.
+    function refrescarHeaderAgente(suffix){
+      if(!agenteActual) return;
+      if(suffix !== undefined) _headerSuffix = suffix; // guardar en login; conservar al re-refrescar tras Guardar
+      const nombre = agenteActual.nombre || "Agente";
+      const av = document.getElementById('mh-user-av');
+      const nm = document.getElementById('mh-user-name');
+      if(av) av.textContent = nombre.split(" ").map(w => w[0]).filter(Boolean).slice(0,2).join("").toUpperCase() || "··";
+      if(nm) nm.textContent = nombre + (_headerSuffix || "");
+      const gear = document.getElementById('btnSettings');
+      if(gear){
+        gear.hidden = false;
+        if(!gear.dataset.bound){ gear.dataset.bound = "1"; gear.addEventListener('click', abrirSettingsModal); }
+      }
+    }
+
+    // Nudge de primera vez: visible solo si el agente aún no guardó su perfil.
+    function actualizarNudgePerfil(){
+      const n = document.getElementById('set-nudge');
+      if(!n) return;
+      const oculto = tienePerfilGuardado() || sessionStorage.getItem(_nudgeKey()) === '1';
+      n.hidden = oculto;
+      if(!n.dataset.bound){
+        n.dataset.bound = "1";
+        const go = document.getElementById('nudge-go');
+        const dz = document.getElementById('nudge-dismiss');
+        if(go) go.addEventListener('click', abrirSettingsModal);
+        if(dz) dz.addEventListener('click', () => { sessionStorage.setItem(_nudgeKey(),'1'); n.hidden = true; });
+      }
+    }
+
+    function _toast(msg){
+      let t = document.getElementById('v360-toast');
+      if(!t){
+        t = document.createElement('div');
+        t.id = 'v360-toast';
+        t.className = 'v360-toast';
+        document.body.appendChild(t);
+      }
+      t.textContent = msg;
+      void t.offsetWidth; // reflow para reiniciar la transición
+      t.classList.add('show');
+      clearTimeout(t._hideTimer);
+      t._hideTimer = setTimeout(() => t.classList.remove('show'), 2600);
+    }
+
+    function abrirSettingsModal(){
+      const prev = document.getElementById('set-modal-bg');
+      if(prev) prev.remove();
+      if(!agenteActual) return;
+      const nombre   = agenteActual.nombre   || "";
+      const whatsapp = agenteActual.whatsapp || "";
+      const licencia = (agenteActual.licencia && agenteActual.licencia !== "—") ? agenteActual.licencia : "";
+      const correo   = agenteActual.email    || "";
+      const html =
+        '<div class="email-modal-bg" id="set-modal-bg">' +
+          '<div class="set-card" role="dialog" aria-modal="true" aria-label="Mis datos de agente">' +
+            '<div class="set-h">' +
+              '<div><h3>Mis datos de agente</h3>' +
+              '<div class="sub">Así aparecés ante el cliente: en la cotización, los correos y el botón de WhatsApp.</div></div>' +
+              '<button class="x" type="button" data-set="cerrar" aria-label="Cerrar">&times;</button>' +
+            '</div>' +
+            '<div class="set-body">' +
+              '<div class="set-field" id="sf-nombre">' +
+                '<label>Nombre del agente <span class="req">*</span></label>' +
+                '<input type="text" id="set-nombre" value="' + escapeAttr(nombre) + '" placeholder="Ej: Juan Carlos Hernández" maxlength="80" autocomplete="off">' +
+                '<div class="set-err">Escribí tu nombre.</div>' +
+              '</div>' +
+              '<div class="set-field">' +
+                '<label>WhatsApp</label>' +
+                '<input type="text" id="set-whatsapp" value="' + escapeAttr(whatsapp) + '" placeholder="Ej: 8822 1348" maxlength="30" autocomplete="off">' +
+                '<div class="hint">El número que ve el cliente para escribirte.</div>' +
+              '</div>' +
+              '<div class="set-field">' +
+                '<label>Licencia SUGESE</label>' +
+                '<input type="text" id="set-licencia" value="' + escapeAttr(licencia) + '" placeholder="Ej: 08-1318" maxlength="20" autocomplete="off">' +
+              '</div>' +
+              '<div class="set-field">' +
+                '<label>Correo (tu cuenta Google)</label>' +
+                '<div class="set-readonly">' + escapeHtml(correo) + '</div>' +
+                '<div class="hint">Los correos salen desde esta cuenta. No se cambia aquí.</div>' +
+              '</div>' +
+            '</div>' +
+            '<div class="set-foot">' +
+              '<button class="btn-guardar" type="button" data-set="guardar">Guardar</button>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
+      document.body.insertAdjacentHTML('beforeend', html);
+      const bg = document.getElementById('set-modal-bg');
+      bg.addEventListener('click', (e) => {
+        const act = e.target.getAttribute && e.target.getAttribute('data-set');
+        if(e.target === bg || act === 'cerrar'){ bg.remove(); return; }
+        if(act === 'guardar'){ guardarSettings(); }
+      });
+      const inp = document.getElementById('set-nombre');
+      if(inp){ inp.focus(); inp.addEventListener('input', () => document.getElementById('sf-nombre').classList.remove('invalid')); }
+    }
+
+    function guardarSettings(){
+      const elN = document.getElementById('set-nombre');
+      const elW = document.getElementById('set-whatsapp');
+      const elL = document.getElementById('set-licencia');
+      if(!elN || !elW || !elL) return;
+      const nombre   = (elN.value || "").trim();
+      const whatsapp = (elW.value || "").trim();
+      const licencia = (elL.value || "").trim();
+      if(!nombre){
+        document.getElementById('sf-nombre').classList.add('invalid');
+        elN.focus();
+        return;
+      }
+      const perfil = { nombre: nombre, whatsapp: whatsapp, licencia: licencia };
+      try{
+        guardarPerfilAgente(agenteActual.email, perfil);
+      }catch(e){
+        alert('No se pudo guardar el perfil en este navegador (¿almacenamiento lleno?).');
+        return;
+      }
+      // Reflejar de inmediato sobre agenteActual: campo con valor gana; vacío revierte
+      // al default de la whitelist (mismo resultado que tras recargar, sin divergencia).
+      const stub = AGENTES[String(agenteActual.email || "").toLowerCase()] || {};
+      PERFIL_CAMPOS.forEach(k => {
+        const v = (perfil[k] || "").trim();
+        agenteActual[k] = v || (stub[k] != null ? stub[k] : "");
+      });
+      refrescarHeaderAgente();
+      actualizarNudgePerfil();
+      const bg = document.getElementById('set-modal-bg');
+      if(bg) bg.remove();
+      _toast('Datos de agente guardados ✓');
     }
 
     // =====================================================================
@@ -4365,13 +4577,14 @@
       if(isDevQuery || oauthSinSetup){
         const email = Object.keys(AGENTES)[0];
         agenteActual = Object.assign({}, AGENTES[email]);
-        document.getElementById('mh-user-av').textContent = agenteActual.nombre.split(" ").map(w => w[0]).slice(0,2).join("").toUpperCase();
+        aplicarPerfilOverlay();
         const suffix = oauthSinSetup ? " · MODO PRUEBA" : " (dev)";
-        document.getElementById('mh-user-name').textContent = agenteActual.nombre + suffix;
+        refrescarHeaderAgente(suffix);
         loadDraft();
         loadHistorial();
         renderAgente();
         showView("agente");
+        actualizarNudgePerfil();
         if(oauthSinSetup) showBannerModoPrueba();
         return;
       }
@@ -4406,14 +4619,15 @@
         showView("bloqueado");
         return;
       }
-      // Autorizado: cargar perfil del agente
+      // Autorizado: cargar agente de la whitelist + superponer perfil editable
       agenteActual = Object.assign({}, AGENTES[emailLower]);
-      document.getElementById('mh-user-av').textContent = agenteActual.nombre.split(" ").map(w => w[0]).slice(0,2).join("").toUpperCase();
-      document.getElementById('mh-user-name').textContent = agenteActual.nombre;
+      aplicarPerfilOverlay();
+      refrescarHeaderAgente();
       loadDraft();
       loadHistorial();
       renderAgente();
       showView("agente");
+      actualizarNudgePerfil();
     }
 
     function showBannerModoPrueba(){
