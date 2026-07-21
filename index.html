@@ -98,6 +98,8 @@
     .set-nudge b{font-weight:600}
     .set-nudge .go{margin-left:auto;background:var(--ins-gold);color:#fff;border:none;cursor:pointer;font-family:inherit;font-size:12px;font-weight:600;padding:6px 12px;border-radius:5px;white-space:nowrap}
     .set-nudge .dismiss{background:transparent;color:#7A5B0E;border:none;cursor:pointer;font-family:inherit;font-size:12px;font-weight:600;padding:6px 4px;text-decoration:underline;white-space:nowrap}
+    /* El atributo [hidden] debe ganarle a display:flex/grid de arriba (si no, no se ocultan) */
+    .mh-gear[hidden],.set-nudge[hidden]{display:none}
 
     /* Tooltip de cobertura — funciona en hover (desktop) y tap (mobile) */
     .has-tip{position:relative;display:inline-flex;align-items:center;gap:6px;cursor:help;border-bottom:1px dotted var(--ink-3);outline:none}
