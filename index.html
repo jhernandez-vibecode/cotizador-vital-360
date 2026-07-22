@@ -871,6 +871,15 @@
         email:    "innovaseguroscrc@gmail.com",
         codigo:   "003",
         licencia: "—"
+      },
+      // Agente amigo — Seguros Ticos. Nombre default editable; completa
+      // su WhatsApp y licencia desde la tuerca ⚙ (licencia "—", NUNCA "").
+      "paolo@segurosticos.com": {
+        nombre:   "Seguros Ticos",
+        whatsapp: "",
+        email:    "paolo@segurosticos.com",
+        codigo:   "004",
+        licencia: "—"
       }
     };
 
@@ -1936,7 +1945,8 @@
               <p style="margin:0;font-size:14px;font-weight:bold;color:#ffffff;">${_escEmail(a.nombre)}</p>
               <p style="margin:4px 0 0;font-size:11px;color:#C7DBE0;">Agente autorizado INS · Lic. SUGESE ${_escEmail(a.licencia || '08-1318')} · WhatsApp ${_escEmail(a.whatsapp)}${a.email ? " · " + _escEmail(a.email) : ""}</p>
               <p style="margin:14px 0 0;font-size:10.5px;color:#94aab0;font-style:italic;line-height:1.55;">Cotización informativa basada en tarifas oficiales del INS vigentes a la fecha. Vigencia ${payload.vigenciaDias} días. Producto Vital 360 registrado bajo norma SUGESE P20-76-A01-1097 V3.</p>
-              <p style="margin:10px 0 0;font-size:10px;color:#6A7A80;">Esta cotización pertenece a <strong style="color:#ffffff;font-weight:600;">Seguros Digitales SDI&reg;</strong> · &copy; 2026 Propiedad intelectual de ${_escEmail(a.nombre)}</p>
+              <p style="margin:10px 0 0;font-size:10px;color:#6A7A80;">Esta cotización pertenece a <strong style="color:#ffffff;font-weight:600;">Seguros Digitales SDI&reg;</strong></p>
+              <p style="margin:3px 0 0;font-size:10px;color:#6A7A80;">Un producto de <strong style="color:#ffffff;font-weight:600;">SDI &middot; Seguros Digitales</strong> &middot; &copy; 2026 Propiedad intelectual de <strong style="color:#ffffff;font-weight:600;">Juan Carlos Hern&aacute;ndez Vargas</strong></p>
             </td>
           </tr>
 
@@ -2076,7 +2086,8 @@
               <p style="margin:0;font-size:14px;font-weight:bold;color:#ffffff;">${_escEmail(a.nombre)}</p>
               <p style="margin:4px 0 0;font-size:11px;color:#C7DBE0;">Agente autorizado INS · Lic. SUGESE ${_escEmail(a.licencia || '08-1318')} · WhatsApp ${_escEmail(a.whatsapp)}${a.email ? " · " + _escEmail(a.email) : ""}</p>
               <p style="margin:14px 0 0;font-size:10.5px;color:#94aab0;font-style:italic;line-height:1.55;">La guía es de carácter informativo. Las Condiciones Generales y Particulares de su póliza son el documento vinculante. Producto Vital 360 registrado bajo norma SUGESE P20-76-A01-1097 V3.</p>
-              <p style="margin:10px 0 0;font-size:10px;color:#6A7A80;">Esta guía pertenece a <strong style="color:#ffffff;font-weight:600;">Seguros Digitales SDI&reg;</strong> · &copy; 2026 Propiedad intelectual de ${_escEmail(a.nombre)}</p>
+              <p style="margin:10px 0 0;font-size:10px;color:#6A7A80;">Esta guía pertenece a <strong style="color:#ffffff;font-weight:600;">Seguros Digitales SDI&reg;</strong></p>
+              <p style="margin:3px 0 0;font-size:10px;color:#6A7A80;">Un producto de <strong style="color:#ffffff;font-weight:600;">SDI &middot; Seguros Digitales</strong> &middot; &copy; 2026 Propiedad intelectual de <strong style="color:#ffffff;font-weight:600;">Juan Carlos Hern&aacute;ndez Vargas</strong></p>
             </td>
           </tr>
 
@@ -2338,7 +2349,8 @@
               <p style="margin:0;font-size:14px;font-weight:bold;color:#ffffff;">${_escEmail(a.nombre)}</p>
               <p style="margin:4px 0 0;font-size:11px;color:#C7DBE0;">Agente autorizado INS · Lic. SUGESE ${_escEmail(a.licencia || '08-1318')} · WhatsApp ${_escEmail(a.whatsapp)}${a.email ? " · " + _escEmail(a.email) : ""}</p>
               <p style="margin:14px 0 0;font-size:10.5px;color:#94aab0;font-style:italic;line-height:1.55;">Esta comunicación es de carácter informativo y se basa en las Condiciones Generales del seguro Vital 360 del INS (registro SUGESE P20-76-A01-1097 V3). La operación de las coberturas se rige por dichas condiciones generales y por las particulares de su póliza.</p>
-              <p style="margin:10px 0 0;font-size:10px;color:#6A7A80;">Esta guía pertenece a <strong style="color:#ffffff;font-weight:600;">Seguros Digitales SDI&reg;</strong> · &copy; 2026 Propiedad intelectual de ${_escEmail(a.nombre)}</p>
+              <p style="margin:10px 0 0;font-size:10px;color:#6A7A80;">Esta guía pertenece a <strong style="color:#ffffff;font-weight:600;">Seguros Digitales SDI&reg;</strong></p>
+              <p style="margin:3px 0 0;font-size:10px;color:#6A7A80;">Un producto de <strong style="color:#ffffff;font-weight:600;">SDI &middot; Seguros Digitales</strong> &middot; &copy; 2026 Propiedad intelectual de <strong style="color:#ffffff;font-weight:600;">Juan Carlos Hern&aacute;ndez Vargas</strong></p>
             </td>
           </tr>
 
@@ -4335,7 +4347,8 @@
           </div>
           <p class="sdi-foot-line">Esta cotización pertenece a <strong>Seguros Digitales SDI<sup>®</sup></strong></p>
           <p class="sdi-foot-line sub">Agente ${escapeHtml(a.nombre)} · Lic. SUGESE ${escapeHtml(a.licencia || '08-1318')} · ${escapeHtml(a.whatsapp || '')}</p>
-          <p class="sdi-foot-line sub">© 2026 Propiedad intelectual de ${escapeHtml(a.nombre)}</p>
+          <p class="sdi-foot-line">Un producto de <strong>SDI · Seguros Digitales</strong></p>
+          <p class="sdi-foot-line sub">© 2026 · Propiedad intelectual de <strong>Juan Carlos Hernández Vargas</strong></p>
         </footer>
       `;
     }
