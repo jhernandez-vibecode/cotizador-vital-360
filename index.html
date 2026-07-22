@@ -593,6 +593,8 @@
     .sdi-foot-line{font-size:12px;color:#C7DBE0;margin:4px 0;line-height:1.55}
     .sdi-foot-line strong{color:#fff;font-weight:600}
     .sdi-foot-line.sub{font-size:11px;color:#94aab0}
+    /* Pie branded de la vista agente (cierra la pantalla donde se cotiza) */
+    .foot-agente{max-width:1480px;margin:0 auto;padding:0 32px 48px}
   </style>
 </head>
 <body>
@@ -658,6 +660,17 @@
     <main class="page-agente hidden" data-tab-panel="vigentes" id="vigentes-body">
       <!-- render dinámico de renderPolizasVigentes() -->
     </main>
+
+    <div class="foot-agente">
+      <footer class="sdi-foot">
+        <div class="sdi-mark">
+          <span class="sdi-word">Seguros Digitales</span>
+          <span class="sdi-bars"><i></i><i></i><i></i></span>
+        </div>
+        <p class="sdi-foot-line">Un producto de <strong>SDI · Seguros Digitales</strong></p>
+        <p class="sdi-foot-line sub">© 2026 · Propiedad intelectual de <strong>Juan Carlos Hernández Vargas</strong></p>
+      </footer>
+    </div>
   </div>
 
   <div data-view="cliente">
