@@ -15,3 +15,6 @@ notas-locales/
 
 # Netlify
 .netlify/
+
+# Node (solo para la dependencia de la Function; el sitio no tiene build)
+node_modules/

@@ -1,6 +1,11 @@
 [build]
   publish = "."
 
+# Function del enlace corto /c/:id (la ruta la declara la propia function).
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+
 [[headers]]
   for = "/*"
   [headers.values]

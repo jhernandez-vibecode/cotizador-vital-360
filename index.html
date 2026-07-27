@@ -1775,6 +1775,38 @@
       return base + (base.endsWith('/') ? '' : '/') + 'guia-reclamos?p=' + enc;
     }
 
+    // =====================================================================
+    // Enlace corto (/c/XXXXXXXXXX) · ver netlify/functions/coti.mjs
+    // ---------------------------------------------------------------------
+    // El link con el payload adentro mide ~1000 caracteres: WhatsApp lo
+    // colapsa con "Leer más" y el cliente termina abriendo el sitio pelado.
+    // Se acorta SOLO donde el cliente ve la URL cruda (WhatsApp y Copiar).
+    // El CORREO conserva el link largo a propósito: el botón lo esconde
+    // igual y de ese ?c= depende "✉ Recuperar desde Gmail".
+    // Si la function no responde se devuelve el link largo: acortar nunca
+    // debe impedir que el agente mande la cotización.
+    // =====================================================================
+    const RE_ID_CORTO = /^[A-Z2-9]{10}$/;
+
+    async function acortarLink(linkLargo){
+      const m = String(linkLargo || "").match(/[?&]([cp])=([A-Za-z0-9_\-]+)$/);
+      if(!m) return linkLargo;
+      try {
+        const r = await fetch('/c', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ t: m[1], d: m[2] })
+        });
+        if(!r.ok) throw new Error('HTTP ' + r.status);
+        const data = await r.json();
+        if(!data || !RE_ID_CORTO.test(data.id || "")) throw new Error('id inválido');
+        return location.origin + '/c/' + data.id;
+      } catch(e){
+        console.warn('[vital360] no se pudo acortar el enlace; se envía el largo', e);
+        return linkLargo;
+      }
+    }
+
     // Fecha ISO "2025-06-03" → "03 jun 2025" (sin timezone shift: parse manual)
     function fmtFechaEs(iso){
       const meses = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
@@ -1806,15 +1838,19 @@
       return `Hola ${payload.cliente.nombre || "estimado"}, le comparto su cotización Vital 360 con ${payload.planes.length === 1 ? "una opción" : payload.planes.length + " opciones"} que pensé para usted:\n\n${planesTxt}\n\nPuede revisar el detalle, cambiar entre colones y dólares, y descargar los formularios aquí:\n${link}\n\nCualquier consulta me escribe directo.\n${payload.agente.nombre} · ${payload.agente.whatsapp}`;
     }
 
-    function sendByWhatsApp(){
+    async function sendByWhatsApp(){
       persistirCotizacionActual();
       const payload = buildPayloadCliente();
-      const link = buildLinkCliente(payload);
+      // La pestaña se reserva ANTES del await: abrirla después de una
+      // llamada de red ya no cuenta como gesto del usuario y el navegador
+      // la bloquea como popup.
+      const win = window.open('', '_blank');
+      const link = await acortarLink(buildLinkCliente(payload));
       const msg = buildWhatsAppMessage(payload, link);
       const phone = String(state.cliente.telefono || "").replace(/\D/g,'');
       // Endpoint web.whatsapp.com — NUNCA wa.me (corrompe emojis)
       const url = "https://web.whatsapp.com/send/?phone=" + (phone ? "506"+phone : "") + "&text=" + encodeURIComponent(msg);
-      window.open(url, "_blank");
+      if(win) win.location.href = url; else window.open(url, "_blank");
     }
 
     function previewCliente(){
@@ -1824,14 +1860,17 @@
       window.open(link, "_blank");
     }
 
-    function copyLinkCliente(){
+    async function copyLinkCliente(){
       persistirCotizacionActual();
       const payload = buildPayloadCliente();
-      const link = buildLinkCliente(payload);
-      navigator.clipboard.writeText(link).then(
-        () => alert("Link copiado al portapapeles."),
-        () => prompt("Copie el link manualmente:", link)
-      );
+      const link = await acortarLink(buildLinkCliente(payload));
+      try {
+        await navigator.clipboard.writeText(link);
+        alert("Link copiado al portapapeles:\n\n" + link);
+      } catch(e){
+        // Tras el await el navegador puede negar el portapapeles: se muestra igual.
+        prompt("Copie el link manualmente:", link);
+      }
     }
 
     // =====================================================================
@@ -3455,23 +3494,28 @@
 
         if(action === 'copiar-guia'){
           persistir(linkCP);
-          if(navigator.clipboard && navigator.clipboard.writeText){
-            navigator.clipboard.writeText(link).then(
-              () => { alert('Link copiado y guía marcada como enviada.'); bg.remove(); },
-              () => { prompt('Copie manualmente el link:', link); bg.remove(); }
-            );
-          } else {
-            prompt('Copie manualmente el link:', link);
-            bg.remove();
-          }
+          acortarLink(link).then(corto => {
+            if(navigator.clipboard && navigator.clipboard.writeText){
+              navigator.clipboard.writeText(corto).then(
+                () => { alert('Link copiado y guía marcada como enviada:\n\n' + corto); bg.remove(); },
+                () => { prompt('Copie manualmente el link:', corto); bg.remove(); }
+              );
+            } else {
+              prompt('Copie manualmente el link:', corto);
+              bg.remove();
+            }
+          });
         }
         if(action === 'wa-guia'){
           const tel2 = String(p.cliente.telefono || "").replace(/\D/g,'');
-          const msg = "Hola " + (p.cliente.nombre || "") + ", su póliza Vital 360 ya está vigente. Aquí su guía de uso y reclamos, con todos los pasos y documentos:\n" + link;
-          const wa = "https://web.whatsapp.com/send/?phone=506" + tel2 + "&text=" + encodeURIComponent(msg);
+          const win = window.open('', '_blank');   // reservada antes del await (popup blocker)
           persistir(linkCP);
-          window.open(wa, '_blank');
-          bg.remove();
+          acortarLink(link).then(corto => {
+            const msg = "Hola " + (p.cliente.nombre || "") + ", su póliza Vital 360 ya está vigente. Aquí su guía de uso y reclamos, con todos los pasos y documentos:\n" + corto;
+            const wa = "https://web.whatsapp.com/send/?phone=506" + tel2 + "&text=" + encodeURIComponent(msg);
+            if(win) win.location.href = wa; else window.open(wa, '_blank');
+            bg.remove();
+          });
         }
         if(action === 'correo-guia'){
           const to = (p.cliente.email || "").trim();
@@ -3856,8 +3900,9 @@
           const pl = PLANES.find(x => x.id === id);
           return id === p.planRecomendado ? `★${pl.nombre}` : pl.nombre;
         }).join(" · ");
-        const wa = String(p.cliente.telefono || "").replace(/\D/g,'');
-        const waLink = wa ? `https://web.whatsapp.com/send/?phone=506${wa}&text=${encodeURIComponent("Hola " + (p.cliente.nombre || "") + ", le reenvío su cotización Vital 360 N.º " + h.id + ": " + h.link)}` : null;
+        // El WhatsApp de reenvío pasa por el handler (no es un <a> directo) porque
+        // el enlace se acorta con una llamada de red antes de armar el mensaje.
+        const tieneWa = !!String(p.cliente.telefono || "").replace(/\D/g,'');
 
         const accs = h.estado === "eliminada"
           ? `<button data-action="restaurar" data-id="${h.id}">↺ Restaurar</button>`
@@ -3867,7 +3912,7 @@
             ${h.estado !== "pendiente" ? `<button data-action="pendiente" data-id="${h.id}">⌛ Pendiente</button>` : ""}
             <a href="${h.link}" target="_blank">👁 Ver</a>
             <button data-action="copy" data-id="${h.id}">🔗 Copiar</button>
-            ${waLink ? `<a class="wa" href="${waLink}" target="_blank">📱 WA</a>` : ""}
+            ${tieneWa ? `<button class="wa" data-action="wa-reenviar" data-id="${h.id}">📱 WA</button>` : ""}
             <button data-action="reabrir" data-id="${h.id}">✎ Editar</button>
             <button class="danger" data-action="eliminar" data-id="${h.id}">🗑 Eliminar</button>
           `;
@@ -3933,10 +3978,21 @@
         }
         if(action === 'copy'){
           const h = historial.find(x => x.id === id);
-          if(h) navigator.clipboard.writeText(h.link).then(
-            () => alert("Link copiado."),
-            () => prompt("Copie manualmente:", h.link)
-          );
+          if(h) acortarLink(h.link).then(corto => navigator.clipboard.writeText(corto).then(
+            () => alert("Link copiado:\n\n" + corto),
+            () => prompt("Copie manualmente:", corto)
+          ));
+        }
+        if(action === 'wa-reenviar'){
+          const h = historial.find(x => x.id === id);
+          if(!h) return;
+          const tel = String(h.payload.cliente.telefono || "").replace(/\D/g,'');
+          const win = window.open('', '_blank');   // reservada antes del await (popup blocker)
+          acortarLink(h.link).then(corto => {
+            const msg = "Hola " + (h.payload.cliente.nombre || "") + ", le reenvío su cotización Vital 360 N.º " + h.id + ": " + corto;
+            const wa = "https://web.whatsapp.com/send/?phone=506" + tel + "&text=" + encodeURIComponent(msg);
+            if(win) win.location.href = wa; else window.open(wa, '_blank');
+          });
         }
       });
     }
@@ -4631,6 +4687,9 @@
 
     function init(){
       runSmokeTests();
+      // La function /c/:id manda acá cuando el id no existe (enlace mal copiado
+      // o cotización ya depurada). Mismo mensaje que un ?c= ilegible.
+      if(new URLSearchParams(location.search).get('enlace')){ showView("enlace"); return; }
       const ruta = determinarVista();
       if(ruta.tipo === "cliente"){
         // Payload ilegible = enlace truncado en el camino, NO un problema de acceso.

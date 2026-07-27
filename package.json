@@ -1,0 +1,10 @@
+{
+  "name": "cotizador-vital-360",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Cotizador Vital 360 INS · Seguros Digitales SDI. El sitio es HTML/CSS/JS vanilla sin build: este package.json existe SOLO para que Netlify instale la dependencia de la Function que acorta los enlaces del cliente.",
+  "type": "module",
+  "dependencies": {
+    "@netlify/blobs": "^10.0.0"
+  }
+}
