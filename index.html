@@ -595,6 +595,11 @@
     .sdi-foot-line.sub{font-size:11px;color:#94aab0}
     /* Pie branded de la vista agente (cierra la pantalla donde se cotiza) */
     .foot-agente{max-width:1480px;margin:0 auto;padding:0 32px 48px}
+    /* Aviso para el cliente que cae por error en login/bloqueado (enlace ?c= cortado) */
+    .aviso-cliente{margin-top:26px;padding:16px 18px;text-align:left;background:var(--cream);
+      border:1px solid var(--ins-gold);border-radius:8px;font-family:var(--font-body);
+      font-size:13px;line-height:1.6;color:var(--ink-2)}
+    .aviso-cliente strong{color:var(--ins-teal-deep);font-weight:600}
   </style>
 </head>
 <body>
@@ -685,6 +690,21 @@
       <p style="color:var(--ink-3);font-size:14px;margin-bottom:18px">Este cotizador está reservado para agentes autorizados de Seguros Digitales SDI.</p>
       <p style="color:var(--ink-3);font-size:13px">Para solicitar acceso, contacte a <a href="mailto:jhernandez@segurosdelins.com" style="color:var(--ins-teal-deep)">jhernandez@segurosdelins.com</a>.</p>
       <p id="block-email" style="margin-top:18px;font-family:var(--font-mono);font-size:12px;color:var(--ink-3)"></p>
+      <div class="aviso-cliente">
+        <strong>¿Usted es cliente y venía a ver su cotización?</strong>
+        El enlace que le enviaron es largo y se corta con facilidad al copiarlo.
+        Pídale a su agente que se lo <strong>reenvíe</strong> y ábralo tocándolo directamente, sin copiar ni pegar.
+      </div>
+    </div>
+  </div>
+
+  <!-- Llegó ?c= pero el payload no decodifica: el enlace viajó cortado (no es un problema de acceso) -->
+  <div data-view="enlace">
+    <div style="max-width:520px;margin:80px auto;padding:40px;text-align:center;background:var(--paper);border:1px solid var(--line);border-radius:8px;font-family:var(--font-body)">
+      <h2 style="font-family:var(--font-display);font-size:28px;font-weight:500;margin-bottom:12px">El enlace llegó incompleto</h2>
+      <p style="color:var(--ink-3);font-size:14px;margin-bottom:18px">Su cotización existe, pero el enlace se cortó en el camino: es muy largo y algunas aplicaciones de mensajería no lo copian completo.</p>
+      <p style="color:var(--ink-3);font-size:14px">Escríbale a su agente para que se lo <strong>reenvíe</strong>, y ábralo tocando el enlace directamente (sin copiarlo ni pegarlo).</p>
+      <p style="margin-top:22px;font-size:13px;color:var(--ink-3)">No hay ningún problema con su cotización ni con su información.</p>
     </div>
   </div>
 
@@ -693,6 +713,11 @@
       <h2 style="font-family:var(--font-display);font-size:28px;font-weight:500;margin-bottom:8px">Cotizador Vital 360</h2>
       <p style="color:var(--ink-3);font-size:14px;margin-bottom:24px">Inicie sesión con su cuenta autorizada para continuar.</p>
       <div id="g_id_signin"></div>
+      <div class="aviso-cliente">
+        <strong>¿Usted es cliente?</strong>
+        Esta pantalla es solo para agentes; no necesita iniciar sesión.
+        Si recibió un enlace de cotización y no le abrió, es porque llegó cortado: pídale a su agente que se lo <strong>reenvíe</strong>.
+      </div>
     </div>
   </div>
 
@@ -4608,7 +4633,8 @@
       runSmokeTests();
       const ruta = determinarVista();
       if(ruta.tipo === "cliente"){
-        if(!ruta.payload){ showView("bloqueado"); return; }
+        // Payload ilegible = enlace truncado en el camino, NO un problema de acceso.
+        if(!ruta.payload){ showView("enlace"); return; }
         renderCliente(ruta.payload);
         showView("cliente");
         return;
