@@ -1792,10 +1792,13 @@
       const m = String(linkLargo || "").match(/[?&]([cp])=([A-Za-z0-9_\-]+)$/);
       if(!m) return linkLargo;
       try {
+        // Tope de espera: la pestaña de WhatsApp ya está abierta esperando este
+        // resultado. Sin timeout, una red colgada la deja en blanco para siempre.
         const r = await fetch('/c', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ t: m[1], d: m[2] })
+          body: JSON.stringify({ t: m[1], d: m[2] }),
+          signal: AbortSignal.timeout ? AbortSignal.timeout(6000) : undefined
         });
         if(!r.ok) throw new Error('HTTP ' + r.status);
         const data = await r.json();
