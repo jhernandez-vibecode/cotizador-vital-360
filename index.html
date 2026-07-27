@@ -595,6 +595,134 @@
     .sdi-foot-line.sub{font-size:11px;color:#94aab0}
     /* Pie branded de la vista agente (cierra la pantalla donde se cotiza) */
     .foot-agente{max-width:1480px;margin:0 auto;padding:0 32px 48px}
+    /* =================================================================
+       Vista cliente v7 (27 jul 2026) · 7 planes + desglose por miembro
+       Regla de jerarquía: la cifra grande es SIEMPRE el total con IVA;
+       "prima + IVA" va como línea susurro debajo. Ver SKILL, Pendientes #1.
+       ================================================================= */
+    .v7 .m{font-family:var(--font-mono);font-variant-numeric:tabular-nums}
+    .v7-sec{max-width:760px;margin:0 auto;padding:0 18px}
+    .v7-k{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ins-teal);font-weight:700}
+    .v7-h{font-size:19px;font-weight:600;letter-spacing:-.01em;color:var(--ins-teal-deep);margin-top:4px}
+    .v7-fine{font-size:12px;color:#7D9298;margin-top:8px;line-height:1.5}
+
+    /* Panel del plan recomendado */
+    .v7-rec{background:var(--ins-teal-deep);color:#EAF2F3;padding:26px 0 24px;margin-top:6px}
+    .v7-rec-in{max-width:760px;margin:0 auto;padding:0 18px}
+    .v7-flag{display:inline-block;background:var(--ins-coral);color:#fff;font-size:10.5px;font-weight:700;
+      letter-spacing:.1em;text-transform:uppercase;padding:4px 9px;border-radius:3px}
+    .v7-rec-nm{font-size:30px;font-weight:600;letter-spacing:-.02em;color:#fff;margin-top:12px;line-height:1.05}
+    .v7-rec-amb{font-size:12.5px;color:#9FBEC4;margin-top:3px}
+    .v7-rec-tot{margin-top:18px;padding-top:16px;border-top:1px solid #2A5561}
+    .v7-rec-tot .lbl{font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:#8FACB2}
+    .v7-rec-tot .big{font-size:38px;font-weight:600;letter-spacing:-.025em;color:#fff;margin-top:4px;line-height:1}
+    .v7-rec-tot .eq{font-size:12.5px;color:#A9C4C9;margin-top:9px}
+    .v7-rec-tot .eq b{color:var(--ins-gold);font-weight:600}
+    /* Justificación calculada (no la escribe el agente) */
+    .v7-just{margin-top:18px;padding-left:13px;border-left:2px solid #4E8492}
+    .v7-just + .v7-just{margin-top:14px}
+    .v7-just .t{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#8FACB2;font-weight:700}
+    .v7-just .d{font-size:13.5px;line-height:1.55;color:#D6E5E8;margin-top:4px}
+    .v7-just .d b{color:#fff;font-weight:600}
+    .v7-just .peor{color:#F0B37B}
+
+    /* Recibo por miembro */
+    .v7-rcpt{border:1px solid var(--ins-teal-line, #DCE5E7);border-radius:9px;overflow:hidden;margin-top:12px;background:#fff}
+    .v7-rcpt-r{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:11px 14px;border-bottom:1px solid #EDF2F3}
+    .v7-rcpt-r:last-child{border-bottom:0}
+    .v7-rcpt-r .nm{font-size:14.5px;color:var(--ink-2)}
+    .v7-rcpt-r .nm i{font-style:normal;color:#7D9298;font-size:12px}
+    .v7-rcpt-r .vl{font-size:15px;font-weight:600;white-space:nowrap;color:var(--ink-1, #0E2127)}
+    .v7-rcpt-r.tot{background:var(--cream);font-weight:700}
+    .v7-rcpt-r.tot .vl{font-size:17px;color:var(--ins-teal-deep)}
+    .v7-iva{background:rgba(193,138,44,.12);border-left:3px solid var(--ins-gold);padding:10px 13px;
+      font-size:12.5px;color:#6B5320;line-height:1.5;margin-top:10px;border-radius:0 6px 6px 0}
+
+    /* Chips de forma de pago */
+    .v7-chips{display:flex;gap:7px;margin-top:12px}
+    .v7-chips button{flex:1;text-align:center;font-size:12px;padding:10px 4px;border:1px solid var(--line);
+      border-radius:7px;line-height:1.3;color:var(--ink-2);background:var(--paper);cursor:pointer;font-family:inherit}
+    .v7-chips button b{display:block;font-size:13.5px;font-weight:600}
+    .v7-chips button.on{background:var(--ins-teal);border-color:var(--ins-teal);color:#fff}
+    .v7-pago-now{margin-top:14px}
+    .v7-pago-now .amt{font-size:29px;font-weight:600;letter-spacing:-.02em;color:var(--ins-teal-deep);line-height:1;font-family:var(--font-mono);font-variant-numeric:tabular-nums}
+    .v7-pago-now .cad{font-size:13px;color:#6E868D;margin-top:5px}
+
+    /* Escalera de planes */
+    .v7-lad{margin-top:10px}
+    .v7-grp{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#8AA2A8;font-weight:700;
+      margin:18px 0 7px;padding-bottom:5px;border-bottom:1px solid #EDF2F3}
+    .v7-row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:13px 12px;
+      border:1px solid var(--line);border-radius:9px;margin-bottom:7px;background:var(--paper);
+      cursor:pointer;width:100%;text-align:left;font-family:inherit}
+    .v7-row.star{border-left:3px solid var(--ins-coral)}
+    .v7-row.open{border-color:var(--ins-teal);border-width:2px;background:#F6FAFA;
+      border-radius:9px 9px 0 0;margin-bottom:0}
+    .v7-row .nm{font-size:15px;font-weight:600;color:var(--ins-teal-deep)}
+    .v7-row .sm{font-size:11px;color:#7D9298;margin-top:2px}
+    .v7-row .rt{text-align:right;white-space:nowrap}
+    .v7-row .rt .big{font-size:16px;font-weight:600;font-family:var(--font-mono);font-variant-numeric:tabular-nums}
+    .v7-row .rt .sm{font-size:10.5px;color:#8AA2A8;margin-top:1px}
+    .v7-chev{color:var(--ins-teal);font-weight:700;font-size:14px;margin-left:4px;flex:0 0 auto}
+    /* El panel anclado: pegado a SU fila, envuelto por el mismo borde (regla #12) */
+    .v7-anchor{border:2px solid var(--ins-teal);border-top:0;border-radius:0 0 9px 9px;background:#F6FAFA;
+      padding:14px;margin-bottom:7px}
+    .v7-anchor .t{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ins-teal);font-weight:700;margin-top:14px}
+    .v7-anchor .t:first-child{margin-top:0}
+    .v7-dif{display:flex;justify-content:space-between;gap:10px;font-size:13px;padding:7px 0;border-bottom:1px solid #E4EDEE}
+    .v7-dif:last-child{border-bottom:0}
+    .v7-dif .mej{color:#2E7D5B;font-weight:600;white-space:nowrap}
+    .v7-dif .peo{color:#B0562C;font-weight:600;white-space:nowrap}
+
+    /* Comparador del cliente */
+    .v7-cmp-pick{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px}
+    .v7-cmp-pick button{font-size:12.5px;padding:8px 12px;border:1px solid var(--line);border-radius:20px;
+      background:var(--paper);color:var(--ink-2);cursor:pointer;font-family:inherit}
+    .v7-cmp-pick button.on{background:var(--ins-teal);border-color:var(--ins-teal);color:#fff;font-weight:600}
+    .v7-cmp-pick button[disabled]{opacity:.4;cursor:not-allowed}
+    .v7-scroll{overflow-x:auto;margin-top:12px;-webkit-overflow-scrolling:touch}
+
+    @media (min-width:760px){
+      .v7-rec-nm{font-size:36px}
+      .v7-rec-tot .big{font-size:46px}
+    }
+    /* Móvil: la reja de características desbordaba la pantalla a 375 px — un
+       grid de 2 columnas cuyo contenido no podía encogerse empujaba el ancho
+       del documento a 552 px y metía scroll horizontal en TODA la página.
+       Defecto viejo, pero la vista v7 es móvil primero y no puede convivir con él. */
+    @media (max-width:700px){
+      .carac{padding:20px 16px}
+      .carac-grid{grid-template-columns:1fr}
+      .carac-item{min-width:0}
+      .carac-item .t, .carac-item .d{overflow-wrap:anywhere}
+      /* El hero tenía la misma enfermedad: grid 1.5fr/1fr con una tarjeta que
+         no podía encogerse por debajo de su contenido. */
+      .hero-body{grid-template-columns:1fr;gap:26px;padding:30px 16px 34px}
+      .hero h1{font-size:32px}
+      .hero .lead{font-size:14.5px}
+      .hero-top-inner{padding:0 16px;flex-wrap:wrap;gap:4px 10px;font-size:11.5px}
+      .hero-card{min-width:0;padding:18px}
+      .hero-card .nm{font-size:20px;overflow-wrap:anywhere}
+      .hero-card .row{gap:10px}
+      .hero-card .row .v{overflow-wrap:anywhere;text-align:right}
+      .wrap-cliente{padding:24px 16px 48px}
+      /* Mismo patrón en el resto de rejas de 2 columnas de la vista cliente */
+      .included-grid{grid-template-columns:1fr}
+      .inc-item{min-width:0}
+      .inc-item .t, .inc-item .d{overflow-wrap:anywhere}
+      .cta-strip{grid-template-columns:1fr;gap:22px;padding:24px 18px}
+      .cta-strip h3{font-size:24px}
+      .cur-toggle-c{gap:8px;flex-wrap:wrap}
+      .cur-toggle-c .swap button{padding:7px 13px;font-size:12.5px}
+      .cur-toggle-c .lbl{flex:1 1 100%}
+      .docs-list-c{grid-template-columns:1fr}
+      .doc-c{min-width:0}
+      .doc-c .info, .doc-c .nm, .doc-c .desc{min-width:0;overflow-wrap:anywhere}
+      .wait{padding:20px 16px}
+      .wait-grid{grid-template-columns:1fr}
+      .wait-grid > div{padding:0;border-right:none;min-width:0}
+    }
+
     /* Aviso para el cliente que cae por error en login/bloqueado (enlace ?c= cortado) */
     .aviso-cliente{margin-top:26px;padding:16px 18px;text-align:left;background:var(--cream);
       border:1px solid var(--ins-gold);border-radius:8px;font-family:var(--font-body);
@@ -882,7 +1010,12 @@
       trimestral: { CRC: 0.07, USD: 0.04, cuotas: 4 }
     };
 
-    const IVA_PCT = 0.02; // 2 % — seguros de personas, Ley 9635 CR. NUNCA sumado, solo nota visual.
+    // 2 % · seguros de personas, Ley 9635 CR.
+    // 🔴 SE SUMA Y SE MUESTRA. Decisión de JC del 21 jul 2026, ratificada el 27:
+    // el IVA se refleja en TODO cálculo que ve el cliente, incluido el desglose
+    // por miembro. La regla vieja ("nunca sumado, solo nota visual") quedó
+    // DEROGADA — no reinstalarla. Todo pasa por totalesPlan/desgloseMiembros.
+    const IVA_PCT = 0.02;
 
     // Whitelist de agentes (auth Google)
     const AGENTES = {
@@ -1012,6 +1145,133 @@
 
     function porPersonaAnio(primaFamiliarAnual, numAsegurados){
       return primaFamiliarAnual / numAsegurados;
+    }
+
+    // =====================================================================
+    // Sección 2b · Totales con IVA — FUENTE ÚNICA de página, correo y WhatsApp
+    // ---------------------------------------------------------------------
+    // Decisiones de JC del 27 jul 2026 (ver SKILL, Pendientes #1):
+    //  · El IVA se refleja en TODO cálculo que ve el cliente, incluido el
+    //    desglose por miembro. La cifra grande es siempre el TOTAL CON IVA.
+    //  · El total oficial es el 2 % sobre la prima TOTAL — es lo que factura
+    //    el INS. Calcular el IVA persona por persona y sumar da hasta 1 unidad
+    //    de más; ese residuo se carga SIEMPRE al titular, NUNCA "al de mayor
+    //    resto": dos hijos de la misma edad tienen la misma prima y no pueden
+    //    aparecer con cifras distintas.
+    //  · Las cuotas se RECONCILIAN contra el total, no se multiplican.
+    //    Imprimir la cuota redondeada × n publica un total que no existe en
+    //    ninguna tabla del INS (Pro 1 trimestral: 1.849.404 en vez de 1.849.402).
+    //  · Con pago fraccionado el renglón por persona NO se llama "prima" — la
+    //    prima de tarifa no cambia nunca. Se llama "aporte del año".
+    // Si estos números se calculan en otro lado, los tres canales se van a
+    // contradecir. Todo pasa por acá.
+    // =====================================================================
+
+    // Reparte un total en n cuotas que suman EXACTAMENTE el total.
+    function cuotasReconciliadas(total, n){
+      const base  = Math.floor(total / n);
+      const resto = total - base * n;          // las primeras `resto` cuotas llevan 1 más
+      return Array.from({ length: n }, (_, i) => base + (i < resto ? 1 : 0));
+    }
+
+    function totalesPlan(planId, moneda, asegurados, modalidad){
+      modalidad = modalidad || "anual";
+      const r = RECARGOS[modalidad];
+      if(!r) throw new Error('modalidad no válida: ' + modalidad);
+      const primaTarifa    = primaFamiliar(planId, moneda, asegurados);
+      const primaRecargada = totalConRecargo(modalidad, moneda, primaTarifa);
+      const prima = Math.round(primaRecargada);
+      const iva   = Math.round(primaRecargada * IVA_PCT);
+      const total = prima + iva;
+      return {
+        modalidad,
+        nCuotas:         r.cuotas,
+        primaTarifa:     Math.round(primaTarifa),
+        fraccionamiento: prima - Math.round(primaTarifa),
+        prima, iva, total,
+        cuotas: cuotasReconciliadas(total, r.cuotas)
+      };
+    }
+
+    // Aporte ANUAL de cada asegurado, ya con IVA: su prima de tarifa más el 2 %.
+    // Deliberadamente reproducible por el cliente — puede tomar la prima,
+    // multiplicar por 1,02 y le da. Repartir proporcionalmente sobre el total
+    // daría cifras que no puede verificar, y este documento lo firma un agente
+    // con licencia.
+    // El recargo por fraccionar NO se reparte por persona: es un cargo de la
+    // póliza, no de nadie en particular, y se muestra en las formas de pago.
+    function desgloseMiembros(planId, moneda, asegurados){
+      const totales = totalesPlan(planId, moneda, asegurados, "anual");
+      const filas = asegurados.map(a => {
+        const prima = primaIndividual(planId, moneda, a.edad);
+        return {
+          nombre: a.nombre, edad: a.edad, parentesco: a.parentesco,
+          primaTarifa: Math.round(prima),
+          iva:         Math.round(prima * IVA_PCT),
+          aporte:      Math.round(prima * (1 + IVA_PCT))
+        };
+      });
+      const suma = filas.reduce((s, f) => s + f.aporte, 0);
+      if(filas.length){
+        const iTit = Math.max(0, filas.findIndex(f => f.parentesco === 'titular'));
+        filas[iTit].aporte += totales.total - suma;   // el residuo, al titular
+      }
+      return { filas, totales };
+    }
+
+    // Coberturas que se citan al comparar dos planes, en orden de peso para el
+    // cliente. `deducible` va segundo a propósito: es la que puede EMPEORAR al
+    // subir de plan, y un texto honesto tiene que decirlo.
+    const COVS_JUSTIFICACION = ["gastos_medicos", "deducible", "maternidad", "medicamentos", "trasplantes"];
+
+    // Diferencias medidas entre dos planes. `mejora` es false cuando el número
+    // sube pero en contra del cliente (el deducible es lo que paga de su bolsa).
+    function diferenciasCobertura(planA, planB, moneda){
+      const out = [];
+      for(const covId of COVS_JUSTIFICACION){
+        const def = COBERTURAS_DEFS.find(d => d.id === covId);
+        if(!def) continue;
+        const va = getCobertura(planA, covId, moneda);
+        const vb = getCobertura(planB, covId, moneda);
+        if(va === vb) continue;
+        const esDeducible = covId === "deducible";
+        if(va === "NA" && typeof vb === "number"){
+          out.push({ label: def.label, tipo: "agrega", a: null, b: vb, mejora: true });
+        } else if(typeof va === "number" && typeof vb === "number"){
+          out.push({ label: def.label, tipo: "cambia", a: va, b: vb, mejora: esDeducible ? vb < va : vb > va });
+        }
+      }
+      return out;
+    }
+
+    // Justificación OBJETIVA del plan, contra su vecino más barato y el
+    // siguiente en la escalera de precio. JC pidió expresamente que el agente
+    // NO escriba el porqué ("que sea standard y objetivo"): acá no hay
+    // adjetivos, solo diferencias trazables a las tablas del INS.
+    // `universo` limita la comparación a los planes que el cliente TIENE en su
+    // cotización: no tiene sentido justificar contra un plan que no le mandaron.
+    function justificacionPlan(planId, moneda, asegurados, universo){
+      const todos = PLANES.map(p => p.id);
+      const orden = (universo && universo.length)
+        ? todos.filter(id => universo.indexOf(id) !== -1)
+        : todos;
+      const i = orden.indexOf(planId);
+      if(i < 0) return { anterior: null, siguiente: null };
+      const tot = id => totalesPlan(id, moneda, asegurados, "anual").total;
+      // OJO con la dirección: contra el vecino MÁS BARATO hay que medir de él
+      // hacia este plan (lo que el cliente gana por pagar de más); contra el
+      // más caro, de este plan hacia él (lo que ganaría si subiera).
+      const lado = (j, esAnterior) => {
+        if(j < 0 || j >= orden.length) return null;
+        const id = orden[j];
+        return {
+          plan: PLANES.find(p => p.id === id),
+          delta: tot(id) - tot(planId),            // negativo = el vecino es más barato
+          cambios: (esAnterior ? diferenciasCobertura(id, planId, moneda)
+                               : diferenciasCobertura(planId, id, moneda)).slice(0, 3)
+        };
+      };
+      return { anterior: lado(i - 1, true), siguiente: lado(i + 1, false) };
     }
 
     // Formatter: número → "₡1.234.567" o "$1,234.56" según moneda.
@@ -1164,7 +1424,7 @@
         // Por defecto vacío. El agente agrega al menos al titular.
       ],
       moneda: "CRC",
-      planesSeleccionados: [],   // ids · máx 3
+      planesSeleccionados: [],   // ids · hasta los 7
       planRecomendado: null      // id de uno de los 3
     };
 
@@ -1663,10 +1923,11 @@
           if(sel.includes(planId)){
             state.planesSeleccionados = sel.filter(id => id !== planId);
             if(state.planRecomendado === planId) state.planRecomendado = null;
-          } else if(sel.length < 3){
+          } else if(sel.length < PLANES.length){
+            // Desde el 27 jul 2026 se pueden mandar los 7: la vista cliente los
+            // presenta como escalera y el cliente compara hasta 3 por su cuenta.
             state.planesSeleccionados.push(planId);
           } else {
-            alert('Máximo 3 planes seleccionados. Quita uno primero.');
             return;
           }
           saveDraft();
@@ -1718,10 +1979,13 @@
 
       const chips = sel.map(planId => {
         const p = PLANES.find(pl => pl.id === planId);
-        const fam = primaFamiliar(planId, state.moneda, state.asegurados);
+        // El mismo total CON IVA que va a ver el cliente: si acá saliera la
+        // prima pelada, el agente diría por teléfono un número distinto del
+        // que el cliente tiene en pantalla.
+        const tot = totalesPlan(planId, state.moneda, state.asegurados, "anual").total;
         const isRec = state.planRecomendado === planId;
         return `<span class="sl-chip ${isRec?"rec":""}">
-          ${isRec ? "★ " : ""}${p.nombre} · ${fmtMoneda(fam, state.moneda)}
+          ${isRec ? "★ " : ""}${p.nombre} · ${fmtMoneda(tot, state.moneda)}
           ${isRec ? "<em>recomendado</em>" : `<button class="set-rec" data-action="set-rec" data-plan="${planId}">marcar recomendado</button>`}
         </span>`;
       }).join('');
@@ -1831,14 +2095,59 @@
       return fmtFechaEs(toIso(desde)) + ' – ' + fmtFechaEs(toIso(hasta));
     }
 
+    // Mensaje de WhatsApp — reglas duras, ver SKILL (Pendientes #1 y #2):
+    //  · El ENLACE VA ARRIBA, en la línea 2. Si WhatsApp colapsa el mensaje con
+    //    "Leer más", lo único que no puede quedar escondido es el enlace: ese
+    //    fue el incidente del 27 jul con la clienta que cayó en "Acceso
+    //    restringido". Nunca moverlo al final.
+    //  · Excepción de IVA autorizada por JC: acá no cabe el desglose
+    //    "prima + IVA" sin inflar el mensaje, así que la única cifra que
+    //    aparece YA es el total con IVA, y se dice antes de mostrarla.
+    //  · Con 4 o más planes se agrupa por ámbito con un "desde"; con 3 o menos
+    //    se listan, porque listar 7 empuja el mensaje a 15 líneas.
     function buildWhatsAppMessage(payload, link){
-      const planesTxt = payload.planes.map(planId => {
-        const p = PLANES.find(pl => pl.id === planId);
-        const fam = primaFamiliar(planId, payload.monedaInicial, payload.asegurados);
-        const star = planId === payload.planRecomendado ? "🟡" : "🔵";
-        return `${star} ${p.nombre}: ${fmtMoneda(fam, payload.monedaInicial)} anual`;
-      }).join('\n');
-      return `Hola ${payload.cliente.nombre || "estimado"}, le comparto su cotización Vital 360 con ${payload.planes.length === 1 ? "una opción" : payload.planes.length + " opciones"} que pensé para usted:\n\n${planesTxt}\n\nPuede revisar el detalle, cambiar entre colones y dólares, y descargar los formularios aquí:\n${link}\n\nCualquier consulta me escribe directo.\n${payload.agente.nombre} · ${payload.agente.whatsapp}`;
+      const mon    = payload.monedaInicial;
+      const ase    = payload.asegurados;
+      const ids    = PLANES.filter(p => payload.planes.indexOf(p.id) !== -1).map(p => p.id);
+      const total  = id => totalesPlan(id, mon, ase, "anual").total;
+      const nombre = (payload.cliente.nombre || "").trim().split(/\s+/)[0] || "estimado";
+      const nAse   = ase.length;
+      const quienes = nAse === 1 ? "" : `, los ${nAse}`;
+
+      let cuerpo;
+      if(ids.length >= 4){
+        const grupos = [
+          { ico:"🏥", txt:"En Costa Rica",  ids: ids.filter(id => /^esencial/.test(id)) },
+          { ico:"🌎", txt:"Centroamérica",  ids: ids.filter(id => /^pro/.test(id)) },
+          { ico:"✈️", txt:"Mundo",          ids: ids.filter(id => ID_PLAN_INTERNACIONAL.indexOf(id) !== -1) }
+        ].filter(g => g.ids.length);
+        cuerpo = grupos.map(g =>
+          `${g.ico} ${g.txt} desde ${fmtMoneda(Math.min.apply(null, g.ids.map(total)), mon)}`
+        ).join('\n');
+      } else {
+        cuerpo = ids.map(id => {
+          const pl = PLANES.find(x => x.id === id);
+          const star = id === payload.planRecomendado ? "⭐" : "🔵";
+          return `${star} ${pl.nombre}: ${fmtMoneda(total(id), mon)}`;
+        }).join('\n');
+      }
+
+      const rec = payload.planRecomendado && ids.indexOf(payload.planRecomendado) !== -1
+        ? PLANES.find(x => x.id === payload.planRecomendado) : null;
+      const lineaRec = (rec && ids.length >= 4)
+        ? `\n⭐ Le recomiendo ${rec.nombre}: ${fmtMoneda(total(rec.id), mon)} al año${quienes}.\n`
+        : "";
+
+      const lic = payload.agente.licencia && payload.agente.licencia !== "—"
+        ? ` · SUGESE ${payload.agente.licencia}` : "";
+
+      return `Hola ${nombre} 👋 Su cotización Vital 360 con ${ids.length === 1 ? "la opción que le preparé" : "las " + ids.length + " opciones"}, ya con IVA:
+${link}
+${lineaRec}
+${cuerpo}
+
+Total del año${quienes}. Adentro ve cuánto aporta cada uno y el pago en 2 o 4 cuotas.
+${payload.agente.nombre}${lic}`;
     }
 
     async function sendByWhatsApp(){
@@ -1888,17 +2197,16 @@
       const planRec = PLANES.find(pl => pl.id === planRecId);
       const numAseg = payload.asegurados.length;
 
-      // Calcular prima anual de los 3 planes (sin recargo)
-      const planesData = payload.planes.map(id => {
-        const pl = PLANES.find(x => x.id === id);
-        const fam = primaFamiliar(id, payload.monedaInicial, payload.asegurados);
-        return {
-          id, plan: pl,
-          isRec: id === payload.planRecomendado,
-          primaAnual: fam,
-          primaFmt: fmtMoneda(fam, payload.monedaInicial)
-        };
+      // Totales del año YA CON IVA (regla de JC, 27 jul 2026). Ordenados como
+      // la escalera de la vista cliente para que el cliente vea lo mismo en los
+      // dos lados. Con 7 planes las tarjetas horizontales de 33 % no caben:
+      // esto es un índice vertical agrupado por ámbito.
+      const mon = payload.monedaInicial;
+      const planesData = PLANES.filter(p => payload.planes.indexOf(p.id) !== -1).map(pl => {
+        const t = totalesPlan(pl.id, mon, payload.asegurados, "anual");
+        return { id: pl.id, plan: pl, isRec: pl.id === planRecId, t };
       });
+      const desRec = desgloseMiembros(planRecId, mon, payload.asegurados);
 
       return `<!DOCTYPE html>
 <html lang="es">
@@ -1949,38 +2257,68 @@
             </td>
           </tr>
 
-          <!-- 5. Cards de planes estilo scanner agente — recomendado con estrellita coral -->
+          <!-- 5a. El plan recomendado, desarmado persona por persona -->
           <tr>
-            <td style="padding:0 28px 24px;">
-              <p style="margin:0 0 14px;font-size:11px;font-weight:bold;color:#143F4A;letter-spacing:0.06em;text-transform:uppercase;">Primas calculadas para los ${numAseg} ${numAseg === 1 ? "asegurado" : "asegurados"}</p>
-              <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:separate;border-spacing:6px 0;">
+            <td style="padding:0 28px 8px;">
+              <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border:1px solid #C7DBE0;border-left:3px solid #E36B43;">
                 <tr>
-                  ${planesData.map(pd => {
-                    const isRec = pd.isRec;
-                    const sumaPlan = payload.monedaInicial === "USD" ? pd.plan.sumaUSD : pd.plan.sumaCRC;
-                    const sumaFmt  = fmtMoneda(sumaPlan, payload.monedaInicial);
-                    const starHtml = isRec
-                      ? `<table cellpadding="0" cellspacing="0" border="0"><tr><td bgcolor="#E36B43" style="background:#E36B43;color:#ffffff;width:22px;height:22px;border-radius:4px;text-align:center;font-size:13px;line-height:22px;font-weight:bold;">&#9733;</td></tr></table>`
-                      : "";
-                    return `<td width="33%" align="left" bgcolor="#E3EEF1" style="background:#E3EEF1;border:1px solid #C7DBE0;border-radius:6px;padding:14px 14px 16px;vertical-align:top;">
-                      <table width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
-                        <td valign="top" style="font-size:10px;color:#B94F2B;text-transform:uppercase;letter-spacing:0.06em;font-weight:bold;line-height:1.3;">${_escEmail(pd.plan.ambito)}</td>
-                        <td valign="top" align="right" width="30">${starHtml}</td>
-                      </tr></table>
-                      <p style="margin:8px 0 12px;font-family:Georgia,'Times New Roman',serif;font-size:20px;font-weight:500;color:#0E2127;letter-spacing:-0.015em;line-height:1.1;">${_escEmail(pd.plan.nombre)}</p>
-                      <p style="margin:0;font-size:10.5px;color:#6A7A80;line-height:1.4;">suma anual</p>
-                      <p style="margin:2px 0 14px;font-family:Courier New,Courier,monospace;font-size:12px;color:#0E2127;font-weight:600;line-height:1.3;">${_escEmail(sumaFmt)}</p>
-                      <table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td bgcolor="#D7DCDE" style="background:#D7DCDE;height:1px;line-height:1px;font-size:0;">&nbsp;</td></tr></table>
-                      <p style="margin:10px 0 0;font-size:9.5px;color:#6A7A80;text-transform:uppercase;letter-spacing:0.06em;font-weight:bold;">Prima familiar/año</p>
-                      <p style="margin:4px 0 0;font-family:Georgia,'Times New Roman',serif;font-size:22px;font-weight:500;color:#0E2127;letter-spacing:-0.015em;line-height:1.1;">${_escEmail(pd.primaFmt)}</p>
-                      <p style="margin:5px 0 0;font-size:10.5px;color:#6A7A80;font-style:italic;">+ 2 % IVA</p>
-                    </td>`;
-                  }).join("")}
+                  <td bgcolor="#E3EEF1" style="background:#E3EEF1;padding:14px 16px 12px;">
+                    <p style="margin:0;font-size:10px;color:#B94F2B;text-transform:uppercase;letter-spacing:0.08em;font-weight:bold;">&#9733; Lo que le recomiendo</p>
+                    <p style="margin:6px 0 2px;font-size:21px;font-weight:bold;color:#0E2127;line-height:1.15;">${_escEmail(planRec.nombre)}</p>
+                    <p style="margin:0;font-size:11.5px;color:#6A7A80;">${_escEmail(planRec.ambito)} · suma ${_escEmail(fmtMoneda(mon === "USD" ? planRec.sumaUSD : planRec.sumaCRC, mon))} por persona</p>
+                  </td>
+                </tr>
+                ${desRec.filas.map(f => `
+                <tr>
+                  <td style="padding:0 16px;">
+                    <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                      <tr>
+                        <td style="padding:8px 0;border-bottom:1px solid #EDF2F3;font-size:13px;color:#34464D;">${_escEmail(f.nombre || "Asegurado")} <span style="color:#8AA2A8;font-size:11.5px;">· ${_escEmail(f.edad)} años</span></td>
+                        <td align="right" style="padding:8px 0;border-bottom:1px solid #EDF2F3;font-family:Courier New,Courier,monospace;font-size:13.5px;font-weight:bold;color:#0E2127;white-space:nowrap;">${_escEmail(fmtMoneda(f.aporte, mon))}</td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>`).join("")}
+                <tr>
+                  <td bgcolor="#F7F1E4" style="background:#F7F1E4;padding:11px 16px;">
+                    <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                      <tr>
+                        <td style="font-size:13px;font-weight:bold;color:#143F4A;">Total del año</td>
+                        <td align="right" style="font-family:Courier New,Courier,monospace;font-size:16px;font-weight:bold;color:#143F4A;white-space:nowrap;">${_escEmail(fmtMoneda(desRec.totales.total, mon))}</td>
+                      </tr>
+                    </table>
+                    <p style="margin:5px 0 0;font-size:11px;color:#6B5320;line-height:1.5;">Incluye ${_escEmail(fmtMoneda(desRec.totales.iva, mon))} de IVA (2 %, Ley 9635) sobre una prima de ${_escEmail(fmtMoneda(desRec.totales.prima, mon))}.</p>
+                  </td>
                 </tr>
               </table>
-              <p style="margin:14px 0 0;font-size:11.5px;color:#6A7A80;font-style:italic;text-align:center;line-height:1.6;">La <span style="background:#E36B43;color:#ffffff;padding:1px 5px;border-radius:3px;font-style:normal;font-size:10px;">&#9733;</span> indica el plan recomendado. <strong style="color:#143F4A;font-style:normal;">En la cotización completa</strong> verá también las opciones <strong style="color:#143F4A;font-style:normal;">semestral y trimestral</strong> con los recargos correspondientes.</p>
+              <p style="margin:9px 0 0;font-size:11px;color:#6A7A80;line-height:1.55;">La prima depende solo de la edad de cada persona; sumadas dan el total. No hay cargos por grupo.</p>
             </td>
           </tr>
+
+          <!-- 5b. Índice de todas las opciones, agrupado por ámbito -->
+          ${planesData.length < 2 ? "" : `
+          <tr>
+            <td style="padding:22px 28px 24px;">
+              <p style="margin:0 0 10px;font-size:11px;font-weight:bold;color:#143F4A;letter-spacing:0.06em;text-transform:uppercase;">${planesData.length} opciones · total del año con IVA, para ${numAseg} ${numAseg === 1 ? "asegurado" : "asegurados"}</p>
+              <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border:1px solid #E2E8E9;">
+                ${(() => {
+                  let out = "", grupo = "";
+                  for(const pd of planesData){
+                    if(pd.plan.ambito !== grupo){
+                      grupo = pd.plan.ambito;
+                      out += `<tr><td colspan="2" bgcolor="#F7FAFA" style="background:#F7FAFA;padding:6px 12px;font-size:9.5px;letter-spacing:0.1em;text-transform:uppercase;color:#6A7A80;font-weight:bold;">${_escEmail(grupo)}</td></tr>`;
+                    }
+                    out += `<tr>
+                      <td style="padding:9px 12px;border-bottom:1px solid #EDF2F3;font-size:13px;color:#34464D;${pd.isRec ? "border-left:3px solid #E36B43;font-weight:bold;" : ""}">${_escEmail(pd.plan.nombre)}${pd.isRec ? " &#9733;" : ""}<br /><span style="font-size:10.5px;color:#8AA2A8;font-weight:normal;">Suma ${_escEmail(fmtMoneda(mon === "USD" ? pd.plan.sumaUSD : pd.plan.sumaCRC, mon))}</span></td>
+                      <td align="right" style="padding:9px 12px;border-bottom:1px solid #EDF2F3;white-space:nowrap;font-family:Courier New,Courier,monospace;font-size:13.5px;font-weight:bold;color:#0E2127;">${_escEmail(fmtMoneda(pd.t.total, mon))}<br /><span style="font-size:10px;color:#8AA2A8;font-weight:normal;">${_escEmail(fmtMoneda(pd.t.prima, mon))} + ${_escEmail(fmtMoneda(pd.t.iva, mon))}</span></td>
+                    </tr>`;
+                  }
+                  return out;
+                })()}
+              </table>
+              <p style="margin:12px 0 0;font-size:11.5px;color:#6A7A80;line-height:1.6;">Cada monto es el <strong style="color:#143F4A;">total del año con IVA incluido</strong>; debajo, en gris, la prima y el IVA por separado. En la cotización completa verá el detalle por persona de cada plan y el pago en 2 o 4 cuotas.</p>
+            </td>
+          </tr>`}
 
           <!-- 6. Qué incluye la guía (texto breve, con aire) -->
           <tr>
@@ -4056,10 +4394,14 @@
     ];
 
     function renderCliente(payload){
+      const rec = payload.planRecomendado || (payload.planes && payload.planes[0]) || null;
       cli = {
         payload,
         moneda: payload.monedaInicial || "CRC",
-        cmpExpandida: false
+        modalidad: "anual",   // chips de forma de pago
+        planFoco: null,       // fila de la escalera abierta (anclada)
+        cobExpandida: false,  // las 28 coberturas del plan recomendado
+        comparar: rec ? [rec] : []   // selección del CLIENTE para comparar, máx 3
       };
       renderClienteHero();
       renderClienteToggle();
@@ -4141,17 +4483,36 @@
       main.addEventListener('click', e => {
         const btn = e.target.closest('[data-action]');
         if(!btn) return;
-        if(btn.dataset.action === 'toggle-cmp-cli'){
-          cli.cmpExpandida = !cli.cmpExpandida;
-          renderClienteMain();
-          // Si se expandió, scroll suave al header de la sección
-          if(cli.cmpExpandida){
-            const sec = main.querySelector('.cmp-table-c-wrap');
-            if(sec) sec.scrollIntoView({behavior:'smooth', block:'start'});
-          }
-        }
         if(btn.dataset.action === 'ver-esquema'){
           abrirLightboxEsquema(btn.dataset.plan);
+        }
+        // --- vista v7 ---
+        if(btn.dataset.action === 'v7-pago'){
+          cli.modalidad = btn.dataset.mod;
+          renderClienteMain();
+        }
+        if(btn.dataset.action === 'v7-cob'){
+          cli.cobExpandida = !cli.cobExpandida;
+          renderClienteMain();
+        }
+        if(btn.dataset.action === 'v7-plan'){
+          const id = btn.dataset.plan;
+          const abriendo = cli.planFoco !== id;
+          cli.planFoco = abriendo ? id : null;
+          renderClienteMain();
+          // Regla #12: la fila tocada se queda a la vista y el panel entra en
+          // pantalla. Sin esto, en un teléfono el cliente toca y no ve nada.
+          if(abriendo){
+            const fila = main.querySelector('.v7-row.open');
+            if(fila) fila.scrollIntoView({ behavior:'smooth', block:'start' });
+          }
+        }
+        if(btn.dataset.action === 'v7-cmp'){
+          const id = btn.dataset.plan;
+          const i = cli.comparar.indexOf(id);
+          if(i !== -1) cli.comparar.splice(i, 1);
+          else if(cli.comparar.length < 3) cli.comparar.push(id);
+          renderClienteMain();
         }
       });
     }
@@ -4190,9 +4551,18 @@
 
     function renderClienteMain(){
       const main = document.getElementById('cli-main');
+      // Orden cerrado con JC el 27 jul 2026 (ver SKILL, Pendientes #2):
+      // recomendado → recibo → pago → cobertura → escalera → comparador,
+      // y después todo lo que no depende del plan.
       main.innerHTML =
-        renderClienteCmp() +
-        renderClientePago() +
+        '<div class="v7">' +
+        renderClienteRecomendado() +
+        renderClienteRecibo() +
+        renderClientePagoV7() +
+        renderClienteCobertura() +
+        renderClienteEscalera() +
+        renderClienteComparador() +
+        '</div>' +
         renderClienteCaracteristicas() +
         renderClienteServicios() +
         renderClienteDocs() +
@@ -4446,144 +4816,293 @@
       `;
     }
 
-    function renderClienteCmp(){
-      const p = cli.payload;
-      const cols = p.planes.map(planId => {
-        const plan = PLANES.find(pl => pl.id === planId);
-        const fam = primaFamiliar(planId, cli.moneda, p.asegurados);
-        const isRec = planId === p.planRecomendado;
-        const suma = cli.moneda === "USD" ? plan.sumaUSD : plan.sumaCRC;
-        const feats = COVS_CLIENTE.map(cov => {
-          const def = COBERTURAS_DEFS.find(d => d.id === cov.id);
-          // Si COVS_CLIENTE override el label, usar el override pero conservar la desc
-          const tipObj = def ? { label: cov.label, desc: def.desc } : cov;
-          const v = getCobertura(planId, cov.id, cli.moneda);
-          if(v === "NA") return `<li><span class="k"><span class="x">—</span>${labelTip(tipObj)}</span><span class="v na">no incluye</span></li>`;
-          const valTxt = typeof v === "number" ? fmtMoneda(v, cli.moneda) :
-                         cov.id === "deducible" && v === 0 ? "Sin deducible" : escapeHtml(String(v));
-          return `<li><span class="k"><span class="check">✓</span>${labelTip(tipObj)}</span><span class="v">${valTxt}</span></li>`;
-        }).join('');
-        return `<article class="col-c ${isRec?"rec":""}">
-          ${isRec ? '<span class="col-c-flag">★ Recomendado</span>' : ""}
-          <div class="col-c-ambito">${escapeHtml(plan.ambito)}</div>
-          <div class="col-c-name">${plan.nombre}</div>
-          <div class="col-c-suma">Suma asegurada anual <span class="v">${fmtMoneda(suma, cli.moneda)}</span></div>
-          <div class="col-c-suma-meta">${cli.moneda} · por persona</div>
-          <div class="col-c-price">
-            <div class="lbl">Prima familiar anual</div>
-            <div class="amt-row"><span class="cur">${cli.moneda==='USD'?'$':'₡'}</span><span class="amt">${fmtMoneda(fam, cli.moneda).replace(/^[₡$]/,'')}</span></div>
-            <div class="per"><span>por los ${p.asegurados.length} asegurados</span><span class="iva">+ 2 % IVA</span></div>
-            <div class="breakdown"><span>≈ por persona/año</span><span class="v">${fmtMoneda(fam / p.asegurados.length, cli.moneda)}</span></div>
-          </div>
-          <div class="col-c-feat">
-            <div class="h">Lo que cubre</div>
-            <ul>${feats}</ul>
-          </div>
-          <div class="col-c-esquema">
-            <button class="esquema-btn" data-action="ver-esquema" data-plan="${planId}">🔍 Ver esquema oficial INS</button>
-          </div>
-        </article>`;
-      }).join('');
+    // =====================================================================
+    // Vista cliente v7 · el recomendado manda, los demás en escalera
+    // =====================================================================
 
-      const n = p.planes.length;
-      return `
-        <section class="comp">
-          <div class="comp-h">
-            <div class="t">Comparativa de ${n > 1 ? n + " planes" : "plan"}</div>
-            <div class="sub">Primas calculadas para los ${p.asegurados.length} asegurados · cuota anual</div>
-          </div>
-          <div class="cols-c n-${n}">${cols}</div>
-        </section>
-        ${renderClienteCmpDetallada()}
-      `;
+    function planesOrdenados(){
+      const sel = cli.payload.planes || [];
+      return PLANES.filter(p => sel.indexOf(p.id) !== -1).map(p => p.id);
     }
 
-    function renderClienteCmpDetallada(){
+    function planRecomendadoId(){
       const p = cli.payload;
-      const expandida = cli.cmpExpandida;
+      const lista = planesOrdenados();
+      return (p.planRecomendado && lista.indexOf(p.planRecomendado) !== -1)
+        ? p.planRecomendado : lista[0];
+    }
 
-      const tablaHtml = !expandida ? "" : (() => {
-        const ths = p.planes.map(planId => {
-          const plan = PLANES.find(pl => pl.id === planId);
-          const isRec = planId === p.planRecomendado;
-          return `<th class="${isRec?'rec':''}">${plan.nombre}${isRec?' ★':''}</th>`;
-        }).join('');
-        const rows = COBERTURAS_DEFS.map(cov => {
-          const cells = p.planes.map(planId => {
-            const v = getCobertura(planId, cov.id, cli.moneda);
-            const isRec = planId === p.planRecomendado;
-            if(v === "NA") return `<td class="na ${isRec?'rec':''}">no aplica</td>`;
-            if(typeof v === "number") return `<td class="${isRec?'rec':''}">${fmtMoneda(v, cli.moneda)}</td>`;
-            return `<td class="${isRec?'rec':''}">${escapeHtml(String(v))}</td>`;
-          }).join('');
-          return `<tr><td>${labelTip(cov)}</td>${cells}</tr>`;
-        }).join('');
-        return `
-          <table class="cmp-table-c">
-            <thead><tr><th>Cobertura</th>${ths}</tr></thead>
-            <tbody>${rows}</tbody>
-          </table>
-        `;
-      })();
-
+    // Una comparación contra un vecino, en texto objetivo. Sin adjetivos: solo
+    // el delta de precio y las coberturas que cambian, incluidas las que
+    // EMPEORAN (el deducible que sube). Ver SKILL, Pendientes #2.
+    function renderJustificacionLado(lado, esAnterior){
+      if(!lado) return "";
+      const mon = cli.moneda;
+      const abs = Math.abs(lado.delta);
+      const precio = esAnterior
+        ? `Cuesta <b>${fmtMoneda(abs, mon)} más</b> al año que ${escapeHtml(lado.plan.nombre)}`
+        : `${escapeHtml(lado.plan.nombre)} cuesta <b>${fmtMoneda(abs, mon)} más</b> al año`;
+      const frases = lado.cambios.map(c => {
+        const nm = escapeHtml(c.label.toLowerCase());
+        if(c.tipo === "agrega") return `agrega ${nm} ${fmtMoneda(c.b, mon)}`;
+        // Un deducible que nace donde antes no había se dice así, no "pasa de 0".
+        const txt = (c.a === 0) ? `aparece ${nm} de ${fmtMoneda(c.b, mon)}`
+                  : (c.b === 0) ? `desaparece ${nm}`
+                  : `${nm} pasa de ${fmtMoneda(c.a, mon)} a ${fmtMoneda(c.b, mon)}`;
+        return c.mejora ? txt : `<span class="peor">${txt}</span>`;
+      });
+      const cuerpo = frases.length
+        ? `${precio}${esAnterior ? ". A cambio, " : ", y "}${frases.join(", ")}.`
+        : `${precio}.`;
       return `
-        <section class="cmp-table-c-wrap ${expandida?'open':''}">
-          <button class="cmp-table-c-h" data-action="toggle-cmp-cli">
-            <div class="cmp-table-c-h-text">
-              <h3>Comparativa detallada · ${COBERTURAS_DEFS.length} coberturas</h3>
-              <p class="sub">Todos los sublímites del producto, lado a lado.</p>
+        <div class="v7-just">
+          <div class="t">${esAnterior ? "Contra " + escapeHtml(lado.plan.nombre) + ", el anterior" : "Contra " + escapeHtml(lado.plan.nombre) + ", el siguiente"}</div>
+          <div class="d">${cuerpo}</div>
+        </div>`;
+    }
+
+    function renderClienteRecomendado(){
+      const p = cli.payload;
+      const id = planRecomendadoId();
+      const plan = PLANES.find(pl => pl.id === id);
+      const t = totalesPlan(id, cli.moneda, p.asegurados, "anual");
+      const j = justificacionPlan(id, cli.moneda, p.asegurados, planesOrdenados());
+      const varios = planesOrdenados().length > 1;
+      return `
+        <section class="v7-rec">
+          <div class="v7-rec-in">
+            ${varios ? '<span class="v7-flag">★ Lo que le recomiendo</span>' : ''}
+            <div class="v7-rec-nm">${escapeHtml(plan.nombre)}</div>
+            <div class="v7-rec-amb">${escapeHtml(plan.ambito)} · suma asegurada ${fmtMoneda(cli.moneda==='USD'?plan.sumaUSD:plan.sumaCRC, cli.moneda)} por persona</div>
+            <div class="v7-rec-tot">
+              <div class="lbl">Total del año · ${p.asegurados.length} ${p.asegurados.length===1?'asegurado':'asegurados'}</div>
+              <div class="big m">${fmtMoneda(t.total, cli.moneda)}</div>
+              <div class="eq">prima <span class="m">${fmtMoneda(t.prima, cli.moneda)}</span> + <b>IVA 2 % <span class="m">${fmtMoneda(t.iva, cli.moneda)}</span></b></div>
             </div>
-            <span class="cmp-toggle-chev">${expandida ? "▴ Ocultar" : "▾ Ver todas"}</span>
-          </button>
-          ${tablaHtml}
-        </section>
-      `;
+            ${renderJustificacionLado(j.anterior, true)}
+            ${renderJustificacionLado(j.siguiente, false)}
+          </div>
+        </section>`;
     }
 
-    function renderClientePago(){
+    function renderClienteRecibo(){
       const p = cli.payload;
+      const id = planRecomendadoId();
+      const d = desgloseMiembros(id, cli.moneda, p.asegurados);
+      const filas = d.filas.map(f => `
+        <div class="v7-rcpt-r">
+          <span class="nm">${escapeHtml(f.nombre || "Asegurado")} <i>· ${escapeHtml(f.edad)} años</i></span>
+          <span class="vl m">${fmtMoneda(f.aporte, cli.moneda)}</span>
+        </div>`).join('');
+      return `
+        <section class="v7-sec" style="margin-top:26px">
+          <div class="v7-k">Quiénes están cubiertos</div>
+          <div class="v7-h">Cuánto aporta cada uno</div>
+          <div class="v7-rcpt">
+            ${filas}
+            <div class="v7-rcpt-r tot"><span class="nm">Total del año</span><span class="vl m">${fmtMoneda(d.totales.total, cli.moneda)}</span></div>
+          </div>
+          <div class="v7-iva">Cada monto ya incluye el IVA del 2 % (Ley 9635). En total son
+            <span class="m">${fmtMoneda(d.totales.iva, cli.moneda)}</span> de IVA sobre una prima de
+            <span class="m">${fmtMoneda(d.totales.prima, cli.moneda)}</span>.</div>
+          <div class="v7-fine">La prima depende solo de la edad de cada persona; sumadas dan el total.
+            No hay cargos por grupo ni por tamaño de familia.</div>
+        </section>`;
+    }
+
+    function renderClientePagoV7(){
+      const p = cli.payload;
+      const id = planRecomendadoId();
+      const mon = cli.moneda;
+      const recTxt = { anual:"sin recargo",
+                       semestral:"recargo " + (mon==='USD'?'3':'5') + " %",
+                       trimestral:"recargo " + (mon==='USD'?'4':'7') + " %" };
       const opts = [
-        { mod:"anual",      nm:"Anual",      rec:"recargo 0 %",      cuotas:"una sola cuota" },
-        { mod:"semestral",  nm:"Semestral",  rec:"recargo + " + (cli.moneda==='USD'?'3':'5') + " %", cuotas:"2 cuotas" },
-        { mod:"trimestral", nm:"Trimestral", rec:"recargo + " + (cli.moneda==='USD'?'4':'7') + " %", cuotas:"4 cuotas" }
+        { mod:"anual",      n:"1 pago",  nm:"Anual" },
+        { mod:"semestral",  n:"2 pagos", nm:"Semestral" },
+        { mod:"trimestral", n:"4 pagos", nm:"Trimestral" }
       ];
+      const chips = opts.map(o => `
+        <button data-action="v7-pago" data-mod="${o.mod}" class="${cli.modalidad===o.mod?'on':''}">
+          <b>${o.n}</b>${o.nm}
+        </button>`).join('');
 
-      const bloques = p.planes.map(planId => {
-        const plan = PLANES.find(pl => pl.id === planId);
-        const isRec = planId === p.planRecomendado;
-        const fam = primaFamiliar(planId, cli.moneda, p.asegurados);
-        const items = opts.map(o => {
-          const tot   = totalConRecargo(o.mod, cli.moneda, fam);
-          const cuota = cuotaPorPeriodo(o.mod, cli.moneda, fam);
-          const isBest = o.mod === "anual";
-          const totLine = isBest ? `una sola cuota` : `${o.cuotas} · total año ${fmtMoneda(tot, cli.moneda)}`;
-          return `<div class="pay-opt ${isBest?"best":""}">
-            <div class="nm">${o.nm}</div>
-            <div class="rec">${o.rec}</div>
-            <div class="ct">${fmtMoneda(cuota, cli.moneda)}</div>
-            <div class="tot">${totLine}</div>
-          </div>`;
-        }).join('');
-        return `
-          <div class="pay-block ${isRec?'rec':''}">
-            <div class="pay-block-h">
-              <span class="ambito">${escapeHtml(plan.ambito)}</span>
-              <span class="nm">${plan.nombre}${isRec ? '<span class="rec-flag">★ recomendado</span>' : ''}</span>
-            </div>
-            <div class="pay-options">${items}</div>
+      const t = totalesPlan(id, mon, p.asegurados, cli.modalidad);
+      const anual = totalesPlan(id, mon, p.asegurados, "anual");
+      const distintas = t.cuotas.length > 1 && t.cuotas[0] !== t.cuotas[t.cuotas.length-1];
+      const cadencia = cli.modalidad === "anual" ? "una sola vez al año · sin recargo"
+        : `cada ${cli.modalidad === "semestral" ? "6 meses" : "3 meses"} · ${t.nCuotas} pagos`;
+      const extra = cli.modalidad === "anual" ? "" : `
+        <div class="v7-fine">Pagar en ${t.nCuotas} tractos suma
+          <span class="m">${fmtMoneda(t.total - anual.total, mon)}</span> más al año que pagar de una vez
+          (${recTxt[cli.modalidad]}).</div>`;
+      return `
+        <section class="v7-sec" style="margin-top:30px">
+          <div class="v7-k">Cómo pagarlo</div>
+          <div class="v7-h">Elija el ritmo</div>
+          <div class="v7-chips">${chips}</div>
+          <div class="v7-pago-now">
+            <div class="amt">${fmtMoneda(t.cuotas[0], mon)}</div>
+            <div class="cad">${cadencia}</div>
           </div>
-        `;
+          <div class="v7-iva" style="margin-top:12px">Total del año en esta modalidad:
+            <span class="m">${fmtMoneda(t.total, mon)}</span> — prima
+            <span class="m">${fmtMoneda(t.prima, mon)}</span> + IVA
+            <span class="m">${fmtMoneda(t.iva, mon)}</span>.${
+              distintas ? ` Las cuotas no son idénticas (${t.cuotas.map(c=>fmtMoneda(c,mon)).join(' · ')}) para que sumen el total exacto.` : ''}</div>
+          ${extra}
+        </section>`;
+    }
+
+    function renderClienteCobertura(){
+      const id = planRecomendadoId();
+      const plan = PLANES.find(pl => pl.id === id);
+      const filas = COVS_CLIENTE.map(cov => {
+        const def = COBERTURAS_DEFS.find(d => d.id === cov.id);
+        const tipObj = def ? { label: cov.label, desc: def.desc } : cov;
+        const v = getCobertura(id, cov.id, cli.moneda);
+        if(v === "NA") return `<div class="v7-rcpt-r"><span class="nm">${labelTip(tipObj)}</span><span class="vl" style="color:#B0562C">no incluye</span></div>`;
+        const txt = typeof v === "number"
+          ? (cov.id === "deducible" && v === 0 ? "Sin deducible" : fmtMoneda(v, cli.moneda))
+          : escapeHtml(String(v));
+        return `<div class="v7-rcpt-r"><span class="nm">${labelTip(tipObj)}</span><span class="vl m">${txt}</span></div>`;
       }).join('');
+      return `
+        <section class="v7-sec" style="margin-top:30px">
+          <div class="v7-k">Qué cubre</div>
+          <div class="v7-h">Lo principal de ${escapeHtml(plan.nombre)}</div>
+          <div class="v7-rcpt">${filas}</div>
+          <div class="v7-fine">Sumas por persona, por año. Toque el icono de cada renglón para ver qué significa.</div>
+          <div class="v7-chips" style="margin-top:12px">
+            <button data-action="v7-cob" style="flex:1.5">${cli.cobExpandida ? '▴ Ocultar las 28' : '▾ Ver las 28 coberturas'}</button>
+            <button data-action="ver-esquema" data-plan="${id}" style="flex:1">Esquema INS</button>
+          </div>
+          ${cli.cobExpandida ? renderTabla28([id]) : ''}
+        </section>`;
+    }
+
+    // Tabla de las 28 coberturas para los planes que se le pasen. Con 7 planes
+    // serían 8 columnas: por eso el recomendado la usa con UNO y el comparador
+    // con un máximo de 3.
+    function renderTabla28(ids){
+      const rec = planRecomendadoId();
+      const ths = ids.map(planId => {
+        const plan = PLANES.find(pl => pl.id === planId);
+        return `<th class="${planId===rec?'rec':''}">${escapeHtml(plan.nombre)}${planId===rec?' ★':''}</th>`;
+      }).join('');
+      const rows = COBERTURAS_DEFS.map(cov => {
+        const cells = ids.map(planId => {
+          const v = getCobertura(planId, cov.id, cli.moneda);
+          const c = planId===rec?'rec':'';
+          if(v === "NA") return `<td class="na ${c}">no aplica</td>`;
+          if(typeof v === "number") return `<td class="${c}">${fmtMoneda(v, cli.moneda)}</td>`;
+          return `<td class="${c}">${escapeHtml(String(v))}</td>`;
+        }).join('');
+        return `<tr><td>${labelTip(cov)}</td>${cells}</tr>`;
+      }).join('');
+      return `<div class="v7-scroll"><table class="cmp-table-c">
+        <thead><tr><th>Cobertura</th>${ths}</tr></thead><tbody>${rows}</tbody></table></div>`;
+    }
+
+    function renderClienteEscalera(){
+      const p = cli.payload;
+      const rec = planRecomendadoId();
+      const lista = planesOrdenados().filter(id => id !== rec);
+      if(!lista.length) return "";
+      const mon = cli.moneda;
+      const totRec = totalesPlan(rec, mon, p.asegurados, "anual").total;
+
+      let html = "", grupoActual = "";
+      for(const id of lista){
+        const plan = PLANES.find(pl => pl.id === id);
+        const t = totalesPlan(id, mon, p.asegurados, "anual");
+        const dif = t.total - totRec;
+        if(plan.ambito !== grupoActual){
+          grupoActual = plan.ambito;
+          html += `<div class="v7-grp">${escapeHtml(grupoActual)}</div>`;
+        }
+        const abierto = cli.planFoco === id;
+        html += `
+          <button class="v7-row ${abierto?'open':''}" data-action="v7-plan" data-plan="${id}" aria-expanded="${abierto?'true':'false'}">
+            <span class="l">
+              <span class="nm">${escapeHtml(plan.nombre)}</span>
+              <span class="sm">Suma ${fmtMoneda(mon==='USD'?plan.sumaUSD:plan.sumaCRC, mon)} · ${
+                (mon==='USD'?plan.deducibleUSD:plan.deducibleCRC) === 0 ? 'sin deducible'
+                : 'deducible ' + fmtMoneda(mon==='USD'?plan.deducibleUSD:plan.deducibleCRC, mon)}</span>
+            </span>
+            <span class="rt">
+              <span class="big">${fmtMoneda(t.total, mon)}</span>
+              <span class="sm">${dif > 0 ? '+' : '−'}${fmtMoneda(Math.abs(dif), mon)} vs ${escapeHtml(PLANES.find(x=>x.id===rec).nombre)}</span>
+            </span>
+            <span class="v7-chev">${abierto ? '⌄' : '›'}</span>
+          </button>
+          ${abierto ? renderPanelPlan(id) : ''}`;
+      }
+      return `
+        <section class="v7-sec" style="margin-top:34px">
+          <div class="v7-k">Las otras opciones</div>
+          <div class="v7-h">${lista.length === 1 ? 'La otra que le cotizé' : 'Las otras ' + lista.length + ', a la vista'}</div>
+          <div class="v7-fine">Total del año con IVA, para ${p.asegurados.length} ${p.asegurados.length===1?'asegurado':'asegurados'}. Toque cualquiera para abrirla.</div>
+          <div class="v7-lad">${html}</div>
+        </section>`;
+    }
+
+    // Panel anclado a SU fila (regla crítica #12): se inserta justo después de
+    // la fila tocada, nunca al final del grupo.
+    function renderPanelPlan(id){
+      const p = cli.payload;
+      const rec = planRecomendadoId();
+      const mon = cli.moneda;
+      const d = desgloseMiembros(id, mon, p.asegurados);
+      const filas = d.filas.map(f => `
+        <div class="v7-rcpt-r">
+          <span class="nm">${escapeHtml(f.nombre || "Asegurado")} <i>· ${escapeHtml(f.edad)}</i></span>
+          <span class="vl m">${fmtMoneda(f.aporte, mon)}</span>
+        </div>`).join('');
+
+      // Contra el recomendado: lo primero que se dice es qué cambia, no el precio.
+      const cambios = diferenciasCobertura(rec, id, mon).slice(0, 5);
+      const difHtml = cambios.length ? cambios.map(c => {
+        const val = c.tipo === "agrega"
+          ? `<span class="mej">agrega ${fmtMoneda(c.b, mon)}</span>`
+          : `<span class="${c.mejora?'mej':'peo'}">${fmtMoneda(c.a, mon)} → ${fmtMoneda(c.b, mon)}</span>`;
+        return `<div class="v7-dif"><span>${escapeHtml(c.label)}</span>${val}</div>`;
+      }).join('') : `<div class="v7-fine">Mismas coberturas principales que ${escapeHtml(PLANES.find(x=>x.id===rec).nombre)}.</div>`;
 
       return `
-        <section class="pay-cli">
-          <div class="pay-cli-h">
-            <div class="t">Formas de pago <em class="em">· ${p.planes.length > 1 ? p.planes.length + " planes lado a lado" : "comparativa"}</em></div>
-            <div class="legend">Tarifas oficiales INS. Pagando anual no hay recargo. El fraccionamiento incrementa el total del año.</div>
+        <div class="v7-anchor">
+          <div class="t">Contra ${escapeHtml(PLANES.find(x=>x.id===rec).nombre)}</div>
+          ${difHtml}
+          <div class="t">Quiénes están cubiertos</div>
+          <div class="v7-rcpt" style="margin-top:7px">
+            ${filas}
+            <div class="v7-rcpt-r tot"><span class="nm">Total del año</span><span class="vl m">${fmtMoneda(d.totales.total, mon)}</span></div>
           </div>
-          <div class="pay-blocks">${bloques}</div>
-        </section>
-      `;
+          <div class="v7-iva">Incluye <span class="m">${fmtMoneda(d.totales.iva, mon)}</span> de IVA sobre una prima de <span class="m">${fmtMoneda(d.totales.prima, mon)}</span>.</div>
+          <div class="v7-chips" style="margin-top:12px">
+            <button data-action="ver-esquema" data-plan="${id}">Esquema oficial INS</button>
+          </div>
+        </div>`;
+    }
+
+    function renderClienteComparador(){
+      const lista = planesOrdenados();
+      if(lista.length < 2) return "";
+      const sel = cli.comparar.filter(id => lista.indexOf(id) !== -1);
+      const chips = lista.map(id => {
+        const plan = PLANES.find(pl => pl.id === id);
+        const on = sel.indexOf(id) !== -1;
+        const bloqueado = !on && sel.length >= 3;
+        return `<button data-action="v7-cmp" data-plan="${id}" class="${on?'on':''}" ${bloqueado?'disabled':''}>${escapeHtml(plan.nombre)}</button>`;
+      }).join('');
+      return `
+        <section class="v7-sec" style="margin-top:34px">
+          <div class="v7-k">¿Quiere comparar?</div>
+          <div class="v7-h">Elija hasta 3 y véalos lado a lado</div>
+          <div class="v7-cmp-pick">${chips}</div>
+          ${sel.length ? renderTabla28(PLANES.filter(p=>sel.indexOf(p.id)!==-1).map(p=>p.id))
+                       : '<div class="v7-fine">Marque al menos un plan para ver la tabla.</div>'}
+        </section>`;
     }
 
     // =====================================================================
@@ -4637,6 +5156,63 @@
       // Sección 2 · formato
       console.assert(fmtMoneda(1768350, "CRC") === "₡1.768.350", '[smoke] fmt CRC, got ' + fmtMoneda(1768350,"CRC"));
       console.assert(fmtMoneda(2801, "USD") === "$2,801", '[smoke] fmt USD, got ' + fmtMoneda(2801,"USD"));
+
+      // Sección 2b · totales con IVA, desglose y justificación (27 jul 2026)
+      const famIVA = [
+        {nombre:"Marco",   parentesco:"titular", edad:42, nacionalidad:"CR"},
+        {nombre:"Adriana", parentesco:"conyuge", edad:39, nacionalidad:"CR"},
+        {nombre:"Emilia",  parentesco:"hijo",    edad:12, nacionalidad:"CR"},
+        {nombre:"Tomás",   parentesco:"hijo",    edad:8,  nacionalidad:"CR"}
+      ];
+      const tPro1 = totalesPlan("pro1", "CRC", famIVA, "anual");
+      console.assert(tPro1.prima === 1694523, '[smoke] Pro1 prima anual CRC, got ' + tPro1.prima);
+      console.assert(tPro1.iva   === 33890,   '[smoke] Pro1 IVA anual CRC, got ' + tPro1.iva);
+      console.assert(tPro1.total === 1728413, '[smoke] Pro1 total con IVA, got ' + tPro1.total);
+      console.assert(tPro1.fraccionamiento === 0, '[smoke] anual no lleva recargo');
+
+      // Las cuotas SUMAN el total: nunca cuota redondeada × n
+      // El total es la suma de las PARTES redondeadas (prima + IVA), no el
+      // redondeo de la suma: si no, lo que el cliente ve en pantalla no cuadra.
+      const tTri = totalesPlan("pro1", "CRC", famIVA, "trimestral");
+      console.assert(tTri.prima === 1813140, '[smoke] Pro1 trimestral prima, got ' + tTri.prima);
+      console.assert(tTri.iva   === 36263,   '[smoke] Pro1 trimestral IVA, got ' + tTri.iva);
+      console.assert(tTri.total === 1849403, '[smoke] Pro1 trimestral total, got ' + tTri.total);
+      console.assert(tTri.prima + tTri.iva === tTri.total, '[smoke] prima + IVA debe dar el total en pantalla');
+      console.assert(tTri.cuotas.reduce((a,b)=>a+b,0) === tTri.total, '[smoke] las 4 cuotas deben sumar el total');
+      console.assert(tTri.cuotas.join(",") === "462351,462351,462351,462350", '[smoke] cuotas reconciliadas, got ' + tTri.cuotas.join(","));
+      const tSem = totalesPlan("pro1", "CRC", famIVA, "semestral");
+      console.assert(tSem.cuotas.reduce((a,b)=>a+b,0) === tSem.total, '[smoke] las 2 cuotas deben sumar el total');
+
+      // Desglose: suma exacta + residuo al titular + misma edad = mismo aporte
+      const dPro1 = desgloseMiembros("pro1", "CRC", famIVA);
+      console.assert(dPro1.filas.reduce((s,f)=>s+f.aporte,0) === tPro1.total, '[smoke] el desglose debe sumar el total oficial');
+      console.assert(dPro1.filas[0].aporte === 617672, '[smoke] residuo al titular, got ' + dPro1.filas[0].aporte);
+      console.assert(dPro1.filas[1].aporte === 561521, '[smoke] aporte cónyuge, got ' + dPro1.filas[1].aporte);
+      console.assert(dPro1.filas[2].aporte === 274610, '[smoke] aporte hijo = prima × 1,02, got ' + dPro1.filas[2].aporte);
+      console.assert(dPro1.filas[2].aporte === dPro1.filas[3].aporte, '[smoke] misma edad = mismo aporte');
+      // Cada aporte que no lleva el residuo tiene que ser reproducible a mano
+      console.assert(dPro1.filas[2].aporte === Math.round(dPro1.filas[2].primaTarifa * 1.02), '[smoke] el cliente debe poder verificar su aporte');
+      // En USD, que es donde el redondeo aprieta más
+      const dUsd = desgloseMiembros("platinum2", "USD", famIVA);
+      console.assert(dUsd.filas.reduce((s,f)=>s+f.aporte,0) === dUsd.totales.total, '[smoke] desglose USD debe cuadrar');
+      // Y en todos los planes y monedas, sin excepción
+      for(const pl of PLANES) for(const mo of ["CRC","USD"]){
+        const d = desgloseMiembros(pl.id, mo, famIVA);
+        console.assert(d.filas.reduce((s,f)=>s+f.aporte,0) === d.totales.total, '[smoke] desglose debe cuadrar en ' + pl.id + ' ' + mo);
+      }
+
+      // Justificación objetiva
+      const jPro1 = justificacionPlan("pro1", "CRC", famIVA);
+      console.assert(jPro1.anterior.plan.id === "esencial2", '[smoke] anterior de pro1 = esencial2');
+      console.assert(jPro1.siguiente.plan.id === "pro2", '[smoke] siguiente de pro1 = pro2');
+      console.assert(jPro1.siguiente.delta === 750796, '[smoke] delta pro1→pro2, got ' + jPro1.siguiente.delta);
+      console.assert(jPro1.anterior.delta === -316324, '[smoke] delta pro1→esencial2, got ' + jPro1.anterior.delta);
+      console.assert(jPro1.siguiente.cambios.some(c => c.tipo === "agrega" && /Maternidad/i.test(c.label)), '[smoke] pro2 agrega maternidad');
+      // El deducible que SUBE tiene que marcarse como que NO mejora
+      const ded = jPro1.siguiente.cambios.find(c => /Deducible/i.test(c.label));
+      console.assert(ded && ded.mejora === false, '[smoke] deducible al alza no es mejora');
+      console.assert(justificacionPlan("esencial1","CRC",famIVA).anterior === null, '[smoke] el primer plan no tiene anterior');
+      console.assert(justificacionPlan("deluxe","CRC",famIVA).siguiente === null, '[smoke] el último plan no tiene siguiente');
 
       // Sección 3 · disparadores
       const fam0 = [
