@@ -4708,7 +4708,13 @@
     function initGoogleAuth(){
       // Bypass automático mientras GOOGLE_CLIENT_ID sea placeholder, o ?dev=1 manual.
       // Cuando se ponga el Client ID real de Google Cloud Console, este bypass se desactiva solo.
-      const isDevQuery   = new URLSearchParams(location.search).get('dev') === '1';
+      //
+      // 🔴 ?dev=1 SOLO en localhost (JC, 27 jul 2026). En producción abría la
+      // consola de agente a cualquiera, cargada como el primer agente de la
+      // whitelist: un desconocido podía emitir cotizaciones con el nombre y la
+      // licencia SUGESE de JC. No volver a habilitarlo fuera de localhost.
+      const esLocal      = /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname);
+      const isDevQuery   = esLocal && new URLSearchParams(location.search).get('dev') === '1';
       const oauthSinSetup = GOOGLE_CLIENT_ID.startsWith('REEMPLAZAR');
       if(isDevQuery || oauthSinSetup){
         const email = Object.keys(AGENTES)[0];
