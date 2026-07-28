@@ -2926,7 +2926,7 @@ ${payload.agente.nombre}${lic}`;
           </div>
           <div class="email-modal-actions">
             <button class="btn btn-primary" data-action="send-direct">🚀 Enviar ahora desde Gmail</button>
-            <button class="btn btn-secondary" data-action="copy-html">📋 Copiar HTML</button>
+            <button class="btn btn-secondary" data-action="copy-html">📋 Copiar correo</button>
             <button class="btn btn-secondary" data-action="open-gmail-manual">✉ Abrir Gmail manualmente</button>
             <button class="btn btn-secondary" data-action="download-eml">💾 Descargar .eml</button>
           </div>
@@ -2952,10 +2952,7 @@ ${payload.agente.nombre}${lic}`;
           window.open(gmailComposeUrl, '_blank');
         }
         if(e.target.dataset.action === 'copy-html'){
-          navigator.clipboard.writeText(html).then(
-            () => { e.target.textContent = "✓ HTML copiado"; setTimeout(() => { e.target.textContent = "📋 Copiar HTML"; }, 2200); },
-            () => alert('No se pudo copiar.')
-          );
+          manejarCopiarHtml(e.target, html, "📋 Copiar correo");
         }
         if(e.target.dataset.action === 'download-eml'){
           // Si hay adjuntos, el .eml descargado los incluye (multipart/mixed),
@@ -3014,7 +3011,7 @@ ${payload.agente.nombre}${lic}`;
           ${adjResumen}
           <div class="email-modal-actions">
             <button class="btn btn-primary" data-action="send-direct">🚀 Enviar ahora desde Gmail</button>
-            <button class="btn btn-secondary" data-action="copy-html">📋 Copiar HTML</button>
+            <button class="btn btn-secondary" data-action="copy-html">📋 Copiar correo</button>
             <button class="btn btn-secondary" data-action="open-gmail-manual">✉ Abrir Gmail manualmente</button>
           </div>
           <div class="email-modal-preview">
@@ -3034,10 +3031,7 @@ ${payload.agente.nombre}${lic}`;
           window.open(gmailComposeUrl, '_blank');
         }
         if(action === 'copy-html'){
-          navigator.clipboard.writeText(html).then(
-            () => { e.target.textContent = "✓ HTML copiado"; setTimeout(() => { e.target.textContent = "📋 Copiar HTML"; }, 2200); },
-            () => alert('No se pudo copiar.')
-          );
+          manejarCopiarHtml(e.target, html, "📋 Copiar correo");
         }
       });
     }
@@ -3183,6 +3177,45 @@ ${payload.agente.nombre}${lic}`;
     // Inserta CRLF cada 76 caracteres (RFC 2045) en un string base64.
     function _chunk76(b64){
       return b64.replace(/.{1,76}/g, '$&\r\n').replace(/\r\n$/, '');
+    }
+
+    // 🔴 Copia el correo como HTML CON FORMATO, no como código fuente.
+    // 27 jul 2026: un agente siguió la instrucción que da esta misma app
+    // ("Copiar HTML → pegar en Gmail") y al cliente le llegó el <!DOCTYPE html>
+    // en crudo. La causa era clipboard.writeText(), que solo pone texto plano:
+    // Gmail pega texto y muestra el código. Con ClipboardItem el portapapeles
+    // lleva la variante text/html y Gmail pega el correo renderizado.
+    // Devuelve 'html' si quedó con formato, 'texto' si hubo que caer al modo
+    // viejo — quien llame DEBE avisarle al agente cuando sea 'texto'.
+    async function copiarCorreoAlPortapapeles(html){
+      if(window.ClipboardItem && navigator.clipboard && navigator.clipboard.write){
+        try {
+          await navigator.clipboard.write([ new ClipboardItem({
+            'text/html':  new Blob([html], { type: 'text/html'  }),
+            'text/plain': new Blob([html], { type: 'text/plain' })
+          }) ]);
+          return 'html';
+        } catch(e){
+          console.warn('[vital360] portapapeles con formato no disponible', e);
+        }
+      }
+      await navigator.clipboard.writeText(html);
+      return 'texto';
+    }
+
+    // Handler compartido por los 3 modales de correo.
+    function manejarCopiarHtml(btn, html, textoOriginal){
+      copiarCorreoAlPortapapeles(html).then(modo => {
+        if(modo === 'texto'){
+          alert('Su navegador solo permitió copiar el código, no el correo con formato.\n\n' +
+                'Si lo pega en Gmail le va a llegar al cliente como código. Use el botón ' +
+                '"🚀 Enviar ahora desde Gmail", que sí manda el correo bien armado.');
+          btn.textContent = textoOriginal;
+          return;
+        }
+        btn.textContent = "✓ Copiado con formato";
+        setTimeout(() => { btn.textContent = textoOriginal; }, 2600);
+      }, () => alert('No se pudo copiar.'));
     }
 
     // Codifica el nombre de archivo para los headers name= / filename=.
@@ -3446,13 +3479,13 @@ ${payload.agente.nombre}${lic}`;
           </div>
           <div class="email-modal-actions">
             <button class="btn btn-primary" data-action="send-direct">🚀 Enviar ahora desde Gmail</button>
-            <button class="btn btn-secondary" data-action="copy-html">📋 Copiar HTML</button>
+            <button class="btn btn-secondary" data-action="copy-html">📋 Copiar correo</button>
             <a class="btn btn-secondary" href="${gmailComposeUrl}" target="_blank">✉ Abrir Gmail manualmente</a>
             <button class="btn btn-secondary" data-action="download-eml">💾 Descargar .eml</button>
           </div>
           <div class="email-modal-hint">
             <strong>1-click:</strong> Click en <em>Enviar ahora desde Gmail</em>. La primera vez te va a pedir autorizar el permiso "enviar correos como tú" (popup de Google). Después de eso, el correo sale instantáneo desde tu cuenta <code>${_escEmail(agenteActual && agenteActual.email || '')}</code>.<br>
-            <strong>Alternativa manual:</strong> Copiar HTML → Abrir Gmail → pegar en el cuerpo (<kbd>Ctrl+V</kbd>) → enviar.
+            <strong>Alternativa manual:</strong> Copiar correo → Abrir Gmail → pegar con <kbd>Ctrl+V</kbd> → enviar. <strong style="color:var(--ins-coral-deep);">Ojo:</strong> pegue con <kbd>Ctrl+V</kbd> normal. Con <kbd>Ctrl+Shift+V</kbd> Gmail pega sin formato y al cliente le llega el código en crudo.
           </div>
           <div class="email-modal-preview">
             <iframe srcdoc="${escapeAttr(html)}" sandbox="" loading="lazy"></iframe>
@@ -3469,10 +3502,7 @@ ${payload.agente.nombre}${lic}`;
           enviarEmailDirecto({ to, subject, html, btnEl: e.target });
         }
         if(e.target.dataset.action === 'copy-html'){
-          navigator.clipboard.writeText(html).then(
-            () => { e.target.textContent = "✓ HTML copiado"; setTimeout(() => { e.target.textContent = "📋 Copiar HTML al portapapeles"; }, 2200); },
-            () => alert('No se pudo copiar al portapapeles. Use Ctrl+A + Ctrl+C en la vista previa.')
-          );
+          manejarCopiarHtml(e.target, html, "📋 Copiar correo");
         }
         if(e.target.dataset.action === 'download-eml'){
           const eml = `To: ${to}\r\nSubject: ${subject}\r\nMIME-Version: 1.0\r\nContent-Type: text/html; charset=UTF-8\r\n\r\n${html}`;
