@@ -658,10 +658,14 @@
     .v7-row.star{border-left:3px solid var(--ins-coral)}
     .v7-row.open{border-color:var(--ins-teal);border-width:2px;background:#F6FAFA;
       border-radius:9px 9px 0 0;margin-bottom:0}
-    .v7-row .nm{font-size:15px;font-weight:600;color:var(--ins-teal-deep)}
-    .v7-row .sm{font-size:11px;color:#7D9298;margin-top:2px}
-    .v7-row .rt{text-align:right;white-space:nowrap}
-    .v7-row .rt .big{font-size:16px;font-weight:600;font-family:var(--font-mono);font-variant-numeric:tabular-nums}
+    /* nm/sm/big son <span>: sin display:block se quedan EN LÍNEA, el margin-top
+       no hace nada y en 375 px la fila se leía como un párrafo corrido
+       ("Esencial 2 Suma ₡13.750.000 ₡1.412.089 −₡316.324 vs Pro 1"). */
+    .v7-row .l{flex:1 1 auto;min-width:0}
+    .v7-row .nm{display:block;font-size:15px;font-weight:600;color:var(--ins-teal-deep)}
+    .v7-row .sm{display:block;font-size:11px;color:#7D9298;margin-top:2px}
+    .v7-row .rt{flex:0 0 auto;text-align:right;white-space:nowrap}
+    .v7-row .rt .big{display:block;font-size:16px;font-weight:600;font-family:var(--font-mono);font-variant-numeric:tabular-nums}
     .v7-row .rt .sm{font-size:10.5px;color:#8AA2A8;margin-top:1px}
     .v7-chev{color:var(--ins-teal);font-weight:700;font-size:14px;margin-left:4px;flex:0 0 auto}
     /* El panel anclado: pegado a SU fila, envuelto por el mismo borde (regla #12) */
@@ -673,6 +677,16 @@
     .v7-dif:last-child{border-bottom:0}
     .v7-dif .mej{color:#2E7D5B;font-weight:600;white-space:nowrap}
     .v7-dif .peo{color:#B0562C;font-weight:600;white-space:nowrap}
+    /* Formas de pago dentro del panel de cada plan. Las tres a la vista (no
+       hay chips acá: el valor está en compararlas de un vistazo) y las cifras
+       salen de totalesPlan, nunca se recalculan. */
+    .v7-pgt{border:1px solid #DCE5E7;border-radius:8px;background:#fff;overflow:hidden;margin-top:8px}
+    .v7-pgr{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:9px 12px;border-bottom:1px solid #EDF2F3}
+    .v7-pgr:last-child{border-bottom:0}
+    .v7-pgr.on{background:rgba(31,92,107,.07)}
+    .v7-pgr .md{display:block;font-size:13.5px;font-weight:600;color:var(--ins-teal-deep)}
+    .v7-pgr .cu{display:block;font-size:11px;color:#7D9298;margin-top:2px;line-height:1.4}
+    .v7-pgr .tt{font-size:14.5px;font-weight:600;white-space:nowrap;color:var(--ink-1, #0E2127)}
 
     /* Comparador del cliente */
     .v7-cmp-pick{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px}
@@ -1217,6 +1231,40 @@
         filas[iTit].aporte += totales.total - suma;   // el residuo, al titular
       }
       return { filas, totales };
+    }
+
+    // Las tres modalidades, en el orden en que se le muestran al cliente.
+    // El número de pagos y el porcentaje NO se escriben acá: se leen de
+    // RECARGOS, para que la página no publique un recargo distinto al cobrado.
+    const MODALIDADES = [
+      { mod:"anual",      nm:"Anual" },
+      { mod:"semestral",  nm:"Semestral" },
+      { mod:"trimestral", nm:"Trimestral" }
+    ];
+
+    function nPagos(modalidad){
+      const c = RECARGOS[modalidad].cuotas;
+      return c === 1 ? "1 pago" : c + " pagos";
+    }
+
+    function txtRecargo(modalidad, moneda){
+      const pct = (RECARGOS[modalidad] || {})[moneda] || 0;
+      return pct ? "recargo " + Math.round(pct * 100) + " %" : "sin recargo";
+    }
+
+    // Cómo se dicen las cuotas de una modalidad, en una sola línea.
+    // Cuando el residuo hace que no sean idénticas se dicen las DOS cifras con
+    // su cantidad: poner "4 de ₡462.351" al lado de un total de ₡1.849.403
+    // invita al cliente a multiplicar y a no cuadrar (ver la nota de arriba
+    // sobre reconciliar las cuotas contra el total).
+    function textoCuotas(t, mon){
+      if(t.nCuotas === 1) return "1 solo pago";
+      const alta = t.cuotas[0], baja = t.cuotas[t.cuotas.length - 1];
+      if(alta === baja) return t.nCuotas + " pagos de " + fmtMoneda(alta, mon);
+      // Con dos cuotas, "1 de X y 1 de Y" suena raro: se dicen las dos y ya.
+      if(t.nCuotas === 2) return "2 pagos: " + fmtMoneda(alta, mon) + " y " + fmtMoneda(baja, mon);
+      const nAlta = t.cuotas.filter(c => c === alta).length;
+      return nAlta + " de " + fmtMoneda(alta, mon) + " y " + (t.nCuotas - nAlta) + " de " + fmtMoneda(baja, mon);
     }
 
     // Coberturas que se citan al comparar dos planes, en orden de peso para el
@@ -4944,17 +4992,10 @@ ${payload.agente.nombre}${lic}`;
       const p = cli.payload;
       const id = planRecomendadoId();
       const mon = cli.moneda;
-      const recTxt = { anual:"sin recargo",
-                       semestral:"recargo " + (mon==='USD'?'3':'5') + " %",
-                       trimestral:"recargo " + (mon==='USD'?'4':'7') + " %" };
-      const opts = [
-        { mod:"anual",      n:"1 pago",  nm:"Anual" },
-        { mod:"semestral",  n:"2 pagos", nm:"Semestral" },
-        { mod:"trimestral", n:"4 pagos", nm:"Trimestral" }
-      ];
-      const chips = opts.map(o => `
+      const plan = PLANES.find(pl => pl.id === id);
+      const chips = MODALIDADES.map(o => `
         <button data-action="v7-pago" data-mod="${o.mod}" class="${cli.modalidad===o.mod?'on':''}">
-          <b>${o.n}</b>${o.nm}
+          <b>${nPagos(o.mod)}</b>${o.nm}
         </button>`).join('');
 
       const t = totalesPlan(id, mon, p.asegurados, cli.modalidad);
@@ -4965,11 +5006,11 @@ ${payload.agente.nombre}${lic}`;
       const extra = cli.modalidad === "anual" ? "" : `
         <div class="v7-fine">Pagar en ${t.nCuotas} tractos suma
           <span class="m">${fmtMoneda(t.total - anual.total, mon)}</span> más al año que pagar de una vez
-          (${recTxt[cli.modalidad]}).</div>`;
+          (${txtRecargo(cli.modalidad, mon)}).</div>`;
       return `
         <section class="v7-sec" style="margin-top:30px">
           <div class="v7-k">Cómo pagarlo</div>
-          <div class="v7-h">Elija el ritmo</div>
+          <div class="v7-h">Elija el ritmo para ${escapeHtml(plan.nombre)}</div>
           <div class="v7-chips">${chips}</div>
           <div class="v7-pago-now">
             <div class="amt">${fmtMoneda(t.cuotas[0], mon)}</div>
@@ -5099,6 +5140,22 @@ ${payload.agente.nombre}${lic}`;
         return `<div class="v7-dif"><span>${escapeHtml(c.label)}</span>${val}</div>`;
       }).join('') : `<div class="v7-fine">Mismas coberturas principales que ${escapeHtml(PLANES.find(x=>x.id===rec).nombre)}.</div>`;
 
+      // Las mismas formas de pago que el plan recomendado (pedido de JC,
+      // 3 ago 2026): la escalera enseñaba solo el total anual y el cliente no
+      // podía ver qué pasaba al fraccionar en los otros planes. Se muestran
+      // las tres juntas, sin chips, porque acá lo que sirve es compararlas.
+      const pagos = MODALIDADES.map(o => {
+        const tp = totalesPlan(id, mon, p.asegurados, o.mod);
+        return `
+          <div class="v7-pgr ${cli.modalidad === o.mod ? 'on' : ''}">
+            <span class="l">
+              <span class="md">${o.nm}</span>
+              <span class="cu">${textoCuotas(tp, mon)} · ${txtRecargo(o.mod, mon)}</span>
+            </span>
+            <span class="tt m">${fmtMoneda(tp.total, mon)}</span>
+          </div>`;
+      }).join('');
+
       return `
         <div class="v7-anchor">
           <div class="t">Contra ${escapeHtml(PLANES.find(x=>x.id===rec).nombre)}</div>
@@ -5109,6 +5166,9 @@ ${payload.agente.nombre}${lic}`;
             <div class="v7-rcpt-r tot"><span class="nm">Total del año</span><span class="vl m">${fmtMoneda(d.totales.total, mon)}</span></div>
           </div>
           <div class="v7-iva">Incluye <span class="m">${fmtMoneda(d.totales.iva, mon)}</span> de IVA sobre una prima de <span class="m">${fmtMoneda(d.totales.prima, mon)}</span>.</div>
+          <div class="t">Cómo pagarlo</div>
+          <div class="v7-pgt">${pagos}</div>
+          <div class="v7-fine">Cada monto de la derecha es el total del año en esa modalidad, con IVA incluido.</div>
           <div class="v7-chips" style="margin-top:12px">
             <button data-action="ver-esquema" data-plan="${id}">Esquema oficial INS</button>
           </div>
@@ -5212,6 +5272,28 @@ ${payload.agente.nombre}${lic}`;
       console.assert(tTri.cuotas.join(",") === "462351,462351,462351,462350", '[smoke] cuotas reconciliadas, got ' + tTri.cuotas.join(","));
       const tSem = totalesPlan("pro1", "CRC", famIVA, "semestral");
       console.assert(tSem.cuotas.reduce((a,b)=>a+b,0) === tSem.total, '[smoke] las 2 cuotas deben sumar el total');
+
+      // Formas de pago en el panel de cada plan (3 ago 2026). La línea de
+      // cuotas nunca puede insinuar un total que no existe: cuando el residuo
+      // las desiguala se dicen las dos cifras con su cantidad.
+      console.assert(textoCuotas(tPro1, "CRC") === "1 solo pago", '[smoke] textoCuotas anual, got ' + textoCuotas(tPro1,"CRC"));
+      console.assert(textoCuotas(tSem, "CRC") === "2 pagos de ₡907.417", '[smoke] textoCuotas semestral, got ' + textoCuotas(tSem,"CRC"));
+      console.assert(textoCuotas(tTri, "CRC") === "3 de ₡462.351 y 1 de ₡462.350", '[smoke] textoCuotas trimestral desigual, got ' + textoCuotas(tTri,"CRC"));
+      // Dos cuotas desiguales: se dicen ambas, sin "1 de X y 1 de Y"
+      const tSemE2 = totalesPlan("esencial2", "CRC", famIVA, "semestral");
+      console.assert(textoCuotas(tSemE2, "CRC") === "2 pagos: ₡741.347 y ₡741.346", '[smoke] textoCuotas 2 cuotas desiguales, got ' + textoCuotas(tSemE2,"CRC"));
+      console.assert(txtRecargo("anual","CRC")      === "sin recargo",  '[smoke] txtRecargo anual');
+      console.assert(txtRecargo("semestral","CRC")  === "recargo 5 %",  '[smoke] txtRecargo semestral CRC');
+      console.assert(txtRecargo("trimestral","CRC") === "recargo 7 %",  '[smoke] txtRecargo trimestral CRC');
+      console.assert(txtRecargo("semestral","USD")  === "recargo 3 %",  '[smoke] txtRecargo semestral USD');
+      console.assert(txtRecargo("trimestral","USD") === "recargo 4 %",  '[smoke] txtRecargo trimestral USD');
+      console.assert(nPagos("anual") === "1 pago" && nPagos("trimestral") === "4 pagos", '[smoke] nPagos');
+      console.assert(MODALIDADES.length === 3, '[smoke] MODALIDADES debe tener 3 (sin mensual)');
+      // Y en cualquier plan/moneda/modalidad las cuotas siguen sumando el total
+      for(const pl of PLANES) for(const mo of ["CRC","USD"]) for(const md of MODALIDADES){
+        const tt = totalesPlan(pl.id, mo, famIVA, md.mod);
+        console.assert(tt.cuotas.reduce((a,b)=>a+b,0) === tt.total, '[smoke] cuotas deben sumar el total en ' + pl.id + ' ' + mo + ' ' + md.mod);
+      }
 
       // Desglose: suma exacta + residuo al titular + misma edad = mismo aporte
       const dPro1 = desgloseMiembros("pro1", "CRC", famIVA);
