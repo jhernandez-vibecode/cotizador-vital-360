@@ -593,6 +593,13 @@
     .sdi-foot-line{font-size:12px;color:#C7DBE0;margin:4px 0;line-height:1.55}
     .sdi-foot-line strong{color:#fff;font-weight:600}
     .sdi-foot-line.sub{font-size:11px;color:#94aab0}
+    /* Registro de cambios: pie visible para el agente, historial dentro de details */
+    .sdi-changelog{margin-top:14px;padding-top:12px;border-top:1px solid rgba(255,255,255,.14);font-size:11px;color:#94AAB0;text-align:center}
+    .sdi-changelog summary{cursor:pointer;list-style-position:inside}
+    .sdi-changelog summary:hover{color:#C7DBE0}
+    .sdi-changelog ul{margin:10px auto 0;padding:0;max-width:620px;line-height:1.65;text-align:left;list-style:none}
+    .sdi-changelog li{margin:5px 0}
+    .sdi-changelog strong{color:#C7DBE0;font-weight:600}
     /* Pie branded de la vista agente (cierra la pantalla donde se cotiza) */
     .foot-agente{max-width:1480px;margin:0 auto;padding:0 32px 48px}
     /* =================================================================
@@ -816,6 +823,20 @@
         </div>
         <p class="sdi-foot-line">Un producto de <strong>SDI · Seguros Digitales</strong></p>
         <p class="sdi-foot-line sub">© 2026 · Propiedad intelectual de <strong>Juan Carlos Hernández Vargas</strong></p>
+        <details class="sdi-changelog">
+          <summary>Última actualización: 6 ago 2026 — el Formulario COVID-19 ya no es requisito</summary>
+          <ul>
+            <li><strong>6 ago 2026</strong> — El INS eliminó el Formulario de Declaración COVID-19 como requisito de suscripción: ya no aparece entre los documentos para iniciar el aseguramiento.</li>
+            <li><strong>3 ago 2026</strong> — Las otras opciones de la cotización también muestran sus formas de pago (anual, semestral y trimestral).</li>
+            <li><strong>27 jul 2026</strong> — La cotización presenta las 7 opciones con el aporte de cada asegurado (IVA incluido) y un comparador para el cliente. Enlace corto para WhatsApp y arreglo de "Copiar correo".</li>
+            <li><strong>21 jul 2026</strong> — Nueva tipografía en la página del cliente y pie con la leyenda de propiedad intelectual.</li>
+            <li><strong>20 jul 2026</strong> — Cada agente puede editar su nombre, WhatsApp y licencia desde la tuerca ⚙ del encabezado.</li>
+            <li><strong>16 jul 2026</strong> — Respaldo del historial de cotizaciones: exportar/importar archivo y recuperación desde los correos enviados en Gmail.</li>
+            <li><strong>15 jul 2026</strong> — Tarifas oficiales INS 2026 en colones y dólares.</li>
+            <li><strong>29 may 2026</strong> — Pestaña "Pólizas vigentes" con la guía de uso y reclamos para el cliente.</li>
+            <li><strong>may 2026</strong> — Lanzamiento del cotizador: 7 planes, envío por WhatsApp, correo y enlace.</li>
+          </ul>
+        </details>
       </footer>
     </div>
   </div>
@@ -1349,7 +1370,10 @@
         base: [
           { id: "solicitud",        nombre: "Solicitud de Seguro Vital 360",     archivo: "docs/solicitud-vital-360.pdf",       desc: "Formulario principal del titular y dependientes. Vigencia 60 días." },
           { id: "autorizacion",     nombre: "Autorización Consulta Expedientes", archivo: "docs/autorizacion-expedientes.pdf",  desc: "Permite al INS verificar información en CCSS y fuentes oficiales." },
-          { id: "declaracion-salud",nombre: "Declaración de Salud + COVID-19",   archivo: "docs/declaracion-salud.pdf",         desc: "Declaración jurada. Una por cada asegurado mayor de edad." }
+          // El Formulario de Declaración COVID-19 dejó de ser requisito de
+          // suscripción (comunicado INS "Somos Socios", ago 2026) — no re-agregarlo
+          // aunque el PDF oficial de Declaración de Salud aún traiga preguntas COVID.
+          { id: "declaracion-salud",nombre: "Declaración de Salud",              archivo: "docs/declaracion-salud.pdf",         desc: "Declaración jurada. Una por cada asegurado mayor de edad." }
         ],
         disparadores: []
       };
