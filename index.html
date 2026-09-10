@@ -1719,6 +1719,12 @@
     // Logo INS hosteado en el Portal SDI (mismo asset que usa cotizador-autos)
     const LOGO_INS_URL = "https://cotizador.appsegurosdigitales.com/img/ins-logo.png";
 
+    // Base ABSOLUTA de las imágenes de los correos. Un cliente de correo no
+    // resuelve rutas relativas: tienen que ser URL completas y públicas.
+    // Ojo: el ins-logo.png de LOGO_INS_URL es BLANCO (para fondo oscuro); los
+    // correos en línea clara usan ins-logo-tinta.png de este mismo repo.
+    const EMAIL_IMG = "https://cotizador-vital360.netlify.app";
+
     // Contactos y procedimientos INS — fuente: Condiciones Generales Vital 360
     // (Cláusulas XXIV utilización, XXV reclamos, XXVI apelación, XXVII plazos)
     const INS_CONTACTOS = {
@@ -2879,11 +2885,12 @@ ${payload.agente.nombre}${lic}`;
       }
     }
 
-    // =====================================================================
-    // Plantilla de correo (modelo cotizador-autos buildCoverageEmail)
-    // =====================================================================
-    // Email-friendly: tablas anidadas + inline styles. Logo INS en header navy.
-    // CTA principal lleva a la vista cliente detallada (?c=BASE64URL).
+    // Plantilla A · "Su cotización Vital 360 está lista" — línea clara (9 sep 2026).
+    // Un correo no es una página: nada de flex, ni grid, ni SVG, ni degradados.
+    // Todo va en tablas con estilos en línea; el radio de las píldoras lo ignora
+    // Outlook y quedan cuadradas, que es la degradación aceptada.
+    // Los dos logos son PNG con URL ABSOLUTA (ver EMAIL_IMG): el PNG del INS que
+    // ya estaba hosteado es BLANCO, para fondo oscuro, y aquí el fondo es blanco.
     function buildEmailVital360(payload, link){
       const a = payload.agente;
       const cliNom = payload.cliente.nombre || "estimado/a cliente";
@@ -2902,6 +2909,9 @@ ${payload.agente.nombre}${lic}`;
       });
       const desRec = desgloseMiembros(planRecId, mon, payload.asegurados);
 
+      const F = "Arial,Helvetica,sans-serif";
+      const M = "'Courier New',Courier,monospace";
+
       return `<!DOCTYPE html>
 <html lang="es">
 <head>
@@ -2909,155 +2919,164 @@ ${payload.agente.nombre}${lic}`;
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Su cotización Vital 360 está lista</title>
 </head>
-<body style="margin:0;padding:0;background:#f5f5f5;font-family:Arial,Helvetica,sans-serif;color:#0E2127;">
-  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#f5f5f5;padding:24px 0;">
+<body style="margin:0;padding:0;background:#F4F7FA;font-family:${F};color:#1B1F23;">
+  <table width="100%" cellpadding="0" cellspacing="0" border="0" role="presentation" style="background:#F4F7FA;padding:26px 0;">
     <tr>
       <td align="center">
-        <table width="600" cellpadding="0" cellspacing="0" border="0" style="background:#ffffff;border-radius:8px;overflow:hidden;max-width:600px;box-shadow:0 4px 20px rgba(14,33,39,0.08);">
+        <table width="600" cellpadding="0" cellspacing="0" border="0" role="presentation" style="background:#ffffff;border:1px solid #DADCE0;border-radius:16px;max-width:600px;">
 
-          <!-- 1. HEADER navy con logo INS -->
+          <!-- 1. Barra, nivel 1: el INS y el número de cotización -->
           <tr>
-            <td bgcolor="#143F4A" style="background:#143F4A;padding:26px 28px;text-align:center;">
-              <img src="${LOGO_INS_URL}" alt="INS" height="40" style="display:inline-block;height:40px;margin-bottom:10px;filter:brightness(0) invert(1);" />
-              <h1 style="margin:0;font-family:Georgia,'Times New Roman',serif;font-size:22px;font-weight:500;color:#ffffff;letter-spacing:-0.01em;">Su cotización Vital 360 está lista</h1>
-              <p style="margin:6px 0 0;font-size:12px;color:#C7DBE0;">Seguro de gastos médicos · INS Costa Rica</p>
-            </td>
-          </tr>
-
-          <!-- 2. SALUDO -->
-          <tr>
-            <td style="padding:28px 28px 4px;">
-              <p style="margin:0;font-size:16px;color:#0E2127;"><strong>Hola ${_escEmail(cliNom)},</strong></p>
-            </td>
-          </tr>
-
-          <!-- 3. INTRO -->
-          <tr>
-            <td style="padding:14px 28px 0;">
-              <p style="margin:0 0 14px;font-size:14px;line-height:1.6;color:#34464D;">
-                Le preparé una cotización Vital 360 del INS pensando en su familia: <strong>${numAseg} ${numAseg === 1 ? "asegurado" : "asegurados"}</strong> con <strong>${payload.planes.length} ${payload.planes.length === 1 ? "opción" : "opciones"}</strong> para que pueda elegir con calma.
-              </p>
-              <p style="margin:0 0 14px;font-size:14px;line-height:1.6;color:#34464D;">
-                Hace click en el botón para ver la <strong>comparativa completa</strong>: primas anuales, coberturas detalladas, formas de pago y documentos del trámite.
-              </p>
-            </td>
-          </tr>
-
-          <!-- 4. CTA principal -->
-          <tr>
-            <td align="center" style="padding:6px 28px 22px;">
-              <a href="${link}" style="display:inline-block;background:#E36B43;color:#ffffff;text-decoration:none;border-radius:6px;padding:14px 28px;font-weight:bold;font-size:15px;font-family:Arial,Helvetica,sans-serif;">VER MI COTIZACIÓN COMPLETA &rarr;</a>
-              <p style="margin:10px 0 0;font-size:11.5px;color:#6A7A80;font-style:italic;">Vigencia ${payload.vigenciaDias} días · cotización N.º ${_escEmail(payload.id)}</p>
-            </td>
-          </tr>
-
-          <!-- 5a. El plan recomendado, desarmado persona por persona -->
-          <tr>
-            <td style="padding:0 28px 8px;">
-              <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border:1px solid #C7DBE0;border-left:3px solid #E36B43;">
+            <td style="padding:14px 26px;border-bottom:1px solid #EDEFF2;">
+              <table width="100%" cellpadding="0" cellspacing="0" border="0" role="presentation">
                 <tr>
-                  <td bgcolor="#E3EEF1" style="background:#E3EEF1;padding:14px 16px 12px;">
-                    <p style="margin:0;font-size:10px;color:#B94F2B;text-transform:uppercase;letter-spacing:0.08em;font-weight:bold;">&#9733; Lo que le recomiendo</p>
-                    <p style="margin:6px 0 2px;font-size:21px;font-weight:bold;color:#0E2127;line-height:1.15;">${_escEmail(planRec.nombre)}</p>
-                    <p style="margin:0;font-size:11.5px;color:#6A7A80;">${_escEmail(planRec.ambito)} · suma ${_escEmail(fmtMoneda(mon === "USD" ? planRec.sumaUSD : planRec.sumaCRC, mon))} por persona</p>
-                  </td>
+                  <td valign="middle"><img src="${EMAIL_IMG}/img/ins-logo-tinta.png" alt="Instituto Nacional de Seguros" width="120" height="28" style="display:block;border:0;width:120px;height:28px;" /></td>
+                  <td valign="middle" align="right" style="font-family:${M};font-size:11px;color:#6B7681;white-space:nowrap;">N.&ordm; ${_escEmail(payload.id)} &middot; ${_escEmail(payload.fecha)}</td>
                 </tr>
-                ${desRec.filas.map(f => `
+              </table>
+            </td>
+          </tr>
+
+          <!-- 2. Barra, nivel 2: el producto -->
+          <tr>
+            <td style="padding:11px 26px;border-bottom:1px solid #EDEFF2;">
+              <table width="100%" cellpadding="0" cellspacing="0" border="0" role="presentation">
                 <tr>
-                  <td style="padding:0 16px;">
-                    <table width="100%" cellpadding="0" cellspacing="0" border="0">
-                      <tr>
-                        <td style="padding:8px 0;border-bottom:1px solid #EDF2F3;font-size:13px;color:#34464D;">${_escEmail(f.nombre || "Asegurado")} <span style="color:#8AA2A8;font-size:11.5px;">· ${_escEmail(f.edad)} años</span></td>
-                        <td align="right" style="padding:8px 0;border-bottom:1px solid #EDF2F3;font-family:Courier New,Courier,monospace;font-size:13.5px;font-weight:bold;color:#0E2127;white-space:nowrap;">${_escEmail(fmtMoneda(f.aporte, mon))}</td>
-                      </tr>
-                    </table>
-                  </td>
-                </tr>`).join("")}
+                  <td valign="middle" style="font-size:18px;font-weight:bold;color:#1B1F23;letter-spacing:-0.02em;">Vital 360</td>
+                  <td valign="middle" align="right" style="font-size:12px;color:#6B7681;">Seguro de gastos m&eacute;dicos &middot; INS Costa Rica</td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- 3. Titular grande y centrado, con las dos acciones -->
+          <tr>
+            <td align="center" style="padding:40px 34px 6px;">
+              <table cellpadding="0" cellspacing="0" border="0" role="presentation" align="center" style="margin:0 auto 20px;">
                 <tr>
-                  <td bgcolor="#F7F1E4" style="background:#F7F1E4;padding:11px 16px;">
-                    <table width="100%" cellpadding="0" cellspacing="0" border="0">
-                      <tr>
-                        <td style="font-size:13px;font-weight:bold;color:#143F4A;">Total del año</td>
-                        <td align="right" style="font-family:Courier New,Courier,monospace;font-size:16px;font-weight:bold;color:#143F4A;white-space:nowrap;">${_escEmail(fmtMoneda(desRec.totales.total, mon))}</td>
-                      </tr>
-                    </table>
-                    <p style="margin:5px 0 0;font-size:11px;color:#6B5320;line-height:1.5;">Incluye ${_escEmail(fmtMoneda(desRec.totales.iva, mon))} de IVA (2 %, Ley 9635) sobre una prima de ${_escEmail(fmtMoneda(desRec.totales.prima, mon))}.</p>
+                  <td bgcolor="#E9F5F0" style="background:#E9F5F0;border-radius:999px;padding:7px 15px;font-size:12px;font-weight:bold;color:#037D61;white-space:nowrap;">&bull;&nbsp; Cotizaci&oacute;n vigente ${_escEmail(payload.vigenciaDias)} d&iacute;as</td>
+                </tr>
+              </table>
+              <h1 style="margin:0;font-size:30px;line-height:1.15;font-weight:bold;color:#1B1F23;letter-spacing:-0.02em;">Su cotizaci&oacute;n Vital 360 est&aacute; lista</h1>
+              <p style="margin:14px auto 0;font-size:15px;line-height:1.6;color:#5A6570;max-width:430px;">
+                ${_escEmail(cliNom)}, le prepar&eacute; ${payload.planes.length === 1 ? "una opci&oacute;n" : payload.planes.length + " opciones"} para ${numAseg} ${numAseg === 1 ? "asegurado" : "asegurados"}. Cada monto es el total del a&ntilde;o, con el IVA ya incluido.
+              </p>
+            </td>
+          </tr>
+          <tr>
+            <td align="center" style="padding:26px 34px 36px;">
+              <table cellpadding="0" cellspacing="0" border="0" role="presentation" align="center" style="margin:0 auto;">
+                <tr>
+                  <td bgcolor="#0369A1" style="background:#0369A1;border-radius:999px;">
+                    <a href="${link}" style="display:inline-block;padding:15px 32px;font-family:${F};font-size:15px;font-weight:bold;color:#ffffff;text-decoration:none;">Ver mi cotizaci&oacute;n completa &rarr;</a>
                   </td>
                 </tr>
               </table>
-              <p style="margin:9px 0 0;font-size:11px;color:#6A7A80;line-height:1.55;">La prima depende solo de la edad de cada persona; sumadas dan el total. No hay cargos por grupo.</p>
             </td>
           </tr>
 
-          <!-- 5b. Índice de todas las opciones, agrupado por ámbito -->
+          <!-- 4. El recomendado: panel blanco sobre banda pálida -->
+          <tr>
+            <td bgcolor="#EEF4F9" style="background:#EEF4F9;padding:26px 22px;">
+              <table width="100%" cellpadding="0" cellspacing="0" border="0" role="presentation" style="background:#ffffff;border:1px solid #DADCE0;border-radius:20px;">
+                <tr>
+                  <td style="padding:24px 24px 18px;">
+                    <table cellpadding="0" cellspacing="0" border="0" role="presentation">
+                      <tr><td bgcolor="#EDF3F4" style="background:#EDF3F4;border-radius:999px;padding:5px 13px;font-size:11.5px;font-weight:bold;color:#1F5C6B;white-space:nowrap;">Lo que le recomiendo</td></tr>
+                    </table>
+                    <p style="margin:14px 0 3px;font-size:26px;font-weight:bold;color:#1B1F23;line-height:1.1;letter-spacing:-0.02em;">${_escEmail(planRec.nombre)}</p>
+                    <p style="margin:0;font-size:13px;color:#5A6570;">${_escEmail(planRec.ambito)} &middot; suma asegurada ${_escEmail(fmtMoneda(mon === "USD" ? planRec.sumaUSD : planRec.sumaCRC, mon))} por persona</p>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding:0 24px;"><table width="100%" cellpadding="0" cellspacing="0" border="0" role="presentation"><tr><td style="border-top:1px solid #EDEFF2;font-size:0;line-height:0;">&nbsp;</td></tr></table></td>
+                </tr>
+                <tr>
+                  <td style="padding:18px 24px 6px;">
+                    <p style="margin:0;font-size:12.5px;color:#6B7681;">Total del a&ntilde;o &middot; ${numAseg} ${numAseg === 1 ? "asegurado" : "asegurados"}</p>
+                    <p style="margin:8px 0 0;font-family:${M};font-size:30px;font-weight:bold;color:#1B1F23;line-height:1.1;">${_escEmail(fmtMoneda(desRec.totales.total, mon))}</p>
+                    <p style="margin:9px 0 0;font-size:11.5px;color:#6B7681;">prima <span style="font-family:${M};">${_escEmail(fmtMoneda(desRec.totales.prima, mon))}</span> + IVA 2 % <span style="font-family:${M};">${_escEmail(fmtMoneda(desRec.totales.iva, mon))}</span></p>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding:16px 24px 8px;">
+                    <p style="margin:0 0 4px;font-size:12.5px;color:#6B7681;">Cu&aacute;nto aporta cada uno</p>
+                    <table width="100%" cellpadding="0" cellspacing="0" border="0" role="presentation">
+                      ${desRec.filas.map(f => `<tr>
+                        <td style="padding:9px 0;border-bottom:1px solid #EDEFF2;font-size:13.5px;color:#5A6570;">${_escEmail(f.nombre || "Asegurado")} <span style="color:#6B7681;font-size:12px;">&middot; ${_escEmail(f.edad)} a&ntilde;os</span></td>
+                        <td align="right" style="padding:9px 0;border-bottom:1px solid #EDEFF2;font-family:${M};font-size:13.5px;font-weight:bold;color:#1B1F23;white-space:nowrap;">${_escEmail(fmtMoneda(f.aporte, mon))}</td>
+                      </tr>`).join("")}
+                    </table>
+                    <p style="margin:12px 0 6px;font-size:11.5px;color:#6B7681;line-height:1.6;">La prima depende solo de la edad de cada persona; sumadas dan el total. No hay cargos por grupo.</p>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- 5. Las demás opciones, agrupadas por ámbito -->
           ${planesData.length < 2 ? "" : `
           <tr>
-            <td style="padding:22px 28px 24px;">
-              <p style="margin:0 0 10px;font-size:11px;font-weight:bold;color:#143F4A;letter-spacing:0.06em;text-transform:uppercase;">${planesData.length} opciones · total del año con IVA, para ${numAseg} ${numAseg === 1 ? "asegurado" : "asegurados"}</p>
-              <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border:1px solid #E2E8E9;">
+            <td style="padding:32px 34px 8px;">
+              <table cellpadding="0" cellspacing="0" border="0" role="presentation" style="margin:0 0 12px;">
+                <tr><td bgcolor="#1F5C6B" style="background:#1F5C6B;width:28px;height:3px;font-size:0;line-height:0;">&nbsp;</td></tr>
+              </table>
+              <p style="margin:0 0 3px;font-size:12px;color:#6B7681;">Las ${planesData.length} opciones</p>
+              <p style="margin:0 0 16px;font-size:20px;font-weight:bold;color:#1B1F23;letter-spacing:-0.02em;">Total del a&ntilde;o, con IVA</p>
+              <table width="100%" cellpadding="0" cellspacing="0" border="0" role="presentation" style="border:1px solid #DADCE0;border-radius:14px;">
                 ${(() => {
                   let out = "", grupo = "";
                   for(const pd of planesData){
                     if(pd.plan.ambito !== grupo){
                       grupo = pd.plan.ambito;
-                      out += `<tr><td colspan="2" bgcolor="#F7FAFA" style="background:#F7FAFA;padding:6px 12px;font-size:9.5px;letter-spacing:0.1em;text-transform:uppercase;color:#6A7A80;font-weight:bold;">${_escEmail(grupo)}</td></tr>`;
+                      out += `<tr><td colspan="2" bgcolor="#F7FAFC" style="background:#F7FAFC;padding:7px 16px;font-size:11px;color:#6B7681;border-bottom:1px solid #EDEFF2;">${_escEmail(grupo)}</td></tr>`;
                     }
                     out += `<tr>
-                      <td style="padding:9px 12px;border-bottom:1px solid #EDF2F3;font-size:13px;color:#34464D;${pd.isRec ? "border-left:3px solid #E36B43;font-weight:bold;" : ""}">${_escEmail(pd.plan.nombre)}${pd.isRec ? " &#9733;" : ""}<br /><span style="font-size:10.5px;color:#8AA2A8;font-weight:normal;">Suma ${_escEmail(fmtMoneda(mon === "USD" ? pd.plan.sumaUSD : pd.plan.sumaCRC, mon))}</span></td>
-                      <td align="right" style="padding:9px 12px;border-bottom:1px solid #EDF2F3;white-space:nowrap;font-family:Courier New,Courier,monospace;font-size:13.5px;font-weight:bold;color:#0E2127;">${_escEmail(fmtMoneda(pd.t.total, mon))}<br /><span style="font-size:10px;color:#8AA2A8;font-weight:normal;">${_escEmail(fmtMoneda(pd.t.prima, mon))} + ${_escEmail(fmtMoneda(pd.t.iva, mon))}</span></td>
+                      <td style="padding:12px 16px;border-bottom:1px solid #EDEFF2;font-size:14px;color:#1B1F23;${pd.isRec ? "font-weight:bold;" : ""}">${_escEmail(pd.plan.nombre)}<br /><span style="font-size:11.5px;color:#6B7681;font-weight:normal;">Suma ${_escEmail(fmtMoneda(mon === "USD" ? pd.plan.sumaUSD : pd.plan.sumaCRC, mon))}</span></td>
+                      <td align="right" style="padding:12px 16px;border-bottom:1px solid #EDEFF2;white-space:nowrap;font-family:${M};font-size:14px;font-weight:bold;color:#1B1F23;">${_escEmail(fmtMoneda(pd.t.total, mon))}<br /><span style="font-size:10.5px;color:#6B7681;font-weight:normal;">${_escEmail(fmtMoneda(pd.t.prima, mon))} + ${_escEmail(fmtMoneda(pd.t.iva, mon))}</span></td>
                     </tr>`;
                   }
                   return out;
                 })()}
               </table>
-              <p style="margin:12px 0 0;font-size:11.5px;color:#6A7A80;line-height:1.6;">Cada monto es el <strong style="color:#143F4A;">total del año con IVA incluido</strong>; debajo, en gris, la prima y el IVA por separado. En la cotización completa verá el detalle por persona de cada plan y el pago en 2 o 4 cuotas.</p>
+              <p style="margin:12px 0 0;font-size:11.5px;color:#6B7681;line-height:1.6;">Debajo de cada total, en gris, la prima y el IVA por separado. En la cotizaci&oacute;n completa ver&aacute; el detalle por persona de cada plan y el pago en 2 o 4 cuotas.</p>
             </td>
           </tr>`}
 
-          <!-- 6. Qué incluye la guía (texto breve, con aire) -->
+          <!-- 6. Qué trae la cotización completa -->
           <tr>
-            <td style="padding:36px 28px 12px;border-top:1px solid #EBEDEE;">
-              <p style="margin:0 0 16px;font-size:11px;font-weight:bold;color:#143F4A;letter-spacing:0.06em;text-transform:uppercase;">En la guía completa encontrará</p>
-              <ul style="margin:0;padding:0 0 0 22px;font-size:13.5px;color:#34464D;line-height:2;">
-                <li style="padding:3px 0;">Comparativa de las opciones cotizadas con primas y deducibles</li>
-                <li style="padding:3px 0;">Las 28 coberturas explicadas con sus sublímites por plan</li>
-                <li style="padding:3px 0;">3 formas de pago: anual (sin recargo), semestral y trimestral</li>
-                <li style="padding:3px 0;">Documentos para iniciar el aseguramiento</li>
-                <li style="padding:3px 0;">Renovación vitalicia, periodos de espera y mecánica de pago</li>
-              </ul>
+            <td style="padding:32px 34px 10px;">
+              <table cellpadding="0" cellspacing="0" border="0" role="presentation" style="margin:0 0 12px;">
+                <tr><td bgcolor="#1F5C6B" style="background:#1F5C6B;width:28px;height:3px;font-size:0;line-height:0;">&nbsp;</td></tr>
+              </table>
+              <p style="margin:0 0 14px;font-size:20px;font-weight:bold;color:#1B1F23;letter-spacing:-0.02em;">En la cotizaci&oacute;n completa encontrar&aacute;</p>
+              <table width="100%" cellpadding="0" cellspacing="0" border="0" role="presentation" style="font-size:14px;color:#5A6570;line-height:1.55;">
+                <tr><td style="padding:7px 0;border-bottom:1px solid #EDEFF2;">Comparativa de las opciones cotizadas con primas y deducibles</td></tr>
+                <tr><td style="padding:7px 0;border-bottom:1px solid #EDEFF2;">Las 28 coberturas explicadas con sus subl&iacute;mites por plan</td></tr>
+                <tr><td style="padding:7px 0;border-bottom:1px solid #EDEFF2;">3 formas de pago: anual (sin recargo), semestral y trimestral</td></tr>
+                <tr><td style="padding:7px 0;border-bottom:1px solid #EDEFF2;">Documentos para iniciar el aseguramiento</td></tr>
+                <tr><td style="padding:7px 0;">Renovaci&oacute;n vitalicia, periodos de espera y mec&aacute;nica de pago</td></tr>
+              </table>
             </td>
           </tr>
 
           <!-- 7. Cierre -->
           <tr>
-            <td style="padding:32px 28px 24px;">
-              <p style="margin:0 0 14px;font-size:14.5px;color:#34464D;line-height:1.7;">Cualquier duda me escribe directo, sin compromiso.</p>
-              <p style="margin:0;font-size:14px;color:#0E2127;font-style:italic;font-weight:500;">— ${_escEmail(a.nombre)}</p>
+            <td style="padding:30px 34px 34px;">
+              <p style="margin:0 0 12px;font-size:14.5px;color:#5A6570;line-height:1.7;">Cualquier duda me escribe directo, sin compromiso.</p>
+              <p style="margin:0;font-size:14.5px;color:#1B1F23;font-weight:bold;">${_escEmail(a.nombre)}</p>
+              <p style="margin:3px 0 0;font-size:12.5px;color:#6B7681;">Agente autorizado INS &middot; WhatsApp ${_escEmail(a.whatsapp)}</p>
             </td>
           </tr>
 
-          <!-- 8. FOOTER navy con logo SDI + datos del agente + propiedad intelectual -->
+          <!-- 8. Pie: banda pálida, marca SDI oficial y propiedad intelectual -->
           <tr>
-            <td bgcolor="#143F4A" style="background:#143F4A;padding:24px 24px 20px;text-align:center;color:#ffffff;">
-              <!-- Logo Seguros Digitales recreado con tablas para compatibilidad email -->
-              <table cellpadding="0" cellspacing="0" border="0" align="center" style="margin:0 auto 16px;">
-                <tr>
-                  <td valign="middle" style="font-family:Georgia,'Times New Roman',serif;font-weight:500;font-size:22px;letter-spacing:-0.01em;color:#ffffff;line-height:1;">Seguros&nbsp;Digitales</td>
-                  <td valign="middle" style="padding-left:12px;">
-                    <table cellpadding="0" cellspacing="0" border="0">
-                      <tr><td bgcolor="#ffffff" style="background:#ffffff;height:3px;width:20px;line-height:3px;font-size:0;">&nbsp;</td></tr>
-                      <tr><td style="height:3px;line-height:3px;font-size:0;">&nbsp;</td></tr>
-                      <tr><td bgcolor="#ffffff" style="background:#ffffff;height:3px;width:20px;line-height:3px;font-size:0;">&nbsp;</td></tr>
-                      <tr><td style="height:3px;line-height:3px;font-size:0;">&nbsp;</td></tr>
-                      <tr><td bgcolor="#ffffff" style="background:#ffffff;height:3px;width:20px;line-height:3px;font-size:0;">&nbsp;</td></tr>
-                    </table>
-                  </td>
-                </tr>
-              </table>
-              <p style="margin:0;font-size:14px;font-weight:bold;color:#ffffff;">${_escEmail(a.nombre)}</p>
-              <p style="margin:4px 0 0;font-size:11px;color:#C7DBE0;">Agente autorizado INS · Lic. SUGESE ${_escEmail(a.licencia || '08-1318')} · WhatsApp ${_escEmail(a.whatsapp)}${a.email ? " · " + _escEmail(a.email) : ""}</p>
-              <p style="margin:14px 0 0;font-size:10.5px;color:#94aab0;font-style:italic;line-height:1.55;">Cotización informativa basada en tarifas oficiales del INS vigentes a la fecha. Vigencia ${payload.vigenciaDias} días. Producto Vital 360 registrado bajo norma SUGESE P20-76-A01-1097 V3.</p>
-              <p style="margin:10px 0 0;font-size:10px;color:#6A7A80;">Un producto de <strong style="color:#ffffff;font-weight:600;">SDI &middot; Seguros Digitales</strong> &middot; &copy; 2026 Propiedad intelectual de <strong style="color:#ffffff;font-weight:600;">Juan Carlos Hern&aacute;ndez Vargas</strong></p>
+            <td bgcolor="#EEF4F9" style="background:#EEF4F9;padding:28px 26px 24px;text-align:center;border-radius:0 0 16px 16px;">
+              <img src="${EMAIL_IMG}/img/sdi-logo-color.png" alt="Seguros Digitales SDI" width="118" height="41" style="display:block;border:0;width:118px;height:41px;margin:0 auto 14px;" />
+              <p style="margin:0;font-size:12.5px;color:#6B7681;">Agente ${_escEmail(a.nombre)} &middot; Lic. SUGESE ${_escEmail(a.licencia || '08-1318')} &middot; ${_escEmail(a.whatsapp)}${a.email ? " &middot; " + _escEmail(a.email) : ""}</p>
+              <p style="margin:12px 0 0;font-size:11px;color:#6B7681;line-height:1.6;">Cotizaci&oacute;n informativa basada en tarifas oficiales del INS vigentes a la fecha. Vigencia ${_escEmail(payload.vigenciaDias)} d&iacute;as. Producto Vital 360 registrado bajo norma SUGESE P20-76-A01-1097 V3.</p>
+              <p style="margin:12px 0 0;font-size:11.5px;color:#5A6570;">Un producto de <strong style="color:#1B1F23;">SDI &middot; Seguros Digitales</strong></p>
+              <p style="margin:4px 0 0;font-size:11px;color:#6B7681;">&copy; 2026 &middot; Propiedad intelectual de <strong style="color:#5A6570;">Juan Carlos Hern&aacute;ndez Vargas</strong></p>
             </td>
           </tr>
 
