@@ -14,7 +14,7 @@ Cotizador online del **Seguro Vital 360** del INS (gastos médicos), operado por
 1. **Vista agente** (con auth): cotiza con los 7 planes, selecciona hasta 3, marca recomendado, envía cotización al cliente y posteriormente la guía de uso/reclamos cuando la póliza se emite.
 2. **Vista cliente** (stateless, vía link `?c=BASE64URL`): comparativa de planes cotizados + tabla detallada de 28 coberturas desplegable + esquemas oficiales INS por plan (lightbox) + formas de pago × N planes + características del producto + material informativo + CTA WhatsApp + footer Seguros Digitales SDI.
 
-## Estado actual (6 ago 2026)
+## Estado actual (9 sep 2026)
 
 - **EN PROD:** [cotizador-vital360.netlify.app](https://cotizador-vital360.netlify.app) (auto-deploy desde `main` en 1-2 min después de cada push)
 - **Subdominio previsto:** vital360.appsegurosdigitales.com (CNAME en DNS de `appsegurosdigitales.com` pendiente)
@@ -22,10 +22,95 @@ Cotizador online del **Seguro Vital 360** del INS (gastos médicos), operado por
 - **Repo local:** `C:/Users/segur/cotizador-vital-360`
 - **Preview local:** `npx serve` puerto 8930 — nombre `vital360` en `~/.claude/launch.json`
 - **Plan MVP:** 15 tareas completadas + ~30 mejoras post-MVP en commits siguientes
-- **Último commit estable:** `5e6144a` (6 ago 2026 · **fuera el Formulario COVID-19 de los requisitos** — el INS lo eliminó como requisito de suscripción por comunicado "Somos Socios"; el doc base vuelve a llamarse "Declaración de Salud". OJO: el PDF oficial `declaracion-salud.pdf` (INS-F-1008238) aún trae preguntas COVID adentro — es formulario oficial del INS, NO editarlo; se reemplaza cuando el INS publique versión nueva. En el mismo commit se estrenó el **registro de cambios al pie de la vista agente** — `<details class="sdi-changelog">` dentro del `.sdi-foot`, historial en lenguaje de usuario, entrada más reciente arriba: **todo update futuro DEBE agregar su entrada ahí antes del commit**, regla del 5 ago 2026. La cara del cliente NO lo lleva todavía — proponérselo a JC antes. Nota: en INS Medical NO había nada que tocar — su lista de documentos nunca listó el formulario COVID). Antes: `4de3209` (3 ago 2026 · **las otras opciones también traen sus formas de pago** — ver "Formas de pago en cada plan"). Antes: `a7942ac` (27 jul 2026 · **"Copiar HTML" mandaba el código fuente al cliente** — ver la sección "Portapapeles" ). Antes: `3c547d0` (27 jul · **las 7 opciones + desglose por miembro + IVA en todo cálculo** — la feature grande; ver Pendientes #1 y #2, ambos ✅ EN PROD. Smoke de JC pendiente). Antes: `b1bbe2a` (27 jul · **`?dev=1` solo en localhost** — cerraba la consola de agente a cualquiera en producción; ver "Arquitectura de vistas"). Antes: `4cb9038` (27 jul · tope de 6 s al acortador para que la pestaña de WhatsApp no quede en blanco) · `122f63f` (27 jul · saca del repo `mockup-tab-polizas.html`, que se coló en el commit anterior por un `git add -A`; queda en disco, ignorado). Antes: `7bc338a` (27 jul · **enlace corto `/c/XXXXXXXXXX`**, ver sección propia — primera Netlify Function del proyecto) · `571075c` (27 jul · **el cliente con enlace cortado ya no ve "Acceso restringido"**: vista `enlace` + avisos en login/bloqueado). Antes: `5f2309c` (21 jul 2026 · **fix dedup del pie** — la leyenda IP nueva se había apilado sobre la línea vieja "Esta cotización/guía pertenece a Seguros Digitales SDI®", repitiendo la marca; se quitó esa línea vieja en footer cliente + 3 correos). Antes: `16f7827` (21 jul · pie branded en la **vista agente** — la leyenda SDI faltaba donde arranca la cotización; footer `.sdi-foot` estático al fondo del `data-view=agente`, después de los 3 paneles, con `.foot-agente{max-width:1480px}`). Antes: `bb514ed` (21 jul · **leyenda de propiedad intelectual FIJA a JC Vargas** en footer vista cliente + los 3 correos, y agente `paolo@segurosticos.com` / Seguros Ticos habilitado). Antes: `45aa20b` (21 jul · batch vista cliente: tipografía Camino B Hanken Grotesk + periodos de espera "m"→"meses" + link "Red de proveedores del INS"). Antes: `22c1835` (20 jul · agente Innova Seguros CR) · `e8b294d` (20 jul · fix `[hidden]` del nudge y la ⚙) · `68dc1dd` (20 jul · tuerca de ajustes ⚙ — perfil editable) · `535dbcd` (16 jul · recuperación del historial desde Gmail) · `4a91b72` (16 jul · **evacuación Pro 1 ₡2.750.000**, ver sección propia) · `3f0119e` (15 jul · primas oficiales INS 2026)
+- **Último commit estable:** `67e6a2e` (9 sep 2026 · **estilo "línea clara" en toda la cara + Plantilla A del correo** — ver la sección propia "Línea clara"). Antes: `339913e` (mismo día, el re-skin de la app). Antes: `5e6144a` (6 ago 2026 · **fuera el Formulario COVID-19 de los requisitos** — el INS lo eliminó como requisito de suscripción por comunicado "Somos Socios"; el doc base vuelve a llamarse "Declaración de Salud". OJO: el PDF oficial `declaracion-salud.pdf` (INS-F-1008238) aún trae preguntas COVID adentro — es formulario oficial del INS, NO editarlo; se reemplaza cuando el INS publique versión nueva. En el mismo commit se estrenó el **registro de cambios al pie de la vista agente** — `<details class="sdi-changelog">` dentro del `.sdi-foot`, historial en lenguaje de usuario, entrada más reciente arriba: **todo update futuro DEBE agregar su entrada ahí antes del commit**, regla del 5 ago 2026. La cara del cliente NO lo lleva todavía — proponérselo a JC antes. Nota: en INS Medical NO había nada que tocar — su lista de documentos nunca listó el formulario COVID). Antes: `4de3209` (3 ago 2026 · **las otras opciones también traen sus formas de pago** — ver "Formas de pago en cada plan"). Antes: `a7942ac` (27 jul 2026 · **"Copiar HTML" mandaba el código fuente al cliente** — ver la sección "Portapapeles" ). Antes: `3c547d0` (27 jul · **las 7 opciones + desglose por miembro + IVA en todo cálculo** — la feature grande; ver Pendientes #1 y #2, ambos ✅ EN PROD. Smoke de JC pendiente). Antes: `b1bbe2a` (27 jul · **`?dev=1` solo en localhost** — cerraba la consola de agente a cualquiera en producción; ver "Arquitectura de vistas"). Antes: `4cb9038` (27 jul · tope de 6 s al acortador para que la pestaña de WhatsApp no quede en blanco) · `122f63f` (27 jul · saca del repo `mockup-tab-polizas.html`, que se coló en el commit anterior por un `git add -A`; queda en disco, ignorado). Antes: `7bc338a` (27 jul · **enlace corto `/c/XXXXXXXXXX`**, ver sección propia — primera Netlify Function del proyecto) · `571075c` (27 jul · **el cliente con enlace cortado ya no ve "Acceso restringido"**: vista `enlace` + avisos en login/bloqueado). Antes: `5f2309c` (21 jul 2026 · **fix dedup del pie** — la leyenda IP nueva se había apilado sobre la línea vieja "Esta cotización/guía pertenece a Seguros Digitales SDI®", repitiendo la marca; se quitó esa línea vieja en footer cliente + 3 correos). Antes: `16f7827` (21 jul · pie branded en la **vista agente** — la leyenda SDI faltaba donde arranca la cotización; footer `.sdi-foot` estático al fondo del `data-view=agente`, después de los 3 paneles, con `.foot-agente{max-width:1480px}`). Antes: `bb514ed` (21 jul · **leyenda de propiedad intelectual FIJA a JC Vargas** en footer vista cliente + los 3 correos, y agente `paolo@segurosticos.com` / Seguros Ticos habilitado). Antes: `45aa20b` (21 jul · batch vista cliente: tipografía Camino B Hanken Grotesk + periodos de espera "m"→"meses" + link "Red de proveedores del INS"). Antes: `22c1835` (20 jul · agente Innova Seguros CR) · `e8b294d` (20 jul · fix `[hidden]` del nudge y la ⚙) · `68dc1dd` (20 jul · tuerca de ajustes ⚙ — perfil editable) · `535dbcd` (16 jul · recuperación del historial desde Gmail) · `4a91b72` (16 jul · **evacuación Pro 1 ₡2.750.000**, ver sección propia) · `3f0119e` (15 jul · primas oficiales INS 2026)
 - **Tarifas vigentes:** `TARIFAS_VERSION = "INS-2026"`. `PRIMAS_USD` (con centavos exactos) y `PRIMAS_CRC` (enteros) actualizadas el 15 jul 2026 (`3f0119e`) desde `docs/Primas en Colones 2026.pdf` + `docs/Primas en Dolares 2026.pdf` (ambos PDFs commiteados como fuente auditable). 182 valores (7 planes × 13 rangos × 2 monedas) verificados celda a celda contra el PDF con script Python/PyMuPDF → 0 errores. **Sumas aseguradas y deducibles sin cambio** — solo subieron las primas (~15%). Smoke tests actualizados a los valores nuevos (Pro 1 40-44: USD 1101.10 / CRC 605562; familia ejemplo 42/39/12/8: USD 3081.10 con tolerancia float / CRC 1694523). Para próximas actualizaciones: reemplazar las dos tablas + bump `TARIFAS_VERSION` + actualizar esos smoke tests.
 - **🔴 `TARIFAS_VERSION` NO es una constante interna — el cliente la LEE.** Se declara en `index.html` (hoy línea 705) y alimenta el badge **"Tarifas vigentes {TARIFAS_VERSION}"** de la vista cliente (hoy línea 4027), además del `console.log` de los smoke tests. El 15 jul 2026 pasó de `"INS-2026-mayo"` a `"INS-2026"`: **JC lo dejó GENÉRICO, sin mes, a propósito** (se le ofreció ponerle el mes y dijo que no). Al bumpearla, escribir un texto que se lea bien en pantalla del cliente y **no volver a meterle el mes** sin que JC lo pida.
 - **OJO — `docs/primas-vital-360.pdf` es la tarifa VIEJA.** La auditoría del 11 jun 2026 (`d7307f9..fc54621`) verificó 210 celdas bit-for-bit contra ese PDF, pero esos VALORES quedaron superados por la tarifa 2026. El método de verificación sí sigue válido. Lo que NO cambió y NO hay que re-verificar desde cero: las 27 coberturas × 7 planes × 2 monedas contra `coberturas-planes-{usd,crc}.pdf` (única excepción deliberada: evacuación de Pro 1, sección aparte).
+
+
+## Línea clara · el estilo de la cara (9 sep 2026 · `339913e` + `67e6a2e`)
+
+JC pidió aplicar a Vital 360 el estilo que aprobó el 9 sep para el portal EBI, con
+`business.google.com/en-all/google-ads` de referencia. Las 10 reglas y el prompt
+reutilizable viven en la memoria `style_linea_clara_google_ads`; acá solo lo propio de
+este proyecto. **Encargo textual: "solo la cara: cero cambios de lógica, mismos ids y
+enganches de JS".** Se cumplió — ver "Lo que NO cambió".
+
+**Tokens** (declarados al final del `<style>`, en un bloque rotulado LÍNEA CLARA que va
+DE ÚLTIMO a propósito para ganar por orden de fuente): acento único `--lc-blue #0369A1`,
+banda `--lc-band #EEF4F9`, hairline de tarjeta `--lc-line #DADCE0`, borde de control
+`--lc-line-btn #8A939C` (3.1:1), estado `--lc-ok-bg #E9F5F0` / `--lc-ok-tx #037D61`,
+color del producto `--lc-prod #1F5C6B`, radios 32 / 24 / 20.
+
+**Fuentes: cambiaron.** Space Grotesk (títulos) · Inter (texto) · JetBrains Mono (cifras),
+por instrucción expresa de JC. **Esto deroga el "Camino B Hanken sola" del 21 jul** — no
+reinstalarlo sin que él lo pida.
+
+### 🔴 El ₡ de Space Grotesk se monta sobre el dígito siguiente
+El glifo U+20A1 de Space Grotesk es **más ancho que su avance**: `₡1.877.216` sale con el
+símbolo pisando el 1, con cualquier `letter-spacing` (probado hasta 0). No es tracking y
+no se arregla con tracking. **Toda cifra grande va en la pila monoespaciada** — en la
+página JetBrains Mono, en el correo `Courier New`. Es además lo que manda el kit SDI
+(Cifras = JetBrains Mono). Arial tiene el mismo defecto en el correo. Vale para cualquier
+app SDI que muestre colones en Space Grotesk.
+
+### Decisiones de marca dentro del estilo
+- **Cliente:** arriba el logo del **INS**; SDI al pie. **Agente:** arriba el logo **SDI a
+  color**. Es la regla de las dos marcas, no una inconsistencia.
+- El `ins-logo.png` hosteado es **BLANCO** (para fondo oscuro). En la página se pinta en
+  tinta con `filter:brightness(0)`; en el correo se usa `img/ins-logo-tinta.png`.
+- El pie estrena `img/sdi-logo-compacto.svg` (kit v1.2) y **jubila las tres barras
+  inventadas**. El wordmark queda accesible pero oculto (`clip-path`), no borrado.
+- La envoltura de 2 px de la regla #12 pasó de teal a **azul SDI** (un solo acento). La
+  regla en sí no se tocó.
+- El color del producto solo como chip, regla de 28×3 px o tinte de hover. **Ninguna cifra
+  pintada:** lo que mejora/empeora se marca con un punto verde/ámbar al lado del número.
+
+### El correo (Plantilla A) · `67e6a2e`
+Solo la A. **B y C siguen con el look viejo**, a la espera del visto bueno de JC — si se
+toca el pie de una, ojo con la regla de los 5 pies (el TEXTO de la leyenda no cambió).
+- Dos imágenes nuevas con URL absoluta vía la constante **`EMAIL_IMG`**
+  (`https://cotizador-vital360.netlify.app`): `img/ins-logo-tinta.png` y
+  `img/sdi-logo-color.png`. **Van en ESTE repo**, no en el del cotizador de autos, para no
+  meterle una dependencia nueva a las tres apps que jalan imágenes de aquel dominio.
+  🔴 Si se despliega el correo sin las imágenes, salen los dos logos rotos: van juntos.
+- **Sin webfonts.** Gmail y Outlook no los cargan: el correo cae a Arial y Courier New. La
+  forma es línea clara; la letra no puede serlo. Outlook además cuadra las píldoras
+  (`border-radius` ignorado) — degradación aceptada.
+- La **regla crítica #11 se verificó de punta a punta**: el cuerpo conserva el `?c=` largo,
+  la regex de `recuperarDesdeGmail` lo encuentra y decodifica al payload completo.
+
+### 🔴 Lo que NO cambió (verificado función por función contra `main`, no repetir)
+Byte a byte idénticas: `buildEmailGuiaReclamos`, `buildEmailPolizaVigente`,
+`buildMimeVital360`, `buildRawMimeMultipart`, `totalesPlan`, `desgloseMiembros`,
+`cuotasReconciliadas`, `fmtMoneda`, `calcularDocumentos`, `justificacionPlan`,
+`diferenciasCobertura`, `getCobertura`, `encodePayload`/`decodePayload`, `acortarLink`,
+`buildLinkCliente`/`buildLinkGuia`, `renderPaso1/2/3`, `renderHistorial`,
+`renderPolizasVigentes`, `textoCuotas`, `txtRecargo`, `nPagos`, `renderTabla28`,
+`renderPanelPlan`. La vista agente cambió **solo por CSS** salvo el masthead.
+`guia-reclamos.html` no se tocó: **sigue con el look anterior.**
+
+### Defectos de paso cerrados en el camino
+- A 375 px la barra de moneda empujaba el documento a **422 px** (scroll horizontal en toda
+  la página): el `.lbl` traía `flex:1 1 100%` de la hoja vieja y le comía el ancho al
+  selector, que se encogía a 119 px con 180 px de botones adentro.
+- La reja de "Servicios que vienen sin costo" seguía en 2 columnas en móvil.
+- El "no incluye" de las coberturas iba en rojo por estilo **en línea** (`#B0562C`), fuera
+  del alcance de cualquier hoja de sobreescritura. Hubo que tocar el template.
+
+### 🔴 El preview local servía el HTML viejo
+`python -m http.server` **no manda `Cache-Control`**: Chrome cachea por heurística y sirve
+el `index.html` de la visita anterior. Le pasó a JC —revisó el mockup y lo vio idéntico— y
+me pasó dos veces a mí el mismo día. La entrada `vital360` de `~/.claude/launch.json` ya
+usa `npx http-server -c-1`, que manda `no-cache, no-store, must-revalidate`. **No volver a
+apuntarla a `http.server`.** Ante un "no veo el cambio", lo primero es `curl -I`.
+
+### Verificado en producción el 9 sep (no repetir)
+Los 3 assets 200 con su Content-Type correcto (el SVG como `image/svg+xml`, no
+octet-stream) · `/` y `/guia-reclamos` 200 · la Function del enlace corto viva: POST `/c`
+→ 200 con id, GET `/c/<id>` → 302 al `?c=`, id inexistente → `/?enlace=roto` · vista
+cliente en prod con hero blanco, panel de 32 px, banda `#EEF4F9` y sin scroll horizontal ·
+`runSmokeTests()` 0 fallos · XSS: un `<script>` en el nombre sale escapado en el correo.
 
 ## Stack
 
@@ -327,6 +412,10 @@ Mismo patrón que cotizador-autos:
 8. **Documentos linkeados / resumidos** — pedirle a JC que precise el alcance.
 
 **Otros pendientes:**
+- 🔴 **Línea clara, segunda tanda (JC, 9 sep 2026):** faltan los correos **B (póliza vigente)** y **C (guía de reclamos)**. En la B hay una decisión pendiente: la caja navy de teléfonos INS y la dorada de derechos del asegurado — ¿pasan a banda pálida o el color se queda porque son avisos operativos? Proponérselo antes de tocar. Después, `guia-reclamos.html`, que sigue con el look anterior.
+- 🔴 **El disclaimer legal del cliente contradice al IVA.** `renderClienteDisclaimers` sigue diciendo que las primas **"no incluyen el IVA"**, cuando desde el 27 jul (`3c547d0`) TODA cifra lo incluye. Es un texto que firma un intermediario con licencia; la redacción la decide JC, por eso no se corrigió dentro de un commit de estética. Se le planteó el 9 sep y quedó abierto.
+- En la consola del agente los botones aún llevan emojis (⬇ ✉ 👁 🗑). Quitarlos toca muchas plantillas de texto, no CSS; JC no lo ha pedido.
+- Quedó una entrada de prueba en los Blobs de producción del enlace corto (`R2W6K687LB`, datos ficticios) del smoke del 9 sep. La Function no expone DELETE; es inofensiva y purgable.
 - 🔴 **Smoke de JC sobre la feature grande (`3c547d0`) — SIN HACER.** Es un cambio que tocó el cálculo, la vista cliente, el correo y el WhatsApp en un solo commit, y **no tuvo cooldown**. Lo que hay que mirar en un teléfono real: (1) que el WhatsApp entre sin "Leer más" y el enlace esté en la línea 2; (2) **que al tocar un plan de la escalera se vea que pasó algo** — es la regla #12 y es lo que no se puede validar en emulador; (3) que el comparador deje marcar 3 y bloquee el cuarto; (4) que al cambiar a dólares se recalcule todo, incluido el recibo. Hasta entonces, no mandarla a un cliente real.
 - **Smoke de JC sobre las formas de pago por plan (`4de3209`) — pendiente.** Se acumula al de `3c547d0` (misma sección de la vista cliente). En el teléfono: abrir una de "las otras opciones" y ver que el bloque **Cómo pagarlo** aparece completo, que la fila resaltada es la del chip elegido arriba, y que las filas de la escalera **ya no se leen como un párrafo corrido** (ese era el defecto que se cerró de paso).
 - **Verificar el pegado real de "📋 Copiar correo" en Gmail** — el fix `a7942ac` no se pudo probar de punta a punta (el portapapeles necesita foco de ventana). Que un agente copie y pegue una vez.
