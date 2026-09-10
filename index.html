@@ -1442,8 +1442,9 @@
         <p class="sdi-foot-line">Un producto de <strong>SDI · Seguros Digitales</strong></p>
         <p class="sdi-foot-line sub">© 2026 · Propiedad intelectual de <strong>Juan Carlos Hernández Vargas</strong></p>
         <details class="sdi-changelog">
-          <summary>Última actualización: 10 sep 2026 — aviso legal: los montos ya incluyen el IVA</summary>
+          <summary>Última actualización: 10 sep 2026 — correos de póliza vigente y de la guía con la cara nueva</summary>
           <ul>
+            <li><strong>10 sep 2026</strong> — Los correos de póliza vigente y de la guía de uso y reclamos estrenan la cara nueva, igual que el de la cotización. Las coberturas, los pasos, los plazos y los contactos del INS dicen exactamente lo mismo.</li>
             <li><strong>10 sep 2026</strong> — Corregido el aviso legal al pie de la cotización: ahora dice que los montos ya incluyen el IVA del 2 %. Antes decía lo contrario, aunque las cifras sí lo incluían desde el 27 de julio.</li>
             <li><strong>9 sep 2026</strong> — Cara nueva en toda la aplicación: fondo blanco, más aire, botones en píldora y un solo color de acento. La información, los planes y los montos son exactamente los mismos.</li>
             <li><strong>6 ago 2026</strong> — El INS eliminó el Formulario de Declaración COVID-19 como requisito de suscripción: ya no aparece entre los documentos para iniciar el aseguramiento.</li>
@@ -3253,11 +3254,11 @@ ${_botonCorreoLC(link, "Ver mi cotizaci&oacute;n completa &rarr;")}
     // Línea clara (10 sep 2026): texto TRANSCRITO de la versión anterior,
     // solo cambia la cara. Las 4 modalidades ya no llevan un color cada una
     // (JC rechazó los "chips de icono de color" y las barras repetidas).
-    // opts.cajasEnColor — SOLO para el mockup: decide si "Números y correos
-    // clave" y "Sus derechos" conservan su color. Se colapsa al elegir JC.
+    // Cajas: JC eligió la variante CLARA el 10 sep 2026 (se descartó dejar los
+    // teléfonos en navy y los derechos en ámbar). "Números y correos clave" es
+    // la ÚNICA caja de su zona: se encuentra por aislamiento, no por color.
     // =====================================================================
-    function buildEmailPolizaVigente(payload, polizaData, opts){
-      const enColor = !!(opts && opts.cajasEnColor);
+    function buildEmailPolizaVigente(payload, polizaData){
       const a = payload.agente;
       const cliNom = payload.cliente.nombre || "estimado/a cliente";
       const planId = polizaData.planId || payload.planRecomendado || payload.planes[0];
@@ -3353,16 +3354,7 @@ ${_botonCorreoLC(link, "Ver mi cotizaci&oacute;n completa &rarr;")}
 
       const numMedVir = 1, numHosp = 2, numAmb = 3, numInt = 4;
 
-      // --- Las dos cajas en discusión -----------------------------------
-      // Variante clara (por defecto): banda pálida, cifras en tinta.
-      // Variante en color: la de teléfonos en navy y la de derechos en ámbar
-      // suave — pero sin la barra lateral de 4 px (R5), ni en esta variante.
-      const cajaNum = enColor
-        ? { bg:"#143F4A", tit:"#C7DBE0", k:"#94aab0", v:"#ffffff", sep:"rgba(255,255,255,.12)" }
-        : { bg:"#EEF4F9", tit:"#6B7681", k:"#6B7681", v:"#1B1F23", sep:"#DADCE0" };
-      const cajaDer = enColor
-        ? { bg:"#FDF4E3", tit:"#7A5B0E", tx:"#5A4A1E" }
-        : { bg:"#EEF4F9", tit:"#6B7681", tx:"#5A6570" };
+      const cajaNum = { bg:"#EEF4F9", tit:"#6B7681", k:"#6B7681", v:"#1B1F23", sep:"#DADCE0" };
       const numVal = `font-family:${M};color:${cajaNum.v};font-weight:bold;`;
 
       return `<!DOCTYPE html>
@@ -3485,15 +3477,15 @@ ${_botonCorreoLC(link, "Ver mi cotizaci&oacute;n completa &rarr;")}
             </td>
           </tr>
 
-          <!-- Sus derechos como asegurado -->
+          <!-- Sus derechos como asegurado: sección abierta, sin caja -->
           <tr>
-            <td style="padding:${enColor ? "10px 30px 22px" : "22px 30px 22px"};">
-              ${enColor ? "" : _reglaCorreoLC()}
-              <table width="100%" cellpadding="0" cellspacing="0" border="0" role="presentation" ${enColor ? `bgcolor="${cajaDer.bg}" style="background:${cajaDer.bg};border-radius:18px;"` : ""}>
+            <td style="padding:22px 30px 22px;">
+              ${_reglaCorreoLC()}
+              <table width="100%" cellpadding="0" cellspacing="0" border="0" role="presentation" >
                 <tr>
-                  <td style="padding:${enColor ? "20px 24px" : "0"};">
-                    <p style="margin:0 0 4px;${enColor ? `font-size:13px;color:${cajaDer.tit};` : "font-size:17px;color:#1B1F23;letter-spacing:-0.02em;"}font-weight:bold;">Sus derechos como asegurado</p>
-                    <p style="margin:${enColor ? "6px" : "8px"} 0 0;font-size:13.5px;color:${cajaDer.tx};line-height:1.7;"><strong>El INS resuelve cada reclamo en máximo ${INS_CONTACTOS.plazo_resolucion_dias} días naturales</strong> (Ley 8956 art. 16). Si su reclamo es declinado parcial o totalmente, usted tiene derecho a presentar <strong>recurso de revocatoria</strong> ante el departamento que dictó la resolución y, después, <strong>apelación</strong> al superior jerárquico. También puede solicitar <strong>revisión del monto indemnizado</strong>.</p>
+                  <td style="padding:0;">
+                    <p style="margin:0 0 4px;font-size:17px;color:#1B1F23;letter-spacing:-0.02em;font-weight:bold;">Sus derechos como asegurado</p>
+                    <p style="margin:8px 0 0;font-size:13.5px;color:#5A6570;line-height:1.7;"><strong>El INS resuelve cada reclamo en máximo ${INS_CONTACTOS.plazo_resolucion_dias} días naturales</strong> (Ley 8956 art. 16). Si su reclamo es declinado parcial o totalmente, usted tiene derecho a presentar <strong>recurso de revocatoria</strong> ante el departamento que dictó la resolución y, después, <strong>apelación</strong> al superior jerárquico. También puede solicitar <strong>revisión del monto indemnizado</strong>.</p>
                   </td>
                 </tr>
               </table>
