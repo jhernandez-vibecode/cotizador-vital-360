@@ -798,7 +798,9 @@
     .lc-pill-out{background:#fff;color:var(--lc-blue);border-color:var(--lc-blue)}
     .lc-pill-out:hover{background:var(--lc-blue-soft)}
     .lc-pill-sm{min-height:38px;padding:0 18px;font-size:13.5px}
-    .btn{border-radius:999px;min-height:44px;padding:0 20px;font-family:var(--font-body);font-size:14px}
+    /* text-decoration: hay <a class="btn"> (Abrir Gmail manualmente, Descargar
+       del esquema) y el subrayado por defecto del enlace se colaba en la píldora */
+    .btn{border-radius:999px;min-height:44px;padding:0 20px;font-family:var(--font-body);font-size:14px;text-decoration:none}
     .btn-primary{background:var(--lc-blue);border-color:var(--lc-blue);color:#fff}
     .btn-primary:hover{background:var(--lc-blue-ink);border-color:var(--lc-blue-ink)}
     .btn-secondary{background:#fff;color:var(--lc-blue);border-color:var(--lc-line-btn)}
