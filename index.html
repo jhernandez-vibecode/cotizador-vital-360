@@ -6,7 +6,7 @@
   <title>Vital 360 · Cotizador · Seguros Digitales</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@300;400;500;600;700;800&family=Spline+Sans+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <style>
     :root{
@@ -749,6 +749,628 @@
       border:1px solid var(--ins-gold);border-radius:8px;font-family:var(--font-body);
       font-size:13px;line-height:1.6;color:var(--ink-2)}
     .aviso-cliente strong{color:var(--ins-teal-deep);font-weight:600}
+
+    /* =====================================================================
+       LÍNEA CLARA · re-skin de la cara (9 sep 2026)
+       Referencia: business.google.com/en-all/google-ads. Blanco y aire,
+       píldoras, esquinas grandes, un solo acento (azul SDI #0369A1).
+       Este bloque va DE ÚLTIMO a propósito: reescribe por orden de fuente,
+       sin tocar lógica, ids ni enganches de JS. Las 10 reglas de JC están
+       anotadas como (R1)…(R10) donde mandan.
+       ===================================================================== */
+    :root{
+      --lc-blue:#0369A1;          /* R7 · acento ÚNICO de botones */
+      --lc-blue-ink:#02557F;      /* hover/pressed */
+      --lc-blue-soft:#E8F1F8;
+      --lc-band:#EEF4F9;          /* R1 · banda pálida, solo para agrupar */
+      --lc-line:#DADCE0;          /* R5 · hairline de tarjeta */
+      --lc-line-btn:#8A939C;      /* R7 · borde de control ≥3:1 sobre blanco */
+      --lc-line-soft:#EDEFF2;
+      --lc-ink:#1B1F23;
+      --lc-ink-2:#5A6570;
+      --lc-ink-3:#6B7681;         /* 4.6:1 sobre blanco */
+      --lc-ok-bg:#E9F5F0;         /* R4 · píldora de estado */
+      --lc-ok-tx:#037D61;
+      --lc-warn-tx:#B26A00;
+      --lc-prod:#1F5C6B;          /* R6 · color del producto: chip / regla / tinte */
+      --lc-prod-tint:#EDF3F4;
+      --lc-r-xl:32px;             /* R5 · panel */
+      --lc-r-lg:24px;
+      --lc-r-md:20px;             /* R5 · tarjeta */
+      --lc-shadow:0 1px 2px rgba(27,31,35,.05);
+      /* R10 · fuentes SDI */
+      --font-display:'Space Grotesk',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+      --font-body:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+      --font-mono:'JetBrains Mono',ui-monospace,'SFMono-Regular',Menlo,Consolas,monospace;
+    }
+    html,body{background:#fff;color:var(--lc-ink)}
+    body{font-size:14px;letter-spacing:0}
+    .mono,.v7 .m{font-variant-numeric:tabular-nums lining-nums}
+
+    /* --- R2/R7 · píldoras -------------------------------------------- */
+    .lc-pill{display:inline-flex;align-items:center;justify-content:center;gap:8px;
+      min-height:44px;padding:0 22px;border-radius:999px;font-family:var(--font-body);
+      font-size:14.5px;font-weight:600;letter-spacing:-.005em;cursor:pointer;
+      text-decoration:none;border:1px solid transparent;white-space:nowrap;
+      transition:background .15s ease,border-color .15s ease,color .15s ease}
+    .lc-pill-fill{background:var(--lc-blue);color:#fff;border-color:var(--lc-blue)}
+    .lc-pill-fill:hover{background:var(--lc-blue-ink);border-color:var(--lc-blue-ink)}
+    .lc-pill-out{background:#fff;color:var(--lc-blue);border-color:var(--lc-blue)}
+    .lc-pill-out:hover{background:var(--lc-blue-soft)}
+    .lc-pill-sm{min-height:38px;padding:0 18px;font-size:13.5px}
+    .btn{border-radius:999px;min-height:44px;padding:0 20px;font-family:var(--font-body);font-size:14px}
+    .btn-primary{background:var(--lc-blue);border-color:var(--lc-blue);color:#fff}
+    .btn-primary:hover{background:var(--lc-blue-ink);border-color:var(--lc-blue-ink)}
+    .btn-secondary{background:#fff;color:var(--lc-blue);border-color:var(--lc-line-btn)}
+    .btn-secondary:hover{background:var(--lc-blue-soft);border-color:var(--lc-blue)}
+
+    /* R4 · aviso de estado: píldora verde con punto, sin emoji ---------- */
+    .lc-state{display:inline-flex;align-items:center;gap:8px;padding:7px 15px;border-radius:999px;
+      background:var(--lc-ok-bg);color:var(--lc-ok-tx);font-size:12.5px;font-weight:600;
+      letter-spacing:.01em;border:none}
+    .lc-state::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor;flex-shrink:0}
+    /* R6 · el color del producto: chip y regla corta de 28×3 px */
+    .lc-chip{display:inline-flex;align-items:center;padding:4px 11px;border-radius:999px;
+      background:var(--lc-prod-tint);color:var(--lc-prod);font-size:11.5px;font-weight:600;letter-spacing:.01em}
+
+    /* R9 · movimiento: entrada suave, sin rebote; se apaga si el sistema lo pide */
+    @keyframes lcIn{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:none}}
+    .lc-in{animation:lcIn .5s cubic-bezier(.22,.61,.36,1) both}
+    .lc-in-2{animation-delay:.08s}
+    .lc-in-3{animation-delay:.16s}
+    @media (prefers-reduced-motion:reduce){
+      .lc-in,.lc-in-2,.lc-in-3{animation:none!important}
+      *{transition-duration:.001ms!important}
+    }
+
+    /* =========================== VISTA CLIENTE ========================= */
+    [data-view="cliente"]{background:#fff;font-size:14.5px;color:var(--lc-ink)}
+
+    /* R3 · barra en dos niveles + R1 · sin hero oscuro ------------------ */
+    .hero{background:#fff;color:var(--lc-ink);overflow:visible;border-bottom:1px solid var(--lc-line)}
+    .hero::before,.hero::after{display:none}
+    .hero-top{padding:0;border-bottom:1px solid var(--lc-line-soft);background:#fff}
+    .hero-top-inner{max-width:1180px;padding:12px 28px;font-size:12.5px;gap:16px}
+    .hero-top .l{gap:14px;min-width:0}
+    /* el PNG del INS es blanco (hecho para fondo oscuro): sobre blanco se pinta en tinta */
+    .hero-ins-logo{height:26px;filter:brightness(0);opacity:.86}
+    .hero-top .l .sep,.hero-top .l .logo{display:none}
+    .hero-top .l .who{color:var(--lc-ink-2);font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .hero-top .r{color:var(--lc-ink-3);font-family:var(--font-mono);font-size:11.5px;white-space:nowrap}
+    .hero-nav{border-bottom:1px solid var(--lc-line-soft);background:#fff}
+    .hero-nav-inner{max-width:1180px;margin:0 auto;padding:9px 28px;display:flex;align-items:center;gap:22px}
+    .hero-prod{font-family:var(--font-display);font-size:19px;font-weight:600;letter-spacing:-.025em;color:var(--lc-ink);white-space:nowrap}
+    .hero-links{display:flex;gap:22px;flex:1;min-width:0;overflow-x:auto;scrollbar-width:none}
+    .hero-links::-webkit-scrollbar{display:none}
+    .hero-links a{color:var(--lc-ink-2);text-decoration:none;font-size:13.5px;font-weight:500;
+      padding:6px 0;white-space:nowrap;border-bottom:2px solid transparent}
+    .hero-links a:hover{color:var(--lc-blue);border-bottom-color:var(--lc-blue)}
+
+    /* R2 · titular grande y centrado ----------------------------------- */
+    .hero-body{max-width:840px;padding:56px 28px 52px;display:block;text-align:center}
+    .hero-eyebrow{background:var(--lc-ok-bg);color:var(--lc-ok-tx);text-transform:none;
+      letter-spacing:.01em;font-size:12.5px;font-weight:600;padding:7px 15px;margin-bottom:22px}
+    .hero-eyebrow::before{background:currentColor;width:7px;height:7px}
+    .hero h1{font-family:var(--font-display);font-weight:600;font-size:50px;letter-spacing:-.03em;
+      line-height:1.06;color:var(--lc-ink);text-wrap:balance}
+    .hero h1 .accent{color:var(--lc-ink);font-style:normal;font-weight:600}
+    .hero .lead{font-size:17px;color:var(--lc-ink-2);margin:16px auto 0;max-width:56ch;line-height:1.6;text-wrap:balance}
+    .hero-cta{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:30px}
+    .hero-fam{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:34px}
+    .hero-fam span{display:inline-flex;align-items:center;gap:8px;padding:7px 14px;border-radius:999px;
+      border:1px solid var(--lc-line);background:#fff;font-size:12.5px;color:var(--lc-ink-3)}
+    .hero-fam span b{color:var(--lc-ink);font-weight:600}
+    .hero-fam span i{font-style:normal;font-family:var(--font-mono);font-size:11.5px;color:var(--lc-ink-3)}
+
+    /* barra de moneda -------------------------------------------------- */
+    .toggle-bar{background:rgba(255,255,255,.92);backdrop-filter:saturate(180%) blur(8px);
+      border-bottom:1px solid var(--lc-line);box-shadow:none}
+    .toggle-inner{max-width:1180px;padding:11px 28px}
+    .toggle-meta{color:var(--lc-ink-2);gap:14px}
+    .toggle-meta .badge{background:var(--lc-prod-tint);color:var(--lc-prod);border-radius:999px;
+      padding:5px 13px;font-size:11.5px;font-weight:600}
+    .toggle-meta .sep{background:var(--lc-line)}
+    .toggle-meta strong{color:var(--lc-ink)}
+    .cur-toggle-c .lbl{color:var(--lc-ink-3)}
+    .cur-toggle-c .swap{background:#fff;border:1px solid var(--lc-line-btn);border-radius:999px;padding:3px}
+    .cur-toggle-c .swap button{border-radius:999px;min-height:36px;padding:0 18px;font-size:13.5px;
+      color:var(--lc-ink-2);font-weight:600}
+    .cur-toggle-c .swap button.on{background:var(--lc-blue);color:#fff}
+
+    .wrap-cliente{max-width:1180px;padding:0 0 72px}
+    .v7-sec{max-width:840px;padding:0 28px}
+
+    /* kicker + título de sección: R6 · regla corta 28×3 px -------------- */
+    .v7-k{font-size:12px;letter-spacing:.02em;text-transform:none;color:var(--lc-ink-3);font-weight:600}
+    .v7-k::before{content:"";display:block;width:28px;height:3px;border-radius:2px;
+      background:var(--lc-prod);margin-bottom:12px}
+    .v7-h{font-family:var(--font-display);font-size:28px;font-weight:600;letter-spacing:-.025em;
+      color:var(--lc-ink);margin-top:6px;line-height:1.18}
+    .v7-fine{font-size:13px;color:var(--lc-ink-3);margin-top:10px;line-height:1.6}
+
+    /* R1/R5 · el recomendado: panel blanco r32 sobre banda pálida ------- */
+    .v7-rec{background:var(--lc-band);color:var(--lc-ink);padding:44px 0;margin-top:0}
+    .v7-rec-in{max-width:896px;padding:0 28px}
+    .lc-panel{background:#fff;border:1px solid var(--lc-line);border-radius:var(--lc-r-xl);
+      padding:38px 40px 34px;box-shadow:var(--lc-shadow)}
+    .v7-flag{background:var(--lc-prod-tint);color:var(--lc-prod);border-radius:999px;padding:5px 13px;
+      font-size:11.5px;font-weight:600;letter-spacing:.01em;text-transform:none}
+    .v7-rec-nm{font-family:var(--font-display);font-size:38px;font-weight:600;letter-spacing:-.03em;
+      color:var(--lc-ink);margin-top:16px}
+    .v7-rec-amb{font-size:14px;color:var(--lc-ink-2);margin-top:6px}
+    .v7-rec-tot{margin-top:26px;padding-top:24px;border-top:1px solid var(--lc-line-soft)}
+    .v7-rec-tot .lbl{font-size:12.5px;letter-spacing:.01em;text-transform:none;color:var(--lc-ink-3);font-weight:500}
+    /* R8 · la protagonista, grande y con punto de miles */
+    .v7-rec-tot .big{font-family:var(--font-mono);font-size:50px;font-weight:600;letter-spacing:-.035em;
+      color:var(--lc-ink);margin-top:10px;font-variant-numeric:tabular-nums}
+    .v7-rec-tot .eq{font-size:13px;color:var(--lc-ink-3);margin-top:12px}
+    .v7-rec-tot .eq b{color:var(--lc-ink-2);font-weight:600}
+    .v7-rec-tot .eq .m{font-family:var(--font-mono);font-size:12.5px}
+    /* R5 · sin bordes de color en reposo: la justificación va en banda pálida */
+    .v7-just{margin-top:22px;padding:16px 18px;border-left:0;background:var(--lc-band);border-radius:var(--lc-r-md)}
+    .v7-just + .v7-just{margin-top:12px}
+    .v7-just .t{font-size:11.5px;letter-spacing:.02em;text-transform:none;color:var(--lc-ink-3);font-weight:600}
+    .v7-just .d{font-size:14px;line-height:1.62;color:var(--lc-ink-2);margin-top:6px}
+    .v7-just .d b{color:var(--lc-ink);font-weight:600}
+    /* R6 · el rojo NUNCA sobre cifras: lo que empeora se marca con un punto */
+    .v7-just .peor{color:var(--lc-ink-2)}
+    .v7-just .peor::before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;
+      background:var(--lc-warn-tx);margin-right:6px;vertical-align:.1em}
+
+    /* tarjetas de renglones (recibo, coberturas) ------------------------ */
+    .v7-rcpt{border:1px solid var(--lc-line);border-radius:var(--lc-r-md);margin-top:16px;background:#fff}
+    .v7-rcpt-r{padding:14px 18px;border-bottom:1px solid var(--lc-line-soft)}
+    .v7-rcpt-r .nm{font-size:14.5px;color:var(--lc-ink-2)}
+    .v7-rcpt-r .nm i{color:var(--lc-ink-3);font-size:12.5px}
+    .v7-rcpt-r .vl{font-size:15px;font-weight:600;color:var(--lc-ink)}
+    .v7-rcpt-r .vl.m{font-family:var(--font-mono);font-size:14px}
+    .v7-rcpt-r.tot{background:var(--lc-band);font-weight:700}
+    .v7-rcpt-r.tot .vl{font-size:17px;color:var(--lc-ink)}
+    /* R1 · las bandas pálidas agrupan; nada de barras de color */
+    .v7-iva{background:var(--lc-band);border-left:0;border-radius:var(--lc-r-md);padding:14px 18px;
+      font-size:13px;color:var(--lc-ink-2);margin-top:12px;line-height:1.6}
+    .v7-iva .m{font-family:var(--font-mono);color:var(--lc-ink);font-weight:600}
+
+    /* R7 · chips de forma de pago: píldoras de 44 px, borde ≥3:1 -------- */
+    .v7-chips{gap:10px;margin-top:16px;flex-wrap:wrap}
+    .v7-chips button{flex:1 1 130px;min-height:44px;border-radius:999px;border:1px solid var(--lc-line-btn);
+      background:#fff;color:var(--lc-ink-2);font-size:13px;font-weight:500;padding:0 14px;
+      transition:background .15s ease,border-color .15s ease,color .15s ease}
+    .v7-chips button:hover{border-color:var(--lc-blue);color:var(--lc-blue);background:var(--lc-blue-soft)}
+    .v7-chips button b{display:inline;font-weight:700;margin-right:5px;font-size:13px}
+    .v7-chips button.on{background:var(--lc-blue);border-color:var(--lc-blue);color:#fff}
+    .v7-chips button.on:hover{background:var(--lc-blue-ink);color:#fff}
+    .v7-pago-now{margin-top:20px}
+    .v7-pago-now .amt{font-family:var(--font-mono);font-size:36px;font-weight:600;letter-spacing:-.03em;
+      color:var(--lc-ink);font-variant-numeric:tabular-nums}
+    .v7-pago-now .cad{font-size:14px;color:var(--lc-ink-3);margin-top:7px}
+
+    /* escalera de planes ------------------------------------------------ */
+    .v7-grp{font-size:12px;letter-spacing:.02em;text-transform:none;color:var(--lc-ink-3);font-weight:600;
+      margin:26px 0 10px;padding-bottom:0;border-bottom:0}
+    .v7-lad{margin-top:14px}
+    .v7-row{border:1px solid var(--lc-line);border-radius:var(--lc-r-md);padding:16px 18px;margin-bottom:10px;
+      background:#fff;transition:background .15s ease,border-color .15s ease}
+    .v7-row:hover{background:var(--lc-prod-tint);border-color:#C6D4D8}   /* R6 · tinte al pasar el mouse */
+    .v7-row.star{border-left:1px solid var(--lc-line)}
+    /* regla #12 · la fila abierta acusa recibo y envuelve al panel */
+    .v7-row.open{border-color:var(--lc-blue);border-width:2px;background:var(--lc-blue-soft);
+      border-radius:var(--lc-r-md) var(--lc-r-md) 0 0;margin-bottom:0}
+    .v7-row .nm{font-family:var(--font-display);font-size:17px;font-weight:600;letter-spacing:-.02em;color:var(--lc-ink)}
+    .v7-row .sm{font-size:12.5px;color:var(--lc-ink-3);margin-top:4px}
+    .v7-row .rt .big{font-family:var(--font-mono);font-size:17px;font-weight:600;letter-spacing:-.02em;
+      color:var(--lc-ink);font-variant-numeric:tabular-nums}
+    .v7-row .rt .sm{font-family:var(--font-mono);font-size:11.5px;color:var(--lc-ink-3);margin-top:3px}
+    .v7-chev{color:var(--lc-blue);font-size:16px}
+    .v7-anchor{border:2px solid var(--lc-blue);border-top:0;border-radius:0 0 var(--lc-r-md) var(--lc-r-md);
+      background:var(--lc-blue-soft);padding:20px 18px;margin-bottom:10px}
+    .v7-anchor .t{font-size:11.5px;letter-spacing:.02em;text-transform:none;color:var(--lc-ink-3);
+      font-weight:600;margin-top:20px}
+    .v7-anchor .v7-rcpt,.v7-anchor .v7-pgt{background:#fff;border-color:var(--lc-line)}
+    .v7-anchor .v7-iva{background:#fff;border:1px solid var(--lc-line)}
+    .v7-dif{font-size:13.5px;padding:9px 0;border-bottom:1px solid #DCE7EF;color:var(--lc-ink-2)}
+    /* R6 · nunca pintar la cifra: el color va en el punto, no en el número */
+    .v7-dif .mej,.v7-dif .peo{color:var(--lc-ink);font-weight:600;font-family:var(--font-mono);font-size:12.5px}
+    .v7-dif .mej::before,.v7-dif .peo::before{content:"";display:inline-block;width:6px;height:6px;
+      border-radius:50%;margin-right:7px;vertical-align:.1em}
+    .v7-dif .mej::before{background:var(--lc-ok-tx)}
+    .v7-dif .peo::before{background:var(--lc-warn-tx)}
+    .v7-pgt{border:1px solid var(--lc-line);border-radius:var(--lc-r-md);background:#fff;margin-top:10px}
+    .v7-pgr{padding:12px 16px;border-bottom:1px solid var(--lc-line-soft)}
+    .v7-pgr.on{background:var(--lc-band)}
+    .v7-pgr .md{font-size:14px;font-weight:600;color:var(--lc-ink)}
+    .v7-pgr .cu{font-size:12px;color:var(--lc-ink-3);margin-top:3px}
+    .v7-pgr .tt{font-size:15px;font-weight:600;color:var(--lc-ink);font-family:var(--font-mono)}
+
+    /* comparador -------------------------------------------------------- */
+    .v7-cmp-pick{gap:9px;margin-top:16px}
+    .v7-cmp-pick button{min-height:44px;padding:0 18px;border-radius:999px;border:1px solid var(--lc-line-btn);
+      background:#fff;color:var(--lc-ink-2);font-size:13.5px;font-weight:500}
+    .v7-cmp-pick button:hover{border-color:var(--lc-blue);color:var(--lc-blue);background:var(--lc-blue-soft)}
+    .v7-cmp-pick button.on{background:var(--lc-blue);border-color:var(--lc-blue);color:#fff}
+    .v7-cmp-pick button[disabled]{opacity:.45}
+    .v7-scroll{border:1px solid var(--lc-line);border-radius:var(--lc-r-md);margin-top:16px}
+
+    /* tabla de 28 coberturas -------------------------------------------- */
+    .cmp-table-c{font-size:13px}
+    .cmp-table-c thead th{font-family:var(--font-body);font-size:11.5px;font-weight:600;text-transform:none;
+      letter-spacing:.01em;color:var(--lc-ink-3);background:#fff;border-bottom:1px solid var(--lc-line);padding:14px}
+    .cmp-table-c thead th:first-child{color:var(--lc-ink)}
+    .cmp-table-c thead th.rec{background:var(--lc-band);color:var(--lc-prod)}
+    .cmp-table-c tbody td{padding:11px 14px;border-bottom:1px solid var(--lc-line-soft);color:var(--lc-ink);
+      font-family:var(--font-mono);font-size:12.5px}
+    .cmp-table-c tbody td:first-child{color:var(--lc-ink-2);font-family:var(--font-body);font-size:13px}
+    .cmp-table-c tbody td.na{color:var(--lc-ink-3)}
+    .cmp-table-c tbody td.rec{background:var(--lc-band)}
+    .cmp-table-c tbody tr:last-child td{border-bottom:0}
+
+    /* tooltips ---------------------------------------------------------- */
+    .has-tip{border-bottom:1px dotted var(--lc-line-btn)}
+    .has-tip .tip-ico{background:var(--lc-band);color:var(--lc-ink-3);font-family:var(--font-body);
+      font-style:normal;font-weight:700;font-size:9.5px}
+    .has-tip:hover .tip-ico,.has-tip:focus .tip-ico,.has-tip.tipped .tip-ico{background:var(--lc-blue);color:#fff}
+    .has-tip::after{background:var(--lc-ink);border-radius:12px;font-family:var(--font-body)}
+
+    /* bloques informativos del cliente ---------------------------------- */
+    .carac,.wait,.pay-cli,.docs-c,.cmp-table-c-wrap,.included{background:#fff;
+      border:1px solid var(--lc-line);border-radius:var(--lc-r-lg);margin-bottom:22px;box-shadow:none}
+    .lc-band-wrap{background:var(--lc-band);padding:48px 0;margin-top:44px}
+    .lc-band-wrap > .v7-sec{max-width:896px}
+    .carac{padding:30px 34px}
+    .carac-h{border-bottom:1px solid var(--lc-line-soft);padding-bottom:18px;margin-bottom:22px}
+    .carac-h h3,.wait h3,.included h3,.docs-c-h h3{font-family:var(--font-display);font-size:26px;
+      font-weight:600;letter-spacing:-.025em;color:var(--lc-ink)}
+    .carac-h .sub,.wait .sub,.included .sub,.docs-c-h .sub{font-size:14px;color:var(--lc-ink-2);line-height:1.6}
+    .carac-grid{gap:16px}
+    .carac-item{background:#fff;border:1px solid var(--lc-line);border-radius:var(--lc-r-md);padding:18px 20px;gap:16px}
+    /* R10 · nada de chips de icono de color: el índice va en tinta suave */
+    .carac-item .ico{width:34px;height:34px;border-radius:50%;background:var(--lc-band);color:var(--lc-ink-2);
+      font-family:var(--font-mono);font-size:13px;font-weight:600}
+    .carac-item .t{font-size:14.5px;color:var(--lc-ink)}
+    .carac-item .d{font-size:13px;color:var(--lc-ink-2)}
+    .included{background:#fff;padding:32px 34px;gap:40px}
+    .inc-item{background:#fff;border:1px solid var(--lc-line);border-radius:var(--lc-r-md);padding:16px 18px}
+    .inc-item .ico{width:30px;height:30px;border-radius:50%;background:var(--lc-band);color:var(--lc-ink-2);
+      font-family:var(--font-body);font-style:normal;font-size:13px;font-weight:700}
+    .inc-item .t{font-size:14px;color:var(--lc-ink)}
+    .inc-item .d{font-size:12.5px;color:var(--lc-ink-3)}
+    .wait{padding:28px 34px}
+    .wait-grid{border-top:1px solid var(--lc-line);margin-top:18px}
+    .wait-row{border-bottom:1px solid var(--lc-line-soft);padding:12px 0;font-size:13.5px}
+    .wait-row .k{color:var(--lc-ink-2)}
+    .wait-row .v{font-family:var(--font-mono);font-size:12.5px;color:var(--lc-ink)}
+    .wait-grid > div{border-right:1px solid var(--lc-line-soft)}
+
+    /* documentos -------------------------------------------------------- */
+    .docs-c-h{background:#fff;border-bottom:1px solid var(--lc-line-soft);padding:28px 34px 22px}
+    .docs-c-h h3 em{font-style:normal;color:var(--lc-ink)}
+    .docs-c-body{padding:22px 34px 28px}
+    .docs-section-c .label-c{font-size:12px;text-transform:none;letter-spacing:.01em;color:var(--lc-ink-3);font-weight:600}
+    .docs-section-c .lpin{width:7px;height:7px}
+    .docs-section-c .lpin.base{background:var(--lc-ok-tx)}
+    .docs-section-c .lpin.extra{background:var(--lc-prod)}
+    .docs-section-c .lpin.cond{background:var(--lc-warn-tx)}
+    .docs-section-c .trigger-chip{background:var(--lc-band);border:none;border-radius:999px;padding:3px 10px;
+      color:var(--lc-ink-2);font-family:var(--font-body);font-size:11.5px}
+    .docs-list-c{gap:12px}
+    .doc-c{background:#fff;border:1px solid var(--lc-line);border-radius:var(--lc-r-md);padding:16px 18px}
+    .doc-c .icon{background:var(--lc-band);border:none;border-radius:12px;width:40px;height:40px}
+    .doc-c .icon::before{color:var(--lc-ink-3);font-family:var(--font-mono);font-size:8.5px}
+    .doc-c .icon::after{border-color:var(--lc-ink-3)}
+    .doc-c.aviso .icon::before{color:var(--lc-ink-2);font-family:var(--font-display);font-style:normal}
+    .doc-c .info .nm{font-size:14px;color:var(--lc-ink)}
+    .doc-c .info .desc{font-size:12.5px;color:var(--lc-ink-3)}
+    .doc-c .dl{background:var(--lc-blue);border-radius:50%;width:36px;height:36px}
+    .doc-c .dl:hover{background:var(--lc-blue-ink)}
+    .exam-list{background:var(--lc-band);border:none;border-radius:var(--lc-r-md);padding:18px 20px}
+    .exam-list .eh .note{font-family:var(--font-body);font-style:normal;color:var(--lc-ink-3)}
+    .exam-list li::before{color:var(--lc-ink-3)}
+    .docs-note{background:var(--lc-band);border-left:0;border-radius:var(--lc-r-md);padding:16px 18px;
+      font-size:13px;color:var(--lc-ink-2)}
+    .red-c{background:#fff;border:1px solid var(--lc-line-btn);border-radius:999px;padding:12px 20px;gap:12px}
+    .red-c:hover{background:var(--lc-blue-soft);border-color:var(--lc-blue)}
+    .red-c .red-ico{display:none}
+    .red-c .red-txt b{color:var(--lc-blue);font-size:14px}
+    .red-c .red-txt span{color:var(--lc-ink-3)}
+
+    /* CTA + pie --------------------------------------------------------- */
+    .cta-strip{background:#fff;color:var(--lc-ink);border:1px solid var(--lc-line);border-radius:var(--lc-r-xl);
+      padding:44px 48px;display:block;text-align:center;margin-bottom:22px}
+    .cta-strip::after{display:none}
+    .cta-strip h3{font-family:var(--font-display);font-size:34px;font-weight:600;letter-spacing:-.03em;
+      color:var(--lc-ink);line-height:1.1}
+    .cta-strip h3 em{font-style:normal;color:var(--lc-ink)}
+    .cta-strip p{color:var(--lc-ink-2);font-size:15px;margin:14px auto 0;max-width:52ch}
+    .cta-strip-r{align-items:center;margin-top:28px;gap:18px}
+    .cta-strip-r .agent{background:#fff;border:1px solid var(--lc-line);border-radius:999px;padding:8px 20px 8px 8px;
+      gap:12px;align-self:center}
+    .cta-strip-r .agent .av{background:var(--lc-band);color:var(--lc-ink-2);font-family:var(--font-display);
+      width:40px;height:40px;font-size:15px;font-weight:600}
+    .cta-strip-r .agent .n{font-size:14px;color:var(--lc-ink)}
+    .cta-strip-r .agent .r{font-size:12px;color:var(--lc-ink-3)}
+    .cta-strip-r .btn-wa{background:var(--lc-blue);border-radius:999px;min-height:44px;padding:0 26px;
+      align-self:center;font-size:15px}
+    .cta-strip-r .btn-wa:hover{background:var(--lc-blue-ink)}
+    .fine{background:#fff;border:1px solid var(--lc-line);border-radius:var(--lc-r-lg);padding:24px 30px;
+      font-size:12.5px;color:var(--lc-ink-3);line-height:1.7}
+    .fine strong{color:var(--lc-ink-2)}
+    .sdi-foot{background:var(--lc-band);border-radius:var(--lc-r-xl);color:var(--lc-ink-2);padding:32px 30px}
+    /* R10 · la marca SDI oficial del kit v1.2 (azul + 4 barras), no la de 3 barras inventada */
+    .sdi-mark{width:92px;height:45px;background:url("img/sdi-logo-compacto.svg") center/contain no-repeat;
+      margin:0 auto 14px;display:block;position:relative}
+    .sdi-mark .sdi-bars{display:none}
+    .sdi-mark .sdi-word{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+    .sdi-foot-line{color:var(--lc-ink-2);font-size:12.5px}
+    .sdi-foot-line strong{color:var(--lc-ink)}
+    .sdi-foot-line.sub{color:var(--lc-ink-3);font-size:11.5px}
+
+    /* ============================ VISTA AGENTE ========================= */
+    /* R3 · barra en dos niveles: SDI arriba, producto y enlaces abajo */
+    .masthead-agente{background:#fff;border-bottom:1px solid var(--lc-line-soft)}
+    .masthead-inner{max-width:1480px;padding:12px 32px}
+    .mh-sdi{display:block;line-height:0}
+    .mh-sdi img{height:36px;width:auto;display:block}
+    .mh-user{border:1px solid var(--lc-line);border-radius:999px;padding:5px 14px 5px 5px;font-size:13px;
+      color:var(--lc-ink-2);gap:9px}
+    .mh-user .av{background:var(--lc-band);color:var(--lc-ink-2);width:28px;height:28px;font-size:11px}
+    .mh-gear{border:1px solid var(--lc-line);color:var(--lc-ink-2);width:38px;height:38px}
+    .mh-gear:hover{background:var(--lc-band);color:var(--lc-blue)}
+    .tabs-agente{max-width:1480px;padding:0 32px;border-bottom:1px solid var(--lc-line);gap:4px;
+      align-items:center;background:#fff}
+    .tabs-prod{font-family:var(--font-display);font-size:19px;font-weight:600;letter-spacing:-.025em;
+      color:var(--lc-ink);margin-right:26px;white-space:nowrap}
+    .tabs-prod .num{font-size:19px;color:var(--lc-ink);vertical-align:baseline}
+    .tabs-agente .tab-btn{padding:15px 16px;font-size:14px;font-weight:500;color:var(--lc-ink-2);
+      border-bottom:2px solid transparent}
+    .tabs-agente .tab-btn:hover{color:var(--lc-blue)}
+    .tabs-agente .tab-btn.active{color:var(--lc-blue);border-bottom-color:var(--lc-blue);font-weight:600}
+    .tabs-agente .tab-count{background:var(--lc-band);color:var(--lc-ink-2);border-radius:999px;
+      font-family:var(--font-mono);min-width:24px;height:21px}
+    .tabs-agente .tab-btn.active .tab-count{background:var(--lc-blue);color:#fff}
+    .tabs-agente .tab-new{border-radius:999px;min-height:38px;padding:0 18px;border:1px solid var(--lc-blue);
+      color:var(--lc-blue);background:#fff;font-size:13.5px;font-weight:600}
+    .tabs-agente .tab-new:hover{background:var(--lc-blue-soft);color:var(--lc-blue)}
+    .page-agente{padding:32px 32px 56px}
+    .set-nudge{max-width:1480px;padding:12px 32px;background:var(--lc-band);border-bottom:1px solid var(--lc-line-soft);
+      color:var(--lc-ink-2);font-size:13px}
+    .set-nudge .go{background:var(--lc-blue);border-radius:999px;min-height:36px;padding:0 16px;font-size:12.5px}
+    .set-nudge .dismiss{color:var(--lc-ink-3)}
+
+    /* paso 1 · banda de datos ------------------------------------------- */
+    .input-band{border:1px solid var(--lc-line);border-radius:var(--lc-r-lg);margin-bottom:22px;background:#fff}
+    .ib-h{background:#fff;border-bottom:1px solid var(--lc-line-soft);padding:18px 24px}
+    .ib-h .t{font-size:15px;font-weight:600}
+    .ib-h .num1,.ib-h .num2,.ib-h .num3{background:var(--lc-band);color:var(--lc-ink-2);
+      font-family:var(--font-mono);width:22px;height:22px;font-size:11px}
+    .ib-h .step{font-family:var(--font-body);text-transform:none;letter-spacing:.01em;color:var(--lc-ink-3);font-size:12px}
+    .ib-body{padding:24px}
+    .ib-section .h{font-size:12px;text-transform:none;letter-spacing:.01em;color:var(--lc-ink-3);font-weight:600}
+    .ib-section input,.ib-section select{border:1px solid var(--lc-line-btn);border-radius:10px;padding:10px 12px;font-size:13.5px}
+    .ib-section input:focus,.ib-section select:focus{border-color:var(--lc-blue);box-shadow:0 0 0 3px var(--lc-blue-soft)}
+    .aseg-chip{background:#fff;border:1px solid var(--lc-line-btn);border-radius:999px;color:var(--lc-ink-2);
+      padding:8px 14px 8px 10px;font-size:13px}
+    .aseg-chip:hover{background:var(--lc-blue-soft);border-color:var(--lc-blue)}
+    .aseg-chip .ico{background:var(--lc-band);color:var(--lc-ink-2);font-family:var(--font-body);
+      font-style:normal;font-weight:700;font-size:10px;width:20px;height:20px}
+    .aseg-chip .age{font-family:var(--font-mono);background:var(--lc-band);color:var(--lc-ink-2);border-radius:999px}
+    .aseg-chip.titular{background:var(--lc-prod-tint);border-color:#C6D4D8;color:var(--lc-prod)}
+    .aseg-chip.titular .ico{background:#fff;color:var(--lc-prod)}
+    .aseg-add{border:1px dashed var(--lc-line-btn);border-radius:999px;color:var(--lc-ink-3);padding:8px 16px}
+    .aseg-add:hover{border-color:var(--lc-blue);color:var(--lc-blue);background:var(--lc-blue-soft)}
+    .tit-info{background:var(--lc-band);border:none;border-radius:12px;color:var(--lc-ink-2);font-size:12.5px;padding:10px 14px}
+    .tit-info.warn{background:#FDF4E3;border:none;color:#7A5B0E}
+    .cur-tog{background:#fff;border:1px solid var(--lc-line-btn);border-radius:999px;padding:3px}
+    .cur-tog button{border-radius:999px;min-height:36px;color:var(--lc-ink-2)}
+    .cur-tog button.on{background:var(--lc-blue);color:#fff}
+
+    /* paso 2 · scanner de 7 planes -------------------------------------- */
+    .scanner-h .t{font-family:var(--font-display);font-size:24px;font-weight:600;letter-spacing:-.025em}
+    .scanner-h .num2{background:var(--lc-band);color:var(--lc-ink-2);font-family:var(--font-mono);width:26px;height:26px}
+    .scanner-h .selector{color:var(--lc-ink-3)}
+    .scanner-h .selector .pill{background:var(--lc-prod-tint);color:var(--lc-prod);border-radius:999px;
+      padding:5px 13px;font-size:11.5px}
+    .scanner-h .selector .clear{color:var(--lc-blue);text-decoration:none;font-weight:600}
+    .plans7{background:transparent;border:0;border-radius:0;padding:0;gap:12px;overflow:visible}
+    .p7{background:#fff;border:1px solid var(--lc-line);border-radius:var(--lc-r-md);padding:18px 16px 16px;
+      transition:background .15s ease,border-color .15s ease,box-shadow .15s ease}
+    .p7:hover{background:var(--lc-prod-tint);border-color:#C6D4D8}   /* R6 · tinte al pasar el mouse */
+    .p7.selected{background:#fff;border-color:var(--lc-blue);box-shadow:inset 0 0 0 1px var(--lc-blue)}
+    .p7 .ambito{font-size:11px;letter-spacing:0;text-transform:none;color:var(--lc-ink-3);font-weight:500}
+    .p7 .star{border-radius:50%;border:1px solid var(--lc-line-btn);color:var(--lc-ink-3);width:24px;height:24px}
+    .p7.selected .star{background:var(--lc-blue);border-color:var(--lc-blue);color:#fff}
+    .p7 .nm{font-family:var(--font-display);font-size:19px;font-weight:600;letter-spacing:-.025em;color:var(--lc-ink)}
+    .p7 .suma{color:var(--lc-ink-3);font-size:11.5px}
+    .p7 .suma .v{font-family:var(--font-mono);color:var(--lc-ink-2)}
+    .p7 .prima-box{border-top:1px solid var(--lc-line-soft);padding-top:12px}
+    .p7 .prima-box .lbl{font-size:11px;letter-spacing:0;text-transform:none;color:var(--lc-ink-3);font-weight:500}
+    .p7 .prima-box .cur,.p7 .prima-box .amt{font-family:var(--font-mono);color:var(--lc-ink)}
+    .p7 .prima-box .amt{font-size:22px;font-weight:600;letter-spacing:-.01em;font-variant-numeric:tabular-nums}
+    .p7 .prima-box .per{font-style:normal;color:var(--lc-ink-3)}
+    .p7 .nodata{font-family:var(--font-body);font-style:normal;color:var(--lc-ink-3)}
+    .cmp-table-wrap{border:1px solid var(--lc-line);border-radius:var(--lc-r-lg);margin-top:22px}
+    .cmp-table-h{background:#fff;border-bottom:1px solid var(--lc-line-soft);padding:18px 24px}
+    .cmp-table-h .t{font-size:14px}
+    .cmp-table-h .toggle-expand{color:var(--lc-blue);text-decoration:none;font-weight:600}
+    .cmp-table thead th{background:#fff;border-bottom:1px solid var(--lc-line);text-transform:none;
+      letter-spacing:.01em;font-size:11.5px;font-weight:600;color:var(--lc-ink-3);padding:12px}
+    .cmp-table thead th.selected{background:var(--lc-band);color:var(--lc-prod)}
+    .cmp-table thead th.selected::after{content:""}
+    .cmp-table tbody td{border-bottom:1px solid var(--lc-line-soft);padding:9px 12px;color:var(--lc-ink)}
+    .cmp-table tbody td:first-child{color:var(--lc-ink-2)}
+    .cmp-table tbody td.selected{background:var(--lc-band)}
+
+    /* paso 3 · envío ---------------------------------------------------- */
+    .send-band{background:var(--lc-band);border-radius:var(--lc-r-xl);color:var(--lc-ink);
+      margin-top:26px;overflow:hidden}
+    .send-l{padding:34px 38px}
+    .send-l .h{color:var(--lc-ink-3);text-transform:none;letter-spacing:.01em;font-size:12.5px;font-weight:600}
+    .send-l .num3{background:#fff;color:var(--lc-ink-2);font-family:var(--font-mono);width:20px;height:20px}
+    .send-l .t{font-family:var(--font-display);font-size:28px;font-weight:600;letter-spacing:-.03em;color:var(--lc-ink)}
+    .send-l p{color:var(--lc-ink-2);font-size:14px}
+    .send-l .empty{font-family:var(--font-body);font-style:normal;color:var(--lc-ink-3);font-size:15px}
+    .send-l .sl-chip{background:#fff;border:1px solid var(--lc-line);border-radius:999px;color:var(--lc-ink-2);
+      padding:8px 14px;font-size:12.5px}
+    .send-l .sl-chip.rec{background:#fff;border-color:var(--lc-prod);color:var(--lc-prod)}
+    .send-l .sl-chip .set-rec{color:var(--lc-ink-3);text-decoration:none;font-weight:600}
+    .send-l .sl-chip.rec .set-rec{color:var(--lc-prod)}
+    .send-r{background:transparent;border-left:1px solid var(--lc-line);padding:34px 38px;gap:12px}
+    .send-r button{border-radius:999px;min-height:46px;font-size:14px;justify-content:center;text-align:center}
+    .send-r .btn-wa{background:var(--lc-blue);color:#fff}
+    .send-r .btn-wa:hover{background:var(--lc-blue-ink)}
+    .send-r .btn-mail{background:#fff;color:var(--lc-blue);border:1px solid var(--lc-blue)}
+    .send-r .btn-mail:hover{background:var(--lc-blue-soft);border-color:var(--lc-blue)}
+    .send-r .btn-preview{background:#fff;color:var(--lc-ink-2);border:1px solid var(--lc-line-btn)}
+    .send-r .btn-preview:hover{background:#fff;border-color:var(--lc-blue);color:var(--lc-blue)}
+    .send-r .btn-copy{background:transparent;color:var(--lc-ink-3);border:1px solid transparent;font-size:13px}
+    .send-r .btn-copy:hover{color:var(--lc-blue)}
+
+    /* historial y pólizas vigentes -------------------------------------- */
+    .hist-h h2{font-family:var(--font-display);font-size:26px;font-weight:600;letter-spacing:-.025em}
+    .hist-h .sub{color:var(--lc-ink-3);font-size:13px}
+    .hist-filter button{border:1px solid var(--lc-line-btn);border-radius:999px;min-height:36px;padding:0 16px;
+      color:var(--lc-ink-2);font-size:13px}
+    .hist-filter button.on{background:var(--lc-blue);border-color:var(--lc-blue);color:#fff}
+    .hist-empty{background:#fff;border:1px solid var(--lc-line);border-radius:var(--lc-r-lg);
+      font-family:var(--font-body);font-style:normal;color:var(--lc-ink-3)}
+    .hist-backup{background:var(--lc-band);border:none;border-radius:var(--lc-r-lg);padding:18px 22px}
+    .hist-backup .hb-txt{color:var(--lc-ink-2);font-size:12.5px}
+    .hist-backup .hb-txt strong{color:var(--lc-ink)}
+    .hist-backup button{border:1px solid var(--lc-line-btn);border-radius:999px;min-height:38px;padding:0 16px;
+      background:#fff;color:var(--lc-ink-2);font-size:13px}
+    .hist-backup button:hover{border-color:var(--lc-blue);color:var(--lc-blue);background:#fff}
+    /* una sola accion llena: respaldar. Las otras dos, contorno azul. */
+    .hist-backup .hb-exp{background:var(--lc-blue);border-color:var(--lc-blue);color:#fff}
+    .hist-backup .hb-exp:hover{background:var(--lc-blue-ink);border-color:var(--lc-blue-ink);color:#fff}
+    .hist-backup .hb-rec{background:#fff;border-color:var(--lc-blue);color:var(--lc-blue)}
+    .hist-backup .hb-rec:hover{background:var(--lc-blue-soft);border-color:var(--lc-blue);color:var(--lc-blue)}
+    .hist-table{border:1px solid var(--lc-line);border-radius:var(--lc-r-lg);font-size:13.5px}
+    .hist-table thead th{background:#fff;border-bottom:1px solid var(--lc-line);text-transform:none;
+      letter-spacing:.01em;font-size:11.5px;font-weight:600;color:var(--lc-ink-3);padding:14px}
+    .hist-table tbody td{padding:15px 14px;border-bottom:1px solid var(--lc-line-soft)}
+    .hist-table tbody tr:hover{background:var(--lc-band)}
+    .hist-table tbody tr:last-child td{border-bottom:0}
+    .hist-table .nm{color:var(--lc-ink)}
+    .hist-table .meta,.hist-table .fecha{color:var(--lc-ink-3)}
+    .hist-table .planes,.hist-table .prima{font-family:var(--font-mono);color:var(--lc-ink)}
+    /* R4 · estado en píldora, con punto y sin emoji */
+    .hist-state-pill{border-radius:999px;padding:5px 12px;font-size:11.5px;text-transform:none;letter-spacing:.01em}
+    .hist-state-pill.aceptada{background:var(--lc-ok-bg);color:var(--lc-ok-tx)}
+    .hist-state-pill.aceptada::before{background:currentColor}
+    .hist-state-pill.pendiente{background:var(--lc-band);color:var(--lc-ink-2)}
+    .hist-state-pill.pendiente::before{background:var(--lc-warn-tx)}
+    .hist-state-pill.eliminada{background:var(--lc-band);color:var(--lc-ink-3)}
+    .hist-state-pill.eliminada::before{background:var(--lc-ink-3)}
+    .hist-actions button,.hist-actions a{border:1px solid var(--lc-line-btn);border-radius:999px;
+      min-height:34px;padding:0 14px;color:var(--lc-ink-2);font-size:12.5px}
+    .hist-actions button:hover,.hist-actions a:hover{border-color:var(--lc-blue);color:var(--lc-blue);background:var(--lc-blue-soft)}
+    .hist-actions button.danger:hover{border-color:var(--lc-line-btn);color:var(--lc-ink)}
+    .hist-actions button.ok:hover{border-color:var(--lc-ok-tx);color:var(--lc-ok-tx)}
+    .hist-actions button.poliza,.hist-actions button.guia{background:var(--lc-blue);border-color:var(--lc-blue);color:#fff}
+    .hist-actions button.poliza:hover,.hist-actions button.guia:hover{background:var(--lc-blue-ink);border-color:var(--lc-blue-ink)}
+    .hist-actions button.guia.reenviar{background:#fff;color:var(--lc-blue);border-color:var(--lc-blue)}
+    .hist-actions button.guia.reenviar:hover{background:var(--lc-blue-soft);color:var(--lc-blue)}
+    .vig-plan{background:var(--lc-prod-tint);color:var(--lc-prod);border-radius:999px;padding:4px 12px}
+    .vig-poliza{font-family:var(--font-mono);color:var(--lc-ink)}
+    .vig-poliza.sin{font-family:var(--font-body);font-style:normal;color:var(--lc-ink-3)}
+    .vig-guia.enviada{color:var(--lc-ok-tx)}
+    .vig-guia.enviada::before{background:var(--lc-ok-tx)}
+    .vig-guia.pendiente{color:var(--lc-ink-3)}
+    .vig-guia.pendiente::before{background:var(--lc-line-btn)}
+    .foot-agente{padding:0 32px 56px}
+    .sdi-changelog{border-top:1px solid var(--lc-line);color:var(--lc-ink-3);font-size:11.5px}
+    .sdi-changelog summary:hover{color:var(--lc-blue)}
+    .sdi-changelog strong{color:var(--lc-ink-2)}
+
+    /* modales y vistas sueltas ------------------------------------------ */
+    .email-modal,.aseg-modal,.set-card,.lightbox{border-radius:var(--lc-r-lg)}
+    .email-modal-h h3,.aseg-modal h3,.set-card .set-h h3,.lightbox-h h3{font-family:var(--font-display);font-weight:600;letter-spacing:-.02em}
+    .email-modal-actions,.set-foot{background:#fff;border-color:var(--lc-line-soft)}
+    .email-modal-hint{background:var(--lc-band);border-bottom-color:var(--lc-line);color:var(--lc-ink-2)}
+    .email-modal-hint kbd{border-radius:6px;border-color:var(--lc-line);font-family:var(--font-mono)}
+    .set-field input,.aseg-modal input,.aseg-modal select{border:1px solid var(--lc-line-btn);border-radius:10px}
+    .set-field input:focus{border-color:var(--lc-blue);box-shadow:0 0 0 3px var(--lc-blue-soft)}
+    .set-field label,.aseg-modal label{text-transform:none;letter-spacing:.01em;font-size:12px;color:var(--lc-ink-3)}
+    .set-readonly{background:var(--lc-band);border:none;border-radius:10px;font-family:var(--font-mono)}
+    .set-foot .btn-guardar{background:var(--lc-blue);border-radius:999px;min-height:44px;padding:0 26px}
+    .set-foot .btn-guardar:hover{background:var(--lc-blue-ink)}
+    .v360-toast{background:var(--lc-ink);border-radius:999px}
+    .lightbox-note{background:var(--lc-band);border-bottom-color:var(--lc-line);color:var(--lc-ink-2)}
+    .lightbox-pre{color:var(--lc-ink-3);text-transform:none;letter-spacing:.01em;font-weight:600}
+    .lightbox-img-wrap{background:var(--lc-band)}
+    .lightbox-img-wrap img{border-color:var(--lc-line);box-shadow:none;border-radius:12px}
+    .aviso-cliente{background:var(--lc-band);border:none;border-radius:var(--lc-r-md);color:var(--lc-ink-2)}
+    .aviso-cliente strong{color:var(--lc-ink)}
+    .lc-solo{max-width:560px;margin:96px auto;padding:48px 44px;text-align:center;background:#fff;
+      border:1px solid var(--lc-line);border-radius:var(--lc-r-xl)}
+    .lc-solo h2{font-family:var(--font-display);font-size:30px;font-weight:600;letter-spacing:-.03em;
+      color:var(--lc-ink);margin-bottom:12px}
+    .lc-solo p{color:var(--lc-ink-2);font-size:14.5px;line-height:1.65}
+    .lc-solo-logo{width:104px;height:51px;margin:0 auto 24px;display:block;
+      background:url("img/sdi-logo-compacto.svg") center/contain no-repeat}
+    .loading{font-family:var(--font-mono);color:var(--lc-ink-3)}
+    .banner-prueba{border-radius:0}
+
+    /* --------------------------- móvil -------------------------------- */
+    @media (max-width:760px){
+      .hero-top-inner{padding:10px 18px;flex-wrap:nowrap;gap:10px}
+      .hero-top .r{display:none}
+      .hero-ins-logo{height:22px}
+      .hero-nav-inner{padding:8px 18px;gap:14px}
+      .hero-prod{font-size:17px}
+      .hero-nav-inner .lc-pill{display:none}
+      .hero-body{padding:38px 20px 40px}
+      .hero h1{font-size:33px}
+      .hero .lead{font-size:15.5px}
+      .hero-cta{flex-direction:column;align-items:stretch}
+      .hero-cta .lc-pill{width:100%}
+      .v7-sec,.v7-rec-in{padding:0 20px}
+      .v7-rec{padding:30px 0}
+      .lc-panel{padding:26px 22px 24px;border-radius:var(--lc-r-lg)}
+      .v7-rec-nm{font-size:30px}
+      .v7-rec-tot .big{font-size:34px}
+      .v7-h{font-size:23px}
+      .v7-pago-now .amt{font-size:28px}
+      .cta-strip{padding:32px 22px;border-radius:var(--lc-r-lg)}
+      .cta-strip h3{font-size:26px}
+      .carac,.wait,.included{padding-left:20px;padding-right:20px}
+      .docs-c-h,.docs-c-body{padding-left:20px;padding-right:20px}
+      .lc-band-wrap{padding:32px 0}
+      /* a 375 px la barra de moneda empujaba el documento a 404 px (scroll
+         horizontal en TODA la pagina): meta y selector pasan a dos lineas */
+      .toggle-inner{padding:10px 18px;gap:10px;flex-wrap:wrap}
+      .toggle-meta{flex:1 1 100%;gap:10px;font-size:12px}
+      .cur-toggle-c{flex:1 1 100%;justify-content:space-between;gap:10px;flex-wrap:nowrap}
+      /* el .lbl traia flex:1 1 100% de la hoja vieja y le comia el ancho al
+         selector, que se encogia a 119 px con 180 px de botones adentro */
+      .cur-toggle-c .lbl{flex:0 0 auto;font-size:11.5px;white-space:nowrap}
+      .cur-toggle-c .swap{flex:0 0 auto;min-width:auto}
+      .cur-toggle-c .swap button{padding:0 14px;font-size:13px;white-space:nowrap}
+      /* la reja del bloque de servicios seguia en 2 columnas: se estrujaba */
+      .included{grid-template-columns:1fr;gap:22px;padding:26px 20px}
+      .lc-solo{margin:40px 18px;padding:32px 24px}
+      .tabs-prod{display:none}
+      .masthead-inner,.tabs-agente,.page-agente,.foot-agente{padding-left:18px;padding-right:18px}
+    }
+    @media (min-width:760px){
+      .v7-rec-nm{font-size:38px}
+      .v7-rec-tot .big{font-size:50px}
+    }
+
+    .v7-rcpt-r .vl.na{color:var(--lc-ink-3);font-weight:500;font-family:var(--font-body);font-size:13.5px}
+    .hero-fam span em{font-style:normal;color:var(--lc-ink-3)}
+
+    /* contenedores de la vista cliente ---------------------------------- */
+    .wrap-cliente{max-width:none;padding:0}
+    .lc-sec{max-width:896px;margin:0 auto;padding:0 28px}
+    .lc-sec-end{padding-top:56px;padding-bottom:72px}
+    .lc-band-wrap > .lc-sec > section:last-child{margin-bottom:0}
+    /* la barra de moneda es sticky: las anclas de la barra de nivel 2 no
+       pueden quedar debajo de ella */
+    #lc-plan,#lc-pago,#lc-cobertura,#lc-opciones,#lc-comparar,#lc-documentos,#lc-cta{scroll-margin-top:84px}
+    @media (max-width:760px){
+      .lc-sec{padding:0 20px}
+      .lc-sec-end{padding-top:36px;padding-bottom:52px}
+    }
   </style>
 </head>
 <body>
@@ -760,14 +1382,9 @@
   <div data-view="agente">
     <header class="masthead-agente">
       <div class="masthead-inner">
-        <div class="brand">
-          <div class="brand-logo"><span class="word">Vital<span class="num">360</span></span></div>
-          <div class="brand-divider"></div>
-          <div class="brand-tag">
-            <div class="a">Cotizador · vista agente</div>
-            <div class="b">Seguros Digitales · 100 años INS</div>
-          </div>
-        </div>
+        <a class="mh-sdi" href="./" aria-label="Seguros Digitales SDI">
+          <img src="img/sdi-logo-compacto.svg" alt="Seguros Digitales SDI" width="184" height="90" />
+        </a>
         <div class="mh-right">
           <button class="mh-gear" id="btnSettings" type="button" title="Configurar mis datos de agente" aria-label="Configurar mis datos de agente" hidden>⚙</button>
           <div class="mh-user" id="mh-user">
@@ -777,17 +1394,18 @@
         </div>
       </div>
     </header>
-    <div class="set-nudge" id="set-nudge" hidden>
-      <span>👋 <b>Configurá tus datos de agente</b> — tu nombre, WhatsApp y licencia aparecen en la cotización y en los correos que recibe el cliente.</span>
-      <button class="go" type="button" id="nudge-go">Configurar ahora</button>
-      <button class="dismiss" type="button" id="nudge-dismiss">Ahora no</button>
-    </div>
     <nav class="tabs-agente">
+      <span class="tabs-prod">Vital<span class="num">360</span></span>
       <button class="tab-btn active" data-tab="cotizador">Cotizador</button>
       <button class="tab-btn"        data-tab="historial">Mis cotizaciones <span class="tab-count" id="tab-count">0</span></button>
       <button class="tab-btn"        data-tab="vigentes">Pólizas vigentes <span class="tab-count" id="tab-count-vig">0</span></button>
       <button class="tab-new"        data-action="nueva-cotizacion" title="Limpiar todo y empezar de cero">+ Nueva cotización</button>
     </nav>
+    <div class="set-nudge" id="set-nudge" hidden>
+      <span><b>Configurá tus datos de agente</b> — tu nombre, WhatsApp y licencia aparecen en la cotización y en los correos que recibe el cliente.</span>
+      <button class="go" type="button" id="nudge-go">Configurar ahora</button>
+      <button class="dismiss" type="button" id="nudge-dismiss">Ahora no</button>
+    </div>
     <main class="page-agente" data-tab-panel="cotizador">
 
       <!-- Paso 1 -->
@@ -824,8 +1442,9 @@
         <p class="sdi-foot-line">Un producto de <strong>SDI · Seguros Digitales</strong></p>
         <p class="sdi-foot-line sub">© 2026 · Propiedad intelectual de <strong>Juan Carlos Hernández Vargas</strong></p>
         <details class="sdi-changelog">
-          <summary>Última actualización: 6 ago 2026 — el Formulario COVID-19 ya no es requisito</summary>
+          <summary>Última actualización: 9 sep 2026 — cara nueva: más blanco, más aire</summary>
           <ul>
+            <li><strong>9 sep 2026</strong> — Cara nueva en toda la aplicación: fondo blanco, más aire, botones en píldora y un solo color de acento. La información, los planes y los montos son exactamente los mismos.</li>
             <li><strong>6 ago 2026</strong> — El INS eliminó el Formulario de Declaración COVID-19 como requisito de suscripción: ya no aparece entre los documentos para iniciar el aseguramiento.</li>
             <li><strong>3 ago 2026</strong> — Las otras opciones de la cotización también muestran sus formas de pago (anual, semestral y trimestral).</li>
             <li><strong>27 jul 2026</strong> — La cotización presenta las 7 opciones con el aporte de cada asegurado (IVA incluido) y un comparador para el cliente. Enlace corto para WhatsApp y arreglo de "Copiar correo".</li>
@@ -848,11 +1467,12 @@
   </div>
 
   <div data-view="bloqueado">
-    <div style="max-width:520px;margin:80px auto;padding:40px;text-align:center;background:var(--paper);border:1px solid var(--line);border-radius:8px;font-family:var(--font-body)">
-      <h2 style="font-family:var(--font-display);font-size:28px;font-weight:500;margin-bottom:12px">Acceso restringido</h2>
-      <p style="color:var(--ink-3);font-size:14px;margin-bottom:18px">Este cotizador está reservado para agentes autorizados de Seguros Digitales SDI.</p>
-      <p style="color:var(--ink-3);font-size:13px">Para solicitar acceso, contacte a <a href="mailto:jhernandez@segurosdelins.com" style="color:var(--ins-teal-deep)">jhernandez@segurosdelins.com</a>.</p>
-      <p id="block-email" style="margin-top:18px;font-family:var(--font-mono);font-size:12px;color:var(--ink-3)"></p>
+    <div class="lc-solo">
+      <span class="lc-solo-logo" role="img" aria-label="Seguros Digitales SDI"></span>
+      <h2>Acceso restringido</h2>
+      <p style="margin-bottom:18px">Este cotizador está reservado para agentes autorizados de Seguros Digitales SDI.</p>
+      <p style="font-size:13.5px">Para solicitar acceso, contacte a <a href="mailto:jhernandez@segurosdelins.com" style="color:var(--lc-blue)">jhernandez@segurosdelins.com</a>.</p>
+      <p id="block-email" style="margin-top:18px;font-family:var(--font-mono);font-size:12px;color:var(--lc-ink-3)"></p>
       <div class="aviso-cliente">
         <strong>¿Usted es cliente y venía a ver su cotización?</strong>
         El enlace que le enviaron es largo y se corta con facilidad al copiarlo.
@@ -863,19 +1483,21 @@
 
   <!-- Llegó ?c= pero el payload no decodifica: el enlace viajó cortado (no es un problema de acceso) -->
   <div data-view="enlace">
-    <div style="max-width:520px;margin:80px auto;padding:40px;text-align:center;background:var(--paper);border:1px solid var(--line);border-radius:8px;font-family:var(--font-body)">
-      <h2 style="font-family:var(--font-display);font-size:28px;font-weight:500;margin-bottom:12px">El enlace llegó incompleto</h2>
-      <p style="color:var(--ink-3);font-size:14px;margin-bottom:18px">Su cotización existe, pero el enlace se cortó en el camino: es muy largo y algunas aplicaciones de mensajería no lo copian completo.</p>
-      <p style="color:var(--ink-3);font-size:14px">Escríbale a su agente para que se lo <strong>reenvíe</strong>, y ábralo tocando el enlace directamente (sin copiarlo ni pegarlo).</p>
-      <p style="margin-top:22px;font-size:13px;color:var(--ink-3)">No hay ningún problema con su cotización ni con su información.</p>
+    <div class="lc-solo">
+      <span class="lc-solo-logo" role="img" aria-label="Seguros Digitales SDI"></span>
+      <h2>El enlace llegó incompleto</h2>
+      <p style="margin-bottom:18px">Su cotización existe, pero el enlace se cortó en el camino: es muy largo y algunas aplicaciones de mensajería no lo copian completo.</p>
+      <p>Escríbale a su agente para que se lo <strong>reenvíe</strong>, y ábralo tocando el enlace directamente (sin copiarlo ni pegarlo).</p>
+      <p style="margin-top:22px;font-size:13px">No hay ningún problema con su cotización ni con su información.</p>
     </div>
   </div>
 
   <div data-view="login">
-    <div style="max-width:420px;margin:80px auto;padding:40px;text-align:center;background:var(--paper);border:1px solid var(--line);border-radius:8px">
-      <h2 style="font-family:var(--font-display);font-size:28px;font-weight:500;margin-bottom:8px">Cotizador Vital 360</h2>
-      <p style="color:var(--ink-3);font-size:14px;margin-bottom:24px">Inicie sesión con su cuenta autorizada para continuar.</p>
-      <div id="g_id_signin"></div>
+    <div class="lc-solo" style="max-width:460px">
+      <span class="lc-solo-logo" role="img" aria-label="Seguros Digitales SDI"></span>
+      <h2>Cotizador Vital 360</h2>
+      <p style="margin-bottom:26px">Inicie sesión con su cuenta autorizada para continuar.</p>
+      <div id="g_id_signin" style="display:flex;justify-content:center"></div>
       <div class="aviso-cliente">
         <strong>¿Usted es cliente?</strong>
         Esta pantalla es solo para agentes; no necesita iniciar sesión.
@@ -4512,38 +5134,47 @@ ${payload.agente.nombre}${lic}`;
 
     function renderClienteHero(){
       const p = cli.payload;
-      const filas = p.asegurados.map(a => {
+      const familia = p.asegurados.map(a => {
         const rel = a.parentesco === "titular" ? "Titular" :
                     a.parentesco === "conyuge" ? "Cónyuge" :
                     a.parentesco === "hijo"    ? "Hijo/a" : "Otro";
-        return `<div class="row"><span>${rel}</span><span class="v">${escapeHtml(a.nombre)}, ${escapeHtml(a.edad)} a.</span></div>`;
+        return `<span><b>${escapeHtml(a.nombre)}</b><i>${escapeHtml(a.edad)} a.</i><em>${rel}</em></span>`;
       }).join('');
+      const varios = p.planes.length > 1;
 
       document.getElementById('cli-hero').innerHTML = `
         <div class="hero-top">
           <div class="hero-top-inner">
             <div class="l">
-              <img src="${LOGO_INS_URL}" alt="INS" class="hero-ins-logo" />
-              <span class="sep"></span>
-              <span class="logo">Vital<span class="n">360</span></span>
-              <span class="sep"></span>
-              <span class="who">Cotización preparada por ${escapeHtml(p.agente.nombre)} · Agente INS</span>
+              <img src="${LOGO_INS_URL}" alt="Instituto Nacional de Seguros" class="hero-ins-logo" />
+              <span class="who">Cotización preparada por ${escapeHtml(p.agente.nombre)} · Agente INS · Lic. SUGESE ${escapeHtml(p.agente.licencia || '08-1318')}</span>
             </div>
-            <div class="r">Cotización N.º ${escapeHtml(p.id)} · ${escapeHtml(p.fecha)} · vigencia ${escapeHtml(p.vigenciaDias)} días</div>
+            <div class="r">N.º ${escapeHtml(p.id)} · ${escapeHtml(p.fecha)}</div>
           </div>
         </div>
-        <div class="hero-body">
-          <div>
-            <span class="hero-eyebrow">Su cotización personal está lista</span>
-            <h1>${p.planes.length > 1 ? p.planes.length + " caminos" : "Una opción"} para cuidar a su familia,<br><span class="accent">${p.planRecomendado ? "uno a su medida." : "elegidos para usted."}</span></h1>
-            <p class="lead">Preparé ${p.planes.length === 1 ? "una opción" : p.planes.length + " planes"} Vital 360 del INS pensando en usted. Compare las coberturas, decida con calma y cualquier consulta me escribe directo por WhatsApp.</p>
+        <div class="hero-nav">
+          <div class="hero-nav-inner">
+            <span class="hero-prod">Vital 360</span>
+            <nav class="hero-links">
+              <a href="#lc-plan">Su plan</a>
+              <a href="#lc-pago">Formas de pago</a>
+              <a href="#lc-cobertura">Qué cubre</a>
+              ${varios ? '<a href="#lc-opciones">Las otras opciones</a>' : ''}
+              <a href="#lc-documentos">Documentos</a>
+            </nav>
+            <a class="lc-pill lc-pill-fill lc-pill-sm" href="${waLinkAgente()}" target="_blank" rel="noopener">Escribir por WhatsApp</a>
           </div>
-          <div class="hero-card">
-            <div class="lbl">Cotización para</div>
-            <div class="nm">${escapeHtml(p.cliente.nombre || "Cliente Vital 360")}</div>
-            ${filas}
-            <div class="row"><span>Total asegurados</span><span class="v">${p.asegurados.length} personas</span></div>
+        </div>
+        <div class="hero-body lc-in">
+          <span class="hero-eyebrow">Cotización N.º ${escapeHtml(p.id)} · vigente ${escapeHtml(p.vigenciaDias)} días</span>
+          <h1>${varios ? p.planes.length + " caminos para cuidar a su familia" : "Una opción para cuidar a su familia"}</h1>
+          <p class="lead">${escapeHtml(p.cliente.nombre || "Cliente Vital 360")}, preparé ${varios ? p.planes.length + " planes" : "una opción"} Vital 360 del INS pensando en usted. Compare con calma: cada monto es el total del año, con el IVA ya incluido.</p>
+          <div class="hero-cta">
+            <a class="lc-pill lc-pill-fill" href="#lc-plan">Ver el plan que le recomiendo</a>
+            ${varios ? '<a class="lc-pill lc-pill-out" href="#lc-comparar">Comparar las opciones</a>'
+                     : '<a class="lc-pill lc-pill-out" href="#lc-cobertura">Ver qué cubre</a>'}
           </div>
+          <div class="hero-fam">${familia}</div>
         </div>
       `;
     }
@@ -4665,14 +5296,52 @@ ${payload.agente.nombre}${lic}`;
         renderClienteEscalera() +
         renderClienteComparador() +
         '</div>' +
+        // R1 · la banda pálida agrupa lo informativo (no decora): producto,
+        // servicios, documentos, esperas y material quedan como un solo bloque.
+        '<div class="lc-band-wrap"><div class="lc-sec">' +
         renderClienteCaracteristicas() +
         renderClienteServicios() +
         renderClienteDocs() +
         renderClienteEspera() +
         renderClienteMaterialInformativo() +
+        '</div></div>' +
+        '<div class="lc-sec lc-sec-end">' +
         renderClienteCTA() +
-        renderClienteDisclaimers();
+        renderClienteDisclaimers() +
+        '</div>';
       bindClienteMainEvents();
+      lcEntrada();
+    }
+
+    // R9 · Entrada suave y cifra protagonista subiendo desde cero, UNA sola vez
+    // (renderClienteMain se vuelve a llamar en cada toque; el guard lo evita).
+    // No recalcula nada: lee el texto ya renderizado y al terminar restituye ese
+    // mismo string, así el cliente jamás puede ver una cifra distinta a la que
+    // produjo totalesPlan. Apagada si el sistema pide menos movimiento.
+    let _lcEntradaHecha = false;
+    function lcEntrada(){
+      if(_lcEntradaHecha) return;
+      _lcEntradaHecha = true;
+      const menos = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if(menos) return;
+      const panel = document.querySelector('#lc-plan .lc-panel');
+      if(panel) panel.classList.add('lc-in', 'lc-in-2');
+      const el = document.querySelector('#lc-plan .v7-rec-tot .big');
+      if(!el) return;
+      const exacto = el.textContent;
+      const n = Number(exacto.replace(/[^0-9]/g, ''));
+      if(!n || !isFinite(n)) return;
+      const mon = cli.moneda, t0 = performance.now(), dur = 950;
+      const paso = ahora => {
+        const k = Math.min(1, (ahora - t0) / dur);
+        if(k < 1){
+          el.textContent = fmtMoneda(n * (1 - Math.pow(1 - k, 3)), mon);
+          requestAnimationFrame(paso);
+        } else {
+          el.textContent = exacto;   // el string exacto que produjo fmtMoneda
+        }
+      };
+      requestAnimationFrame(paso);
     }
 
     function renderClienteCaracteristicas(){
@@ -4777,7 +5446,7 @@ ${payload.agente.nombre}${lic}`;
       }).join('');
 
       return `
-        <section class="docs-c">
+        <section class="docs-c" id="lc-documentos">
           <div class="docs-c-h">
             <h3>Documentos para <em>iniciar el aseguramiento</em></h3>
             <p class="sub">Cuando decida proceder con cualquiera de los planes cotizados, estos son los formularios que necesitamos completar. <strong>Su agente le acompaña en todo el proceso.</strong></p>
@@ -4876,12 +5545,19 @@ ${payload.agente.nombre}${lic}`;
       `;
     }
 
-    function renderClienteCTA(){
+    // Regla crítica #2: SIEMPRE web.whatsapp.com/send/, NUNCA wa.me (corrompe emojis).
+    // Una sola fuente para la píldora de la barra y para el cierre.
+    function waLinkAgente(){
       const a = cli.payload.agente;
       const wa = String(a.whatsapp || "").replace(/\D/g,'');
-      const waLink = "https://web.whatsapp.com/send/?phone=506" + wa + "&text=" + encodeURIComponent("Hola " + a.nombre + ", quisiera consultar sobre la cotización Vital 360 N.º " + cli.payload.id);
+      return "https://web.whatsapp.com/send/?phone=506" + wa + "&text=" + encodeURIComponent("Hola " + a.nombre + ", quisiera consultar sobre la cotización Vital 360 N.º " + cli.payload.id);
+    }
+
+    function renderClienteCTA(){
+      const a = cli.payload.agente;
+      const waLink = waLinkAgente();
       return `
-        <section class="cta-strip">
+        <section class="cta-strip" id="lc-cta">
           <div>
             <h3>¿Tiene una duda?<br><em>Hablemos directo.</em></h3>
             <p>Le explico cualquier detalle del plan, los periodos de espera o cómo cotizar diferente. Sin compromiso.</p>
@@ -4971,9 +5647,10 @@ ${payload.agente.nombre}${lic}`;
       const j = justificacionPlan(id, cli.moneda, p.asegurados, planesOrdenados());
       const varios = planesOrdenados().length > 1;
       return `
-        <section class="v7-rec">
+        <section class="v7-rec" id="lc-plan">
           <div class="v7-rec-in">
-            ${varios ? '<span class="v7-flag">★ Lo que le recomiendo</span>' : ''}
+           <div class="lc-panel">
+            ${varios ? '<span class="v7-flag">Lo que le recomiendo</span>' : ''}
             <div class="v7-rec-nm">${escapeHtml(plan.nombre)}</div>
             <div class="v7-rec-amb">${escapeHtml(plan.ambito)} · suma asegurada ${fmtMoneda(cli.moneda==='USD'?plan.sumaUSD:plan.sumaCRC, cli.moneda)} por persona</div>
             <div class="v7-rec-tot">
@@ -4983,6 +5660,7 @@ ${payload.agente.nombre}${lic}`;
             </div>
             ${renderJustificacionLado(j.anterior, true)}
             ${renderJustificacionLado(j.siguiente, false)}
+           </div>
           </div>
         </section>`;
     }
@@ -5032,7 +5710,7 @@ ${payload.agente.nombre}${lic}`;
           <span class="m">${fmtMoneda(t.total - anual.total, mon)}</span> más al año que pagar de una vez
           (${txtRecargo(cli.modalidad, mon)}).</div>`;
       return `
-        <section class="v7-sec" style="margin-top:30px">
+        <section class="v7-sec" id="lc-pago" style="margin-top:30px">
           <div class="v7-k">Cómo pagarlo</div>
           <div class="v7-h">Elija el ritmo para ${escapeHtml(plan.nombre)}</div>
           <div class="v7-chips">${chips}</div>
@@ -5056,14 +5734,14 @@ ${payload.agente.nombre}${lic}`;
         const def = COBERTURAS_DEFS.find(d => d.id === cov.id);
         const tipObj = def ? { label: cov.label, desc: def.desc } : cov;
         const v = getCobertura(id, cov.id, cli.moneda);
-        if(v === "NA") return `<div class="v7-rcpt-r"><span class="nm">${labelTip(tipObj)}</span><span class="vl" style="color:#B0562C">no incluye</span></div>`;
+        if(v === "NA") return `<div class="v7-rcpt-r"><span class="nm">${labelTip(tipObj)}</span><span class="vl na">no incluye</span></div>`;
         const txt = typeof v === "number"
           ? (cov.id === "deducible" && v === 0 ? "Sin deducible" : fmtMoneda(v, cli.moneda))
           : escapeHtml(String(v));
         return `<div class="v7-rcpt-r"><span class="nm">${labelTip(tipObj)}</span><span class="vl m">${txt}</span></div>`;
       }).join('');
       return `
-        <section class="v7-sec" style="margin-top:30px">
+        <section class="v7-sec" id="lc-cobertura" style="margin-top:30px">
           <div class="v7-k">Qué cubre</div>
           <div class="v7-h">Lo principal de ${escapeHtml(plan.nombre)}</div>
           <div class="v7-rcpt">${filas}</div>
@@ -5134,7 +5812,7 @@ ${payload.agente.nombre}${lic}`;
           ${abierto ? renderPanelPlan(id) : ''}`;
       }
       return `
-        <section class="v7-sec" style="margin-top:34px">
+        <section class="v7-sec" id="lc-opciones" style="margin-top:34px">
           <div class="v7-k">Las otras opciones</div>
           <div class="v7-h">${lista.length === 1 ? 'La otra que le cotizé' : 'Las otras ' + lista.length + ', a la vista'}</div>
           <div class="v7-fine">Total del año con IVA, para ${p.asegurados.length} ${p.asegurados.length===1?'asegurado':'asegurados'}. Toque cualquiera para abrirla.</div>
@@ -5210,7 +5888,7 @@ ${payload.agente.nombre}${lic}`;
         return `<button data-action="v7-cmp" data-plan="${id}" class="${on?'on':''}" ${bloqueado?'disabled':''}>${escapeHtml(plan.nombre)}</button>`;
       }).join('');
       return `
-        <section class="v7-sec" style="margin-top:34px">
+        <section class="v7-sec" id="lc-comparar" style="margin-top:34px">
           <div class="v7-k">¿Quiere comparar?</div>
           <div class="v7-h">Elija hasta 3 y véalos lado a lado</div>
           <div class="v7-cmp-pick">${chips}</div>
