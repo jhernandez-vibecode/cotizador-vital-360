@@ -2886,6 +2886,84 @@ ${payload.agente.nombre}${lic}`;
       }
     }
 
+    // =====================================================================
+    // Piezas comunes de los 3 correos en línea clara (A, B y C)
+    // Una sola fuente para la barra y el pie. Con tres copias a mano la
+    // leyenda de propiedad intelectual ya se desfasó una vez (SKILL, "5 pies").
+    // Recordatorio de correo: tablas y estilos en línea; nada de flex, grid,
+    // SVG, degradados ni hoja de estilos. Outlook cuadra las píldoras.
+    // =====================================================================
+    const _LC_F = "Arial,Helvetica,sans-serif";
+    const _LC_M = "'Courier New',Courier,monospace";
+
+    // Barra en dos niveles: arriba el INS y una referencia (N.º de cotización
+    // o de póliza), abajo el producto. `derecha` llega YA escapado.
+    function _barraCorreoLC(derecha){
+      return `
+          <tr>
+            <td style="padding:14px 26px;border-bottom:1px solid #EDEFF2;">
+              <table width="100%" cellpadding="0" cellspacing="0" border="0" role="presentation">
+                <tr>
+                  <td valign="middle"><img src="${EMAIL_IMG}/img/ins-logo-tinta.png" alt="Instituto Nacional de Seguros" width="120" height="28" style="display:block;border:0;width:120px;height:28px;" /></td>
+                  <td valign="middle" align="right" style="font-family:${_LC_M};font-size:11px;color:#6B7681;white-space:nowrap;">${derecha}</td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:11px 26px;border-bottom:1px solid #EDEFF2;">
+              <table width="100%" cellpadding="0" cellspacing="0" border="0" role="presentation">
+                <tr>
+                  <td valign="middle" style="font-size:18px;font-weight:bold;color:#1B1F23;letter-spacing:-0.02em;">Vital 360</td>
+                  <td valign="middle" align="right" style="font-size:12px;color:#6B7681;">Seguro de gastos m&eacute;dicos &middot; INS Costa Rica</td>
+                </tr>
+              </table>
+            </td>
+          </tr>`;
+    }
+
+    // Regla corta de 28×3 px en el color del producto (R6), encima de cada título.
+    function _reglaCorreoLC(){
+      return `<table cellpadding="0" cellspacing="0" border="0" role="presentation" style="margin:0 0 12px;">
+                <tr><td bgcolor="#1F5C6B" style="background:#1F5C6B;width:28px;height:3px;font-size:0;line-height:0;">&nbsp;</td></tr>
+              </table>`;
+    }
+
+    // Píldora de estado verde con punto (R4). `texto` llega YA escapado.
+    function _estadoCorreoLC(texto){
+      return `<table cellpadding="0" cellspacing="0" border="0" role="presentation" align="center" style="margin:0 auto 20px;">
+                <tr>
+                  <td bgcolor="#E9F5F0" style="background:#E9F5F0;border-radius:999px;padding:7px 15px;font-size:12px;font-weight:bold;color:#037D61;white-space:nowrap;">&bull;&nbsp; ${texto}</td>
+                </tr>
+              </table>`;
+    }
+
+    // Botón píldora azul SDI (R7). `link` es una URL que armamos nosotros.
+    function _botonCorreoLC(link, texto){
+      return `<table cellpadding="0" cellspacing="0" border="0" role="presentation" align="center" style="margin:0 auto;">
+                <tr>
+                  <td bgcolor="#0369A1" style="background:#0369A1;border-radius:999px;">
+                    <a href="${link}" style="display:inline-block;padding:15px 32px;font-family:${_LC_F};font-size:15px;font-weight:bold;color:#ffffff;text-decoration:none;">${texto}</a>
+                  </td>
+                </tr>
+              </table>`;
+    }
+
+    // Pie: banda pálida, marca SDI oficial, agente, aviso propio de cada
+    // correo y la leyenda de propiedad intelectual (FIJA a JC Vargas).
+    function _pieCorreoLC(a, aviso){
+      return `
+          <tr>
+            <td bgcolor="#EEF4F9" style="background:#EEF4F9;padding:28px 26px 24px;text-align:center;border-radius:0 0 16px 16px;">
+              <img src="${EMAIL_IMG}/img/sdi-logo-color.png" alt="Seguros Digitales SDI" width="118" height="41" style="display:block;border:0;width:118px;height:41px;margin:0 auto 14px;" />
+              <p style="margin:0;font-size:12.5px;color:#6B7681;">Agente ${_escEmail(a.nombre)} &middot; Lic. SUGESE ${_escEmail(a.licencia || '08-1318')} &middot; ${_escEmail(a.whatsapp)}${a.email ? " &middot; " + _escEmail(a.email) : ""}</p>
+              <p style="margin:12px 0 0;font-size:11px;color:#6B7681;line-height:1.6;">${aviso}</p>
+              <p style="margin:12px 0 0;font-size:11.5px;color:#5A6570;">Un producto de <strong style="color:#1B1F23;">SDI &middot; Seguros Digitales</strong></p>
+              <p style="margin:4px 0 0;font-size:11px;color:#6B7681;">&copy; 2026 &middot; Propiedad intelectual de <strong style="color:#5A6570;">Juan Carlos Hern&aacute;ndez Vargas</strong></p>
+            </td>
+          </tr>`;
+    }
+
     // Plantilla A · "Su cotización Vital 360 está lista" — línea clara (9 sep 2026).
     // Un correo no es una página: nada de flex, ni grid, ni SVG, ni degradados.
     // Todo va en tablas con estilos en línea; el radio de las píldoras lo ignora
@@ -2910,8 +2988,7 @@ ${payload.agente.nombre}${lic}`;
       });
       const desRec = desgloseMiembros(planRecId, mon, payload.asegurados);
 
-      const F = "Arial,Helvetica,sans-serif";
-      const M = "'Courier New',Courier,monospace";
+      const F = _LC_F, M = _LC_M;
 
       return `<!DOCTYPE html>
 <html lang="es">
@@ -2926,38 +3003,12 @@ ${payload.agente.nombre}${lic}`;
       <td align="center">
         <table width="600" cellpadding="0" cellspacing="0" border="0" role="presentation" style="background:#ffffff;border:1px solid #DADCE0;border-radius:16px;max-width:600px;">
 
-          <!-- 1. Barra, nivel 1: el INS y el número de cotización -->
-          <tr>
-            <td style="padding:14px 26px;border-bottom:1px solid #EDEFF2;">
-              <table width="100%" cellpadding="0" cellspacing="0" border="0" role="presentation">
-                <tr>
-                  <td valign="middle"><img src="${EMAIL_IMG}/img/ins-logo-tinta.png" alt="Instituto Nacional de Seguros" width="120" height="28" style="display:block;border:0;width:120px;height:28px;" /></td>
-                  <td valign="middle" align="right" style="font-family:${M};font-size:11px;color:#6B7681;white-space:nowrap;">N.&ordm; ${_escEmail(payload.id)} &middot; ${_escEmail(payload.fecha)}</td>
-                </tr>
-              </table>
-            </td>
-          </tr>
-
-          <!-- 2. Barra, nivel 2: el producto -->
-          <tr>
-            <td style="padding:11px 26px;border-bottom:1px solid #EDEFF2;">
-              <table width="100%" cellpadding="0" cellspacing="0" border="0" role="presentation">
-                <tr>
-                  <td valign="middle" style="font-size:18px;font-weight:bold;color:#1B1F23;letter-spacing:-0.02em;">Vital 360</td>
-                  <td valign="middle" align="right" style="font-size:12px;color:#6B7681;">Seguro de gastos m&eacute;dicos &middot; INS Costa Rica</td>
-                </tr>
-              </table>
-            </td>
-          </tr>
+          ${_barraCorreoLC(`N.&ordm; ${_escEmail(payload.id)} &middot; ${_escEmail(payload.fecha)}`)}
 
           <!-- 3. Titular grande y centrado, con las dos acciones -->
           <tr>
             <td align="center" style="padding:40px 34px 6px;">
-              <table cellpadding="0" cellspacing="0" border="0" role="presentation" align="center" style="margin:0 auto 20px;">
-                <tr>
-                  <td bgcolor="#E9F5F0" style="background:#E9F5F0;border-radius:999px;padding:7px 15px;font-size:12px;font-weight:bold;color:#037D61;white-space:nowrap;">&bull;&nbsp; Cotizaci&oacute;n vigente ${_escEmail(payload.vigenciaDias)} d&iacute;as</td>
-                </tr>
-              </table>
+${_estadoCorreoLC(`Cotizaci&oacute;n vigente ${_escEmail(payload.vigenciaDias)} d&iacute;as`)}
               <h1 style="margin:0;font-size:30px;line-height:1.15;font-weight:bold;color:#1B1F23;letter-spacing:-0.02em;">Su cotizaci&oacute;n Vital 360 est&aacute; lista</h1>
               <p style="margin:14px auto 0;font-size:15px;line-height:1.6;color:#5A6570;max-width:430px;">
                 ${_escEmail(cliNom)}, le prepar&eacute; ${payload.planes.length === 1 ? "una opci&oacute;n" : payload.planes.length + " opciones"} para ${numAseg} ${numAseg === 1 ? "asegurado" : "asegurados"}. Cada monto es el total del a&ntilde;o, con el IVA ya incluido.
@@ -2966,13 +3017,7 @@ ${payload.agente.nombre}${lic}`;
           </tr>
           <tr>
             <td align="center" style="padding:26px 34px 36px;">
-              <table cellpadding="0" cellspacing="0" border="0" role="presentation" align="center" style="margin:0 auto;">
-                <tr>
-                  <td bgcolor="#0369A1" style="background:#0369A1;border-radius:999px;">
-                    <a href="${link}" style="display:inline-block;padding:15px 32px;font-family:${F};font-size:15px;font-weight:bold;color:#ffffff;text-decoration:none;">Ver mi cotizaci&oacute;n completa &rarr;</a>
-                  </td>
-                </tr>
-              </table>
+${_botonCorreoLC(link, "Ver mi cotizaci&oacute;n completa &rarr;")}
             </td>
           </tr>
 
@@ -3019,9 +3064,7 @@ ${payload.agente.nombre}${lic}`;
           ${planesData.length < 2 ? "" : `
           <tr>
             <td style="padding:32px 34px 8px;">
-              <table cellpadding="0" cellspacing="0" border="0" role="presentation" style="margin:0 0 12px;">
-                <tr><td bgcolor="#1F5C6B" style="background:#1F5C6B;width:28px;height:3px;font-size:0;line-height:0;">&nbsp;</td></tr>
-              </table>
+              ${_reglaCorreoLC()}
               <p style="margin:0 0 3px;font-size:12px;color:#6B7681;">Las ${planesData.length} opciones</p>
               <p style="margin:0 0 16px;font-size:20px;font-weight:bold;color:#1B1F23;letter-spacing:-0.02em;">Total del a&ntilde;o, con IVA</p>
               <table width="100%" cellpadding="0" cellspacing="0" border="0" role="presentation" style="border:1px solid #DADCE0;border-radius:14px;">
@@ -3047,9 +3090,7 @@ ${payload.agente.nombre}${lic}`;
           <!-- 6. Qué trae la cotización completa -->
           <tr>
             <td style="padding:32px 34px 10px;">
-              <table cellpadding="0" cellspacing="0" border="0" role="presentation" style="margin:0 0 12px;">
-                <tr><td bgcolor="#1F5C6B" style="background:#1F5C6B;width:28px;height:3px;font-size:0;line-height:0;">&nbsp;</td></tr>
-              </table>
+              ${_reglaCorreoLC()}
               <p style="margin:0 0 14px;font-size:20px;font-weight:bold;color:#1B1F23;letter-spacing:-0.02em;">En la cotizaci&oacute;n completa encontrar&aacute;</p>
               <table width="100%" cellpadding="0" cellspacing="0" border="0" role="presentation" style="font-size:14px;color:#5A6570;line-height:1.55;">
                 <tr><td style="padding:7px 0;border-bottom:1px solid #EDEFF2;">Comparativa de las opciones cotizadas con primas y deducibles</td></tr>
@@ -3070,16 +3111,7 @@ ${payload.agente.nombre}${lic}`;
             </td>
           </tr>
 
-          <!-- 8. Pie: banda pálida, marca SDI oficial y propiedad intelectual -->
-          <tr>
-            <td bgcolor="#EEF4F9" style="background:#EEF4F9;padding:28px 26px 24px;text-align:center;border-radius:0 0 16px 16px;">
-              <img src="${EMAIL_IMG}/img/sdi-logo-color.png" alt="Seguros Digitales SDI" width="118" height="41" style="display:block;border:0;width:118px;height:41px;margin:0 auto 14px;" />
-              <p style="margin:0;font-size:12.5px;color:#6B7681;">Agente ${_escEmail(a.nombre)} &middot; Lic. SUGESE ${_escEmail(a.licencia || '08-1318')} &middot; ${_escEmail(a.whatsapp)}${a.email ? " &middot; " + _escEmail(a.email) : ""}</p>
-              <p style="margin:12px 0 0;font-size:11px;color:#6B7681;line-height:1.6;">Cotizaci&oacute;n informativa basada en tarifas oficiales del INS vigentes a la fecha. Vigencia ${_escEmail(payload.vigenciaDias)} d&iacute;as. Producto Vital 360 registrado bajo norma SUGESE P20-76-A01-1097 V3.</p>
-              <p style="margin:12px 0 0;font-size:11.5px;color:#5A6570;">Un producto de <strong style="color:#1B1F23;">SDI &middot; Seguros Digitales</strong></p>
-              <p style="margin:4px 0 0;font-size:11px;color:#6B7681;">&copy; 2026 &middot; Propiedad intelectual de <strong style="color:#5A6570;">Juan Carlos Hern&aacute;ndez Vargas</strong></p>
-            </td>
-          </tr>
+          ${_pieCorreoLC(a, "Cotizaci&oacute;n informativa basada en tarifas oficiales del INS vigentes a la fecha. Vigencia " + _escEmail(payload.vigenciaDias) + " d&iacute;as. Producto Vital 360 registrado bajo norma SUGESE P20-76-A01-1097 V3.")}
 
         </table>
       </td>
@@ -3104,9 +3136,9 @@ ${payload.agente.nombre}${lic}`;
     }
 
     // =====================================================================
-    // Correo "Su guía de uso y reclamos" — versión HTML con botón.
-    // Reemplaza el correo de texto plano que mostraba el link crudo.
+    // Correo "Su guía de uso y reclamos" — línea clara (10 sep 2026).
     // El cliente ve un botón limpio; la URL larga queda oculta en el <a>.
+    // Texto TRANSCRITO de la versión anterior (bb1fa62): solo cambia la cara.
     // pol = { numero, fecha, planNombre }
     // =====================================================================
     function buildEmailGuiaReclamos(payload, link, pol){
@@ -3114,6 +3146,11 @@ ${payload.agente.nombre}${lic}`;
       const cliNom = (payload && payload.cliente && payload.cliente.nombre) || "estimado/a cliente";
       pol = pol || {};
       const vigDesde = pol.fecha ? _fechaLargaEmail(pol.fecha) : "";
+      // Hairline ENTRE filas, no debajo de la última (las filas son opcionales).
+      const fila = (k, v, primera) => `<tr>
+                      <td style="padding:9px 0;${primera ? "" : "border-top:1px solid #EDEFF2;"}font-size:13px;color:#6B7681;width:150px;">${k}</td>
+                      <td style="padding:9px 0;${primera ? "" : "border-top:1px solid #EDEFF2;"}font-size:14px;font-weight:bold;color:#1B1F23;">${v}</td>
+                    </tr>`;
 
       return `<!DOCTYPE html>
 <html lang="es">
@@ -3122,104 +3159,84 @@ ${payload.agente.nombre}${lic}`;
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Su guía de uso y reclamos · Vital 360</title>
 </head>
-<body style="margin:0;padding:0;background:#f5f5f5;font-family:Arial,Helvetica,sans-serif;color:#0E2127;">
-  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#f5f5f5;padding:24px 0;">
+<body style="margin:0;padding:0;background:#F4F7FA;font-family:${_LC_F};color:#1B1F23;">
+  <table width="100%" cellpadding="0" cellspacing="0" border="0" role="presentation" style="background:#F4F7FA;padding:26px 0;">
     <tr>
       <td align="center">
-        <table width="600" cellpadding="0" cellspacing="0" border="0" style="background:#ffffff;border-radius:8px;overflow:hidden;max-width:600px;box-shadow:0 4px 20px rgba(14,33,39,0.08);">
+        <table width="600" cellpadding="0" cellspacing="0" border="0" role="presentation" style="background:#ffffff;border:1px solid #DADCE0;border-radius:16px;max-width:600px;">
+          ${_barraCorreoLC(pol.numero ? "P&oacute;liza N.&ordm; " + _escEmail(pol.numero) : "Gu&iacute;a de uso y reclamos")}
 
-          <!-- 1. HEADER navy con logo INS -->
+          <!-- Titular -->
           <tr>
-            <td bgcolor="#143F4A" style="background:#143F4A;padding:26px 28px;text-align:center;">
-              <img src="${LOGO_INS_URL}" alt="INS" height="40" style="display:inline-block;height:40px;margin-bottom:10px;filter:brightness(0) invert(1);" />
-              <h1 style="margin:0;font-family:Georgia,'Times New Roman',serif;font-size:22px;font-weight:500;color:#ffffff;letter-spacing:-0.01em;">Su póliza Vital 360 está vigente</h1>
-              <p style="margin:6px 0 0;font-size:12px;color:#C7DBE0;">Guía de uso y reclamos · INS Costa Rica</p>
+            <td align="center" style="padding:40px 34px 8px;">
+              ${_estadoCorreoLC("P&oacute;liza emitida y vigente")}
+              <h1 style="margin:0;font-size:30px;line-height:1.15;font-weight:bold;color:#1B1F23;letter-spacing:-0.02em;">Su póliza Vital 360 está vigente</h1>
+              <p style="margin:10px 0 0;font-size:13px;color:#6B7681;">Guía de uso y reclamos · INS Costa Rica</p>
             </td>
           </tr>
 
-          <!-- 2. SALUDO -->
+          <!-- Saludo e intro -->
           <tr>
-            <td style="padding:28px 28px 4px;">
-              <p style="margin:0;font-size:16px;color:#0E2127;"><strong>Hola ${_escEmail(cliNom)},</strong></p>
-            </td>
-          </tr>
-
-          <!-- 3. INTRO -->
-          <tr>
-            <td style="padding:14px 28px 0;">
-              <p style="margin:0 0 14px;font-size:14px;line-height:1.6;color:#34464D;">
-                ¡Felicidades! Su póliza Vital 360 del INS ya quedó <strong>emitida y vigente</strong>. Le preparé una <strong>guía digital</strong> con los pasos para cada situación &mdash; consultas, hospitalización, reembolsos y emergencias &mdash; junto con los teléfonos y documentos que pueda necesitar.
+            <td style="padding:28px 34px 0;">
+              <p style="margin:0 0 12px;font-size:16px;color:#1B1F23;"><strong>Hola ${_escEmail(cliNom)},</strong></p>
+              <p style="margin:0;font-size:14.5px;line-height:1.7;color:#5A6570;">
+                ¡Felicidades! Su póliza Vital 360 del INS ya quedó <strong style="color:#1B1F23;">emitida y vigente</strong>. Le preparé una <strong style="color:#1B1F23;">guía digital</strong> con los pasos para cada situación &mdash; consultas, hospitalización, reembolsos y emergencias &mdash; junto con los teléfonos y documentos que pueda necesitar.
               </p>
             </td>
           </tr>
 
-          ${(pol.numero || pol.planNombre || vigDesde) ? `
-          <!-- 4. Mini-tarjeta de póliza -->
+          <!-- Botón -->
           <tr>
-            <td style="padding:6px 28px 4px;">
-              <table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#E3EEF1" style="background:#E3EEF1;border:1px solid #C7DBE0;border-radius:6px;">
-                <tr><td style="padding:14px 18px;">
-                  ${pol.numero ? `<p style="margin:0 0 6px;font-size:13px;color:#34464D;"><span style="display:inline-block;width:130px;color:#6A7A80;font-size:11px;text-transform:uppercase;letter-spacing:0.05em;">N.&ordm; de póliza</span><strong style="color:#0E2127;">${_escEmail(pol.numero)}</strong></p>` : ""}
-                  ${pol.planNombre ? `<p style="margin:0 0 6px;font-size:13px;color:#34464D;"><span style="display:inline-block;width:130px;color:#6A7A80;font-size:11px;text-transform:uppercase;letter-spacing:0.05em;">Plan contratado</span><strong style="color:#0E2127;">${_escEmail(pol.planNombre)}</strong></p>` : ""}
-                  ${vigDesde ? `<p style="margin:0;font-size:13px;color:#34464D;"><span style="display:inline-block;width:130px;color:#6A7A80;font-size:11px;text-transform:uppercase;letter-spacing:0.05em;">Vigente desde</span><strong style="color:#0E2127;">${_escEmail(vigDesde)}</strong></p>` : ""}
+            <td align="center" style="padding:28px 34px 34px;">
+              ${_botonCorreoLC(link, "Abrir mi guía de uso y reclamos &rarr;")}
+              <p style="margin:14px 0 0;font-size:12px;color:#6B7681;line-height:1.55;">Guárdela en favoritos para tenerla siempre a mano. No necesita contraseña.</p>
+            </td>
+          </tr>
+
+          ${(pol.numero || pol.planNombre || vigDesde) ? `
+          <!-- La póliza: panel blanco sobre banda pálida -->
+          <tr>
+            <td bgcolor="#EEF4F9" style="background:#EEF4F9;padding:24px 22px;">
+              <table width="100%" cellpadding="0" cellspacing="0" border="0" role="presentation" style="background:#ffffff;border:1px solid #DADCE0;border-radius:20px;">
+                <tr><td style="padding:20px 24px 12px;">
+                  <table cellpadding="0" cellspacing="0" border="0" role="presentation" style="margin:0 0 8px;">
+                    <tr><td bgcolor="#EDF3F4" style="background:#EDF3F4;border-radius:999px;padding:5px 13px;font-size:11.5px;font-weight:bold;color:#1F5C6B;white-space:nowrap;">Su póliza</td></tr>
+                  </table>
+                  <table width="100%" cellpadding="0" cellspacing="0" border="0" role="presentation">
+                    ${[ pol.numero     ? ["N.&ordm; de póliza", `<span style="font-family:${_LC_M};">${_escEmail(pol.numero)}</span>`] : null,
+                        pol.planNombre ? ["Plan contratado", _escEmail(pol.planNombre)] : null,
+                        vigDesde       ? ["Vigente desde", _escEmail(vigDesde)] : null
+                      ].filter(Boolean).map((f, i) => fila(f[0], f[1], i === 0)).join("")}
+                  </table>
                 </td></tr>
               </table>
             </td>
           </tr>` : ""}
 
-          <!-- 5. CTA principal -->
+          <!-- Qué encontrará en la guía -->
           <tr>
-            <td align="center" style="padding:20px 28px 22px;">
-              <a href="${link}" style="display:inline-block;background:#1F5C6B;color:#ffffff;text-decoration:none;border-radius:6px;padding:15px 30px;font-weight:bold;font-size:15px;font-family:Arial,Helvetica,sans-serif;">ABRIR MI GUÍA DE USO Y RECLAMOS &rarr;</a>
-              <p style="margin:12px 0 0;font-size:11.5px;color:#6A7A80;font-style:italic;line-height:1.55;">Guárdela en favoritos para tenerla siempre a mano. No necesita contraseña.</p>
-            </td>
-          </tr>
-
-          <!-- 6. Qué encontrará en la guía -->
-          <tr>
-            <td style="padding:30px 28px 12px;border-top:1px solid #EBEDEE;">
-              <p style="margin:0 0 16px;font-size:11px;font-weight:bold;color:#143F4A;letter-spacing:0.06em;text-transform:uppercase;">En su guía encontrará</p>
-              <ul style="margin:0;padding:0 0 0 22px;font-size:13.5px;color:#34464D;line-height:2;">
-                <li style="padding:3px 0;">Qué hacer paso a paso en consulta, hospitalización, urgencias y emergencias fuera del país</li>
-                <li style="padding:3px 0;">Cómo y a dónde solicitar reembolsos, con los plazos del INS</li>
-                <li style="padding:3px 0;">Teléfonos y correos clave del INS, siempre a mano</li>
-                <li style="padding:3px 0;">Los documentos y formularios listos para descargar cuando los necesite</li>
-                <li style="padding:3px 0;">Sus derechos como asegurado bajo la Ley 8956</li>
-              </ul>
-            </td>
-          </tr>
-
-          <!-- 7. Cierre -->
-          <tr>
-            <td style="padding:30px 28px 24px;">
-              <p style="margin:0 0 14px;font-size:14.5px;color:#34464D;line-height:1.7;">Cualquier duda me escribe directo, con toda confianza. Estoy para acompañarlo cuando lo necesite.</p>
-              <p style="margin:0;font-size:14px;color:#0E2127;font-style:italic;font-weight:500;">&mdash; ${_escEmail(a.nombre)}</p>
-            </td>
-          </tr>
-
-          <!-- 8. FOOTER navy -->
-          <tr>
-            <td bgcolor="#143F4A" style="background:#143F4A;padding:24px 24px 20px;text-align:center;color:#ffffff;">
-              <table cellpadding="0" cellspacing="0" border="0" align="center" style="margin:0 auto 16px;">
-                <tr>
-                  <td valign="middle" style="font-family:Georgia,'Times New Roman',serif;font-weight:500;font-size:22px;letter-spacing:-0.01em;color:#ffffff;line-height:1;">Seguros&nbsp;Digitales</td>
-                  <td valign="middle" style="padding-left:12px;">
-                    <table cellpadding="0" cellspacing="0" border="0">
-                      <tr><td bgcolor="#ffffff" style="background:#ffffff;height:3px;width:20px;line-height:3px;font-size:0;">&nbsp;</td></tr>
-                      <tr><td style="height:3px;line-height:3px;font-size:0;">&nbsp;</td></tr>
-                      <tr><td bgcolor="#ffffff" style="background:#ffffff;height:3px;width:20px;line-height:3px;font-size:0;">&nbsp;</td></tr>
-                      <tr><td style="height:3px;line-height:3px;font-size:0;">&nbsp;</td></tr>
-                      <tr><td bgcolor="#ffffff" style="background:#ffffff;height:3px;width:20px;line-height:3px;font-size:0;">&nbsp;</td></tr>
-                    </table>
-                  </td>
-                </tr>
+            <td style="padding:32px 34px 10px;">
+              ${_reglaCorreoLC()}
+              <p style="margin:0 0 14px;font-size:20px;font-weight:bold;color:#1B1F23;letter-spacing:-0.02em;">En su guía encontrará</p>
+              <table width="100%" cellpadding="0" cellspacing="0" border="0" role="presentation" style="font-size:14px;color:#5A6570;line-height:1.55;">
+                <tr><td style="padding:8px 0;border-bottom:1px solid #EDEFF2;">Qué hacer paso a paso en consulta, hospitalización, urgencias y emergencias fuera del país</td></tr>
+                <tr><td style="padding:8px 0;border-bottom:1px solid #EDEFF2;">Cómo y a dónde solicitar reembolsos, con los plazos del INS</td></tr>
+                <tr><td style="padding:8px 0;border-bottom:1px solid #EDEFF2;">Teléfonos y correos clave del INS, siempre a mano</td></tr>
+                <tr><td style="padding:8px 0;border-bottom:1px solid #EDEFF2;">Los documentos y formularios listos para descargar cuando los necesite</td></tr>
+                <tr><td style="padding:8px 0;">Sus derechos como asegurado bajo la Ley 8956</td></tr>
               </table>
-              <p style="margin:0;font-size:14px;font-weight:bold;color:#ffffff;">${_escEmail(a.nombre)}</p>
-              <p style="margin:4px 0 0;font-size:11px;color:#C7DBE0;">Agente autorizado INS · Lic. SUGESE ${_escEmail(a.licencia || '08-1318')} · WhatsApp ${_escEmail(a.whatsapp)}${a.email ? " · " + _escEmail(a.email) : ""}</p>
-              <p style="margin:14px 0 0;font-size:10.5px;color:#94aab0;font-style:italic;line-height:1.55;">La guía es de carácter informativo. Las Condiciones Generales y Particulares de su póliza son el documento vinculante. Producto Vital 360 registrado bajo norma SUGESE P20-76-A01-1097 V3.</p>
-              <p style="margin:10px 0 0;font-size:10px;color:#6A7A80;">Un producto de <strong style="color:#ffffff;font-weight:600;">SDI &middot; Seguros Digitales</strong> &middot; &copy; 2026 Propiedad intelectual de <strong style="color:#ffffff;font-weight:600;">Juan Carlos Hern&aacute;ndez Vargas</strong></p>
             </td>
           </tr>
+
+          <!-- Cierre -->
+          <tr>
+            <td style="padding:30px 34px 34px;">
+              <p style="margin:0 0 12px;font-size:14.5px;color:#5A6570;line-height:1.7;">Cualquier duda me escribe directo, con toda confianza. Estoy para acompañarlo cuando lo necesite.</p>
+              <p style="margin:0;font-size:14.5px;color:#1B1F23;font-weight:bold;">${_escEmail(a.nombre)}</p>
+              <p style="margin:3px 0 0;font-size:12.5px;color:#6B7681;">Agente autorizado INS &middot; WhatsApp ${_escEmail(a.whatsapp)}</p>
+            </td>
+          </tr>
+          ${_pieCorreoLC(a, "La guía es de carácter informativo. Las Condiciones Generales y Particulares de su póliza son el documento vinculante. Producto Vital 360 registrado bajo norma SUGESE P20-76-A01-1097 V3.")}
 
         </table>
       </td>
@@ -3233,8 +3250,14 @@ ${payload.agente.nombre}${lic}`;
     // Plantilla 2 · "Su póliza Vital 360 está vigente" + guía de reclamos
     // Autocontenida (sin link externo): el cliente la archiva para consulta.
     // Fuente legal: Condiciones Generales Vital 360, cláusulas XXIV-XXVII.
+    // Línea clara (10 sep 2026): texto TRANSCRITO de la versión anterior,
+    // solo cambia la cara. Las 4 modalidades ya no llevan un color cada una
+    // (JC rechazó los "chips de icono de color" y las barras repetidas).
+    // opts.cajasEnColor — SOLO para el mockup: decide si "Números y correos
+    // clave" y "Sus derechos" conservan su color. Se colapsa al elegir JC.
     // =====================================================================
-    function buildEmailPolizaVigente(payload, polizaData){
+    function buildEmailPolizaVigente(payload, polizaData, opts){
+      const enColor = !!(opts && opts.cajasEnColor);
       const a = payload.agente;
       const cliNom = payload.cliente.nombre || "estimado/a cliente";
       const planId = polizaData.planId || payload.planRecomendado || payload.planes[0];
@@ -3251,17 +3274,25 @@ ${payload.agente.nombre}${lic}`;
       // Modalidad 4 (internacional) solo aplica si el ámbito lo permite.
       const aplicaInternacional = ambitoPlan === "regional" || ambitoPlan === "internacional";
 
-      // Helper local: tarjeta de modalidad con borde lateral de color.
-      const modalidad = ({num, color, titulo, subtitulo, cuerpo}) => `
-        <tr><td style="padding:0 28px 14px;">
-          <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#ffffff;border:1px solid #C7DBE0;border-left:5px solid ${color};border-radius:6px;">
+      const M = _LC_M;
+      const T = "font-size:13.5px;color:#5A6570;line-height:1.65;";   // texto de cuerpo
+      const S = "font-size:12px;color:#6B7681;font-weight:bold;";      // subtítulo "Pasos", "Documentos…"
+      const V = `font-family:${M};color:#1B1F23;font-weight:bold;`;    // valor: teléfono, correo
+      const K = "color:#6B7681;padding:2px 14px 2px 0;";               // etiqueta de tabla
+
+      // Tarjeta de modalidad: número en círculo neutro, sin color propio.
+      const modalidad = ({num, titulo, subtitulo, cuerpo}) => `
+        <tr><td style="padding:0 30px 12px;">
+          <table width="100%" cellpadding="0" cellspacing="0" border="0" role="presentation" style="background:#ffffff;border:1px solid #DADCE0;border-radius:18px;">
             <tr>
-              <td valign="top" width="58" style="padding:18px 0 18px 18px;">
-                <p style="margin:0;font-family:Georgia,'Times New Roman',serif;font-size:30px;font-weight:600;color:${color};line-height:1;letter-spacing:-0.02em;">${num}</p>
+              <td valign="top" width="62" style="padding:20px 0 20px 20px;">
+                <table cellpadding="0" cellspacing="0" border="0" role="presentation"><tr>
+                  <td bgcolor="#EEF4F9" align="center" valign="middle" style="background:#EEF4F9;border-radius:999px;width:34px;height:34px;font-family:${M};font-size:15px;font-weight:bold;color:#5A6570;">${num}</td>
+                </tr></table>
               </td>
-              <td valign="top" style="padding:18px 22px 18px 6px;">
-                <p style="margin:0;font-size:10px;color:${color};letter-spacing:0.08em;text-transform:uppercase;font-weight:bold;line-height:1.3;">${_escEmail(subtitulo)}</p>
-                <p style="margin:3px 0 12px;font-family:Georgia,'Times New Roman',serif;font-size:20px;font-weight:500;color:#0E2127;letter-spacing:-0.015em;line-height:1.2;">${_escEmail(titulo)}</p>
+              <td valign="top" style="padding:20px 22px 20px 4px;">
+                <p style="margin:0;font-size:12px;color:#6B7681;line-height:1.3;">${_escEmail(subtitulo)}</p>
+                <p style="margin:3px 0 12px;font-size:19px;font-weight:bold;color:#1B1F23;letter-spacing:-0.02em;line-height:1.2;">${_escEmail(titulo)}</p>
                 ${cuerpo}
               </td>
             </tr>
@@ -3270,55 +3301,69 @@ ${payload.agente.nombre}${lic}`;
       `;
 
       const cuerpoMedicinaVirtual = `
-        <p style="margin:0 0 10px;font-size:13px;color:#34464D;line-height:1.6;">Para consultas médicas generales, sin emergencia. <strong>Sin costo, sin deducible, sin coaseguro</strong>.</p>
-        <table cellpadding="0" cellspacing="0" border="0" style="font-size:12.5px;line-height:1.7;">
-          <tr><td style="color:#6A7A80;padding:1px 12px 1px 0;">App móvil</td><td style="font-family:Courier New,Courier,monospace;color:#0E2127;font-weight:600;">App INS 24/7</td></tr>
-          <tr><td style="color:#6A7A80;padding:1px 12px 1px 0;">Email</td><td style="font-family:Courier New,Courier,monospace;color:#0E2127;font-weight:600;">${INS_CONTACTOS.medicina_virtual_email}</td></tr>
+        <p style="margin:0 0 10px;${T}">Para consultas médicas generales, sin emergencia. <strong style="color:#1B1F23;">Sin costo, sin deducible, sin coaseguro</strong>.</p>
+        <table cellpadding="0" cellspacing="0" border="0" role="presentation" style="font-size:13px;line-height:1.75;">
+          <tr><td style="${K}">App móvil</td><td style="${V}">App INS 24/7</td></tr>
+          <tr><td style="${K}">Email</td><td style="${V}">${INS_CONTACTOS.medicina_virtual_email}</td></tr>
         </table>
       `;
 
       const cuerpoHospitalizacion = `
-        <p style="margin:0 0 10px;font-size:13px;color:#34464D;line-height:1.6;">Internamiento o cirugía programada. <strong>El INS paga directamente al hospital</strong>. Usted asume solo deducible + coaseguro ${Math.round(COASEGURO_PCT*100)} %.</p>
-        <p style="margin:8px 0 6px;font-size:11px;color:#B94F2B;text-transform:uppercase;letter-spacing:0.04em;font-weight:bold;">Pasos</p>
-        <ol style="margin:0 0 10px;padding:0 0 0 22px;font-size:13px;color:#34464D;line-height:1.85;">
-          <li>Solicite pre-autorización con <strong>${INS_CONTACTOS.preautorizacion_dias_habiles} días hábiles de anticipación</strong>.</li>
-          <li>Envíe a <span style="font-family:Courier New,Courier,monospace;color:#143F4A;font-weight:600;">${INS_CONTACTOS.autorizaciones_email}</span> el formulario de pre-autorización con la orden de hospitalización del médico tratante y los exámenes que la justifican.</li>
-          <li>El INS confirma por escrito al hospital afiliado.</li>
-          <li>Reciba la atención. Pague únicamente deducible + coaseguro + lo no cubierto.</li>
+        <p style="margin:0 0 10px;${T}">Internamiento o cirugía programada. <strong style="color:#1B1F23;">El INS paga directamente al hospital</strong>. Usted asume solo deducible + coaseguro ${Math.round(COASEGURO_PCT*100)} %.</p>
+        <p style="margin:10px 0 4px;${S}">Pasos</p>
+        <ol style="margin:0 0 10px;padding:0 0 0 20px;${T}">
+          <li style="padding:2px 0;">Solicite pre-autorización con <strong style="color:#1B1F23;">${INS_CONTACTOS.preautorizacion_dias_habiles} días hábiles de anticipación</strong>.</li>
+          <li style="padding:2px 0;">Envíe a <span style="${V}">${INS_CONTACTOS.autorizaciones_email}</span> el formulario de pre-autorización con la orden de hospitalización del médico tratante y los exámenes que la justifican.</li>
+          <li style="padding:2px 0;">El INS confirma por escrito al hospital afiliado.</li>
+          <li style="padding:2px 0;">Reciba la atención. Pague únicamente deducible + coaseguro + lo no cubierto.</li>
         </ol>
       `;
 
       const cuerpoReembolso = `
-        <p style="margin:0 0 10px;font-size:13px;color:#34464D;line-height:1.6;">Consulta médica, exámenes ambulatorios, medicamentos, urgencias. <strong>Usted paga primero, el INS reembolsa</strong> después de presentar el reclamo.</p>
-        <p style="margin:8px 0 6px;font-size:11px;color:#B94F2B;text-transform:uppercase;letter-spacing:0.04em;font-weight:bold;">Pasos</p>
-        <ol style="margin:0 0 12px;padding:0 0 0 22px;font-size:13px;color:#34464D;line-height:1.85;">
-          <li>Encuentre proveedor afiliado: <span style="font-family:Courier New,Courier,monospace;color:#143F4A;font-weight:600;">grupoins.com/red-proveedores</span> o llame a <strong>${INS_CONTACTOS.red_medica}</strong> (800-MEDICAL).</li>
-          <li>Pague la atención al proveedor.</li>
-          <li>Dentro de los <strong>${INS_CONTACTOS.plazo_reembolso_dias} días naturales</strong> siguientes, presente el reclamo al INS.</li>
+        <p style="margin:0 0 10px;${T}">Consulta médica, exámenes ambulatorios, medicamentos, urgencias. <strong style="color:#1B1F23;">Usted paga primero, el INS reembolsa</strong> después de presentar el reclamo.</p>
+        <p style="margin:10px 0 4px;${S}">Pasos</p>
+        <ol style="margin:0 0 12px;padding:0 0 0 20px;${T}">
+          <li style="padding:2px 0;">Encuentre proveedor afiliado: <span style="${V}">grupoins.com/red-proveedores</span> o llame a <strong style="color:#1B1F23;">${INS_CONTACTOS.red_medica}</strong> (800-MEDICAL).</li>
+          <li style="padding:2px 0;">Pague la atención al proveedor.</li>
+          <li style="padding:2px 0;">Dentro de los <strong style="color:#1B1F23;">${INS_CONTACTOS.plazo_reembolso_dias} días naturales</strong> siguientes, presente el reclamo al INS.</li>
         </ol>
-        <p style="margin:0 0 6px;font-size:11px;color:#B94F2B;text-transform:uppercase;letter-spacing:0.04em;font-weight:bold;">Documentos requeridos</p>
-        <ul style="margin:0 0 12px;padding:0 0 0 22px;font-size:12.5px;color:#34464D;line-height:1.8;">
-          <li>Formulario <strong>Solicitud de Beneficios</strong> debidamente cumplimentado y firmado <em>(adjunto en este correo)</em>.</li>
-          <li>Factura electrónica cancelada (en CR autorizada por Hacienda · archivo XML).</li>
-          <li>Prescripciones y recetas médicas del médico tratante.</li>
-          <li>Resultados de exámenes asociados al reclamo.</li>
-          <li>Formulario <strong>Autorización para Consulta de Expedientes</strong> firmado por el asegurado.</li>
-          <li>Si fue accidente de tránsito: copia de licencia, parte oficial y prueba de alcoholemia.</li>
+        <p style="margin:0 0 4px;${S}">Documentos requeridos</p>
+        <ul style="margin:0 0 12px;padding:0 0 0 20px;font-size:13px;color:#5A6570;line-height:1.7;">
+          <li style="padding:1px 0;">Formulario <strong style="color:#1B1F23;">Solicitud de Beneficios</strong> debidamente cumplimentado y firmado <em>(adjunto en este correo)</em>.</li>
+          <li style="padding:1px 0;">Factura electrónica cancelada (en CR autorizada por Hacienda · archivo XML).</li>
+          <li style="padding:1px 0;">Prescripciones y recetas médicas del médico tratante.</li>
+          <li style="padding:1px 0;">Resultados de exámenes asociados al reclamo.</li>
+          <li style="padding:1px 0;">Formulario <strong style="color:#1B1F23;">Autorización para Consulta de Expedientes</strong> firmado por el asegurado.</li>
+          <li style="padding:1px 0;">Si fue accidente de tránsito: copia de licencia, parte oficial y prueba de alcoholemia.</li>
         </ul>
-        <p style="margin:8px 0 0;font-size:12.5px;color:#143F4A;line-height:1.6;">Enviar reclamo completo a: <span style="background:#E3EEF1;padding:3px 8px;border-radius:3px;font-family:Courier New,Courier,monospace;color:#143F4A;font-weight:600;">${INS_CONTACTOS.reembolso_email}</span></p>
+        <table cellpadding="0" cellspacing="0" border="0" role="presentation" style="margin-top:4px;"><tr>
+          <td bgcolor="#EEF4F9" style="background:#EEF4F9;border-radius:12px;padding:10px 14px;font-size:13px;color:#5A6570;line-height:1.6;">Enviar reclamo completo a: <span style="${V}">${INS_CONTACTOS.reembolso_email}</span></td>
+        </tr></table>
       `;
 
       const cuerpoInternacional = aplicaInternacional ? `
-        <p style="margin:0 0 10px;font-size:13px;color:#34464D;line-height:1.6;">Accidente o enfermedad aguda <strong>fuera de Costa Rica</strong>. <strong>Llame PRIMERO</strong> al Administrador de Servicios Médicos antes de gastar — opera por Asistencia al Viajero ($10,000 o 60 días) y después por reembolso.</p>
-        <table cellpadding="0" cellspacing="0" border="0" style="font-size:12.5px;line-height:1.75;margin-top:8px;">
-          <tr><td style="color:#6A7A80;padding:1px 14px 1px 0;">USA (gratuito)</td><td style="font-family:Courier New,Courier,monospace;color:#0E2127;font-weight:600;">${INS_CONTACTOS.asistencia_usa_gratis}</td></tr>
-          <tr><td style="color:#6A7A80;padding:1px 14px 1px 0;">España (gratuito)</td><td style="font-family:Courier New,Courier,monospace;color:#0E2127;font-weight:600;">${INS_CONTACTOS.asistencia_esp_gratis}</td></tr>
-          <tr><td style="color:#6A7A80;padding:1px 14px 1px 0;">Otros (directo)</td><td style="font-family:Courier New,Courier,monospace;color:#0E2127;font-weight:600;">${INS_CONTACTOS.asistencia_directo}</td></tr>
-          <tr><td style="color:#6A7A80;padding:1px 14px 1px 0;">Email</td><td style="font-family:Courier New,Courier,monospace;color:#0E2127;font-weight:600;">${INS_CONTACTOS.internacional_email}</td></tr>
+        <p style="margin:0 0 10px;${T}">Accidente o enfermedad aguda <strong style="color:#1B1F23;">fuera de Costa Rica</strong>. <strong style="color:#1B1F23;">Llame PRIMERO</strong> al Administrador de Servicios Médicos antes de gastar — opera por Asistencia al Viajero ($10,000 o 60 días) y después por reembolso.</p>
+        <table cellpadding="0" cellspacing="0" border="0" role="presentation" style="font-size:13px;line-height:1.8;margin-top:8px;">
+          <tr><td style="${K}">USA (gratuito)</td><td style="${V}">${INS_CONTACTOS.asistencia_usa_gratis}</td></tr>
+          <tr><td style="${K}">España (gratuito)</td><td style="${V}">${INS_CONTACTOS.asistencia_esp_gratis}</td></tr>
+          <tr><td style="${K}">Otros (directo)</td><td style="${V}">${INS_CONTACTOS.asistencia_directo}</td></tr>
+          <tr><td style="${K}">Email</td><td style="${V}">${INS_CONTACTOS.internacional_email}</td></tr>
         </table>
       ` : "";
 
       const numMedVir = 1, numHosp = 2, numAmb = 3, numInt = 4;
+
+      // --- Las dos cajas en discusión -----------------------------------
+      // Variante clara (por defecto): banda pálida, cifras en tinta.
+      // Variante en color: la de teléfonos en navy y la de derechos en ámbar
+      // suave — pero sin la barra lateral de 4 px (R5), ni en esta variante.
+      const cajaNum = enColor
+        ? { bg:"#143F4A", tit:"#C7DBE0", k:"#94aab0", v:"#ffffff", sep:"rgba(255,255,255,.12)" }
+        : { bg:"#EEF4F9", tit:"#6B7681", k:"#6B7681", v:"#1B1F23", sep:"#DADCE0" };
+      const cajaDer = enColor
+        ? { bg:"#FDF4E3", tit:"#7A5B0E", tx:"#5A4A1E" }
+        : { bg:"#EEF4F9", tit:"#6B7681", tx:"#5A6570" };
+      const numVal = `font-family:${M};color:${cajaNum.v};font-weight:bold;`;
 
       return `<!DOCTYPE html>
 <html lang="es">
@@ -3327,59 +3372,63 @@ ${payload.agente.nombre}${lic}`;
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Su póliza Vital 360 está vigente</title>
 </head>
-<body style="margin:0;padding:0;background:#F7F1E4;font-family:Arial,Helvetica,sans-serif;color:#0E2127;">
-  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#F7F1E4;padding:24px 0;">
+<body style="margin:0;padding:0;background:#F4F7FA;font-family:${_LC_F};color:#1B1F23;">
+  <table width="100%" cellpadding="0" cellspacing="0" border="0" role="presentation" style="background:#F4F7FA;padding:26px 0;">
     <tr>
       <td align="center">
-        <table width="640" cellpadding="0" cellspacing="0" border="0" style="background:#ffffff;border-radius:8px;overflow:hidden;max-width:640px;box-shadow:0 4px 20px rgba(14,33,39,0.08);">
+        <table width="640" cellpadding="0" cellspacing="0" border="0" role="presentation" style="background:#ffffff;border:1px solid #DADCE0;border-radius:16px;max-width:640px;">
+          ${_barraCorreoLC("P&oacute;liza N.&ordm; " + _escEmail(polizaData.numero))}
 
-          <!-- HEADER -->
+          <!-- Titular -->
           <tr>
-            <td bgcolor="#143F4A" style="background:#143F4A;padding:28px 28px 24px;text-align:center;">
-              <img src="${LOGO_INS_URL}" alt="INS" height="42" style="display:inline-block;height:42px;margin-bottom:14px;filter:brightness(0) invert(1);" />
-              <p style="margin:0;font-size:11px;color:#C7DBE0;letter-spacing:0.08em;text-transform:uppercase;font-weight:600;">Bienvenida a Vital 360</p>
-              <h1 style="margin:6px 0 0;font-family:Georgia,'Times New Roman',serif;font-size:26px;font-weight:500;color:#ffffff;letter-spacing:-0.015em;line-height:1.15;">Su póliza está vigente</h1>
+            <td align="center" style="padding:40px 34px 8px;">
+              ${_estadoCorreoLC("P&oacute;liza emitida y vigente")}
+              <p style="margin:0 0 8px;font-size:13px;color:#6B7681;">Bienvenida a Vital 360</p>
+              <h1 style="margin:0;font-size:32px;line-height:1.12;font-weight:bold;color:#1B1F23;letter-spacing:-0.02em;">Su póliza está vigente</h1>
             </td>
           </tr>
 
-          <!-- SALUDO + TARJETA PÓLIZA -->
+          <!-- Saludo -->
           <tr>
-            <td style="padding:32px 28px 8px;">
-              <p style="margin:0;font-size:16px;color:#0E2127;line-height:1.5;"><strong>Hola ${_escEmail(cliNom)},</strong></p>
-              <p style="margin:14px 0 22px;font-size:14px;color:#34464D;line-height:1.7;">Su póliza Vital 360 quedó emitida y está vigente. A continuación los datos de su contrato y una guía de uso para cuando la necesite.</p>
+            <td style="padding:28px 34px 26px;">
+              <p style="margin:0;font-size:16px;color:#1B1F23;line-height:1.5;"><strong>Hola ${_escEmail(cliNom)},</strong></p>
+              <p style="margin:12px 0 0;font-size:14.5px;color:#5A6570;line-height:1.7;">Su póliza Vital 360 quedó emitida y está vigente. A continuación los datos de su contrato y una guía de uso para cuando la necesite.</p>
             </td>
           </tr>
 
+          <!-- Datos de la póliza: panel blanco sobre banda pálida -->
           <tr>
-            <td style="padding:0 28px 22px;">
-              <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#E3EEF1;border:1px solid #C7DBE0;border-radius:6px;">
+            <td bgcolor="#EEF4F9" style="background:#EEF4F9;padding:24px 22px;">
+              <table width="100%" cellpadding="0" cellspacing="0" border="0" role="presentation" style="background:#ffffff;border:1px solid #DADCE0;border-radius:20px;">
                 <tr>
-                  <td style="padding:18px 22px;">
-                    <p style="margin:0 0 6px;font-size:10px;color:#143F4A;letter-spacing:0.08em;text-transform:uppercase;font-weight:bold;">Datos de su póliza</p>
-                    <table width="100%" cellpadding="0" cellspacing="0" border="0" style="font-size:13px;line-height:1.85;">
+                  <td style="padding:22px 24px 14px;">
+                    <table cellpadding="0" cellspacing="0" border="0" role="presentation" style="margin:0 0 8px;">
+                      <tr><td bgcolor="#EDF3F4" style="background:#EDF3F4;border-radius:999px;padding:5px 13px;font-size:11.5px;font-weight:bold;color:#1F5C6B;white-space:nowrap;">Datos de su póliza</td></tr>
+                    </table>
+                    <table width="100%" cellpadding="0" cellspacing="0" border="0" role="presentation" style="font-size:13.5px;">
                       <tr>
-                        <td style="color:#6A7A80;padding:4px 12px 4px 0;width:160px;">N.º de póliza</td>
-                        <td style="font-family:Courier New,Courier,monospace;color:#0E2127;font-weight:600;font-size:14px;">${_escEmail(polizaData.numero)}</td>
+                        <td style="color:#6B7681;padding:9px 12px 9px 0;width:170px;border-bottom:1px solid #EDEFF2;">N.º de póliza</td>
+                        <td style="font-family:${M};color:#1B1F23;font-weight:bold;font-size:14.5px;border-bottom:1px solid #EDEFF2;">${_escEmail(polizaData.numero)}</td>
                       </tr>
                       <tr>
-                        <td style="color:#6A7A80;padding:4px 12px 4px 0;">Plan contratado</td>
-                        <td style="color:#0E2127;font-weight:600;">${_escEmail(plan.nombre)} &middot; ${_escEmail(plan.ambito)}</td>
+                        <td style="color:#6B7681;padding:9px 12px 9px 0;border-bottom:1px solid #EDEFF2;">Plan contratado</td>
+                        <td style="color:#1B1F23;font-weight:bold;border-bottom:1px solid #EDEFF2;">${_escEmail(plan.nombre)} &middot; ${_escEmail(plan.ambito)}</td>
                       </tr>
                       <tr>
-                        <td style="color:#6A7A80;padding:4px 12px 4px 0;">Vigencia desde</td>
-                        <td style="font-family:Courier New,Courier,monospace;color:#0E2127;font-weight:600;">${_escEmail(polizaData.fechaInicio)}</td>
+                        <td style="color:#6B7681;padding:9px 12px 9px 0;border-bottom:1px solid #EDEFF2;">Vigencia desde</td>
+                        <td style="font-family:${M};color:#1B1F23;font-weight:bold;border-bottom:1px solid #EDEFF2;">${_escEmail(polizaData.fechaInicio)}</td>
                       </tr>
                       <tr>
-                        <td style="color:#6A7A80;padding:4px 12px 4px 0;">Asegurados</td>
-                        <td style="color:#0E2127;">${payload.asegurados.length} ${payload.asegurados.length === 1 ? "persona" : "personas"}</td>
+                        <td style="color:#6B7681;padding:9px 12px 9px 0;border-bottom:1px solid #EDEFF2;">Asegurados</td>
+                        <td style="color:#1B1F23;border-bottom:1px solid #EDEFF2;">${payload.asegurados.length} ${payload.asegurados.length === 1 ? "persona" : "personas"}</td>
                       </tr>
                       <tr>
-                        <td style="color:#6A7A80;padding:4px 12px 4px 0;">Suma asegurada anual</td>
-                        <td style="font-family:Courier New,Courier,monospace;color:#0E2127;font-weight:600;">${_escEmail(fmtMoneda(sumaPlan, moneda))} <span style="color:#6A7A80;font-weight:normal;font-family:Arial;">por persona</span></td>
+                        <td style="color:#6B7681;padding:9px 12px 9px 0;border-bottom:1px solid #EDEFF2;">Suma asegurada anual</td>
+                        <td style="font-family:${M};color:#1B1F23;font-weight:bold;border-bottom:1px solid #EDEFF2;">${_escEmail(fmtMoneda(sumaPlan, moneda))} <span style="color:#6B7681;font-weight:normal;font-family:${_LC_F};">por persona</span></td>
                       </tr>
                       <tr>
-                        <td style="color:#6A7A80;padding:4px 12px 4px 0;">Deducible · Coaseguro</td>
-                        <td style="color:#0E2127;"><span style="font-family:Courier New,Courier,monospace;font-weight:600;">${_escEmail(fmtMoneda(deduciblePlan, moneda))}</span> &middot; ${Math.round(COASEGURO_PCT*100)} %</td>
+                        <td style="color:#6B7681;padding:9px 12px 9px 0;">Deducible · Coaseguro</td>
+                        <td style="color:#1B1F23;"><span style="font-family:${M};font-weight:bold;">${_escEmail(fmtMoneda(deduciblePlan, moneda))}</span> &middot; ${Math.round(COASEGURO_PCT*100)} %</td>
                       </tr>
                     </table>
                   </td>
@@ -3388,47 +3437,47 @@ ${payload.agente.nombre}${lic}`;
             </td>
           </tr>
 
-          <!-- INTRO GUÍA -->
+          <!-- Guía rápida -->
           <tr>
-            <td style="padding:8px 28px 18px;border-top:1px solid #EBEDEE;">
-              <p style="margin:18px 0 6px;font-size:11px;color:#143F4A;letter-spacing:0.08em;text-transform:uppercase;font-weight:bold;">Guía rápida de uso</p>
-              <p style="margin:0;font-size:14px;color:#34464D;line-height:1.7;">Hay <strong>${aplicaInternacional ? 4 : 3} modalidades</strong> según el tipo de atención. Identifique la suya y siga los pasos del bloque correspondiente.</p>
+            <td style="padding:34px 30px 18px;">
+              ${_reglaCorreoLC()}
+              <p style="margin:0 0 8px;font-size:21px;font-weight:bold;color:#1B1F23;letter-spacing:-0.02em;">Guía rápida de uso</p>
+              <p style="margin:0;font-size:14.5px;color:#5A6570;line-height:1.7;">Hay <strong style="color:#1B1F23;">${aplicaInternacional ? 4 : 3} modalidades</strong> según el tipo de atención. Identifique la suya y siga los pasos del bloque correspondiente.</p>
             </td>
           </tr>
 
-          ${modalidad({ num: numMedVir, color: "#19A65A", subtitulo: "Sin costo · 24/7",     titulo: "Medicina Virtual 360",          cuerpo: cuerpoMedicinaVirtual })}
-          ${modalidad({ num: numHosp,   color: "#1F5C6B", subtitulo: "Pago directo del INS", titulo: "Hospitalización o cirugía",     cuerpo: cuerpoHospitalizacion })}
-          ${modalidad({ num: numAmb,    color: "#E36B43", subtitulo: "Reembolso",            titulo: "Ambulatorio y urgencias en CR", cuerpo: cuerpoReembolso })}
-          ${aplicaInternacional ? modalidad({ num: numInt, color: "#143F4A", subtitulo: "Asistencia al Viajero primero", titulo: "Emergencia fuera del país", cuerpo: cuerpoInternacional }) : ""}
+          ${modalidad({ num: numMedVir, subtitulo: "Sin costo · 24/7",     titulo: "Medicina Virtual 360",          cuerpo: cuerpoMedicinaVirtual })}
+          ${modalidad({ num: numHosp,   subtitulo: "Pago directo del INS", titulo: "Hospitalización o cirugía",     cuerpo: cuerpoHospitalizacion })}
+          ${modalidad({ num: numAmb,    subtitulo: "Reembolso",            titulo: "Ambulatorio y urgencias en CR", cuerpo: cuerpoReembolso })}
+          ${aplicaInternacional ? modalidad({ num: numInt, subtitulo: "Asistencia al Viajero primero", titulo: "Emergencia fuera del país", cuerpo: cuerpoInternacional }) : ""}
 
-          <!-- DOCUMENTOS ADICIONALES SEGÚN CASO -->
+          <!-- Documentos adicionales según el caso -->
           <tr>
-            <td style="padding:14px 28px 18px;">
-              <p style="margin:0 0 10px;font-size:11px;color:#143F4A;letter-spacing:0.08em;text-transform:uppercase;font-weight:bold;">Documentos adicionales según el caso</p>
-              <table width="100%" cellpadding="0" cellspacing="0" border="0" style="font-size:12.5px;line-height:1.65;background:#F7F1E4;border-radius:6px;">
-                <tr><td style="padding:12px 16px;">
-                  <p style="margin:0 0 4px;color:#34464D;"><strong style="color:#143F4A;">Odontología por accidente:</strong> radiografía previa con fractura visible · ficha odontológica completa · radiografía posterior al tratamiento.</p>
-                  <p style="margin:6px 0 0;color:#34464D;"><strong style="color:#143F4A;">Fallecimiento:</strong> carta del beneficiario · certificado oficial de defunción · IDs · si fue accidente, expediente judicial con alcoholemia/tóxicos · Autorización Consulta Expedientes.</p>
-                </td></tr>
+            <td style="padding:22px 30px 14px;">
+              ${_reglaCorreoLC()}
+              <p style="margin:0 0 12px;font-size:17px;font-weight:bold;color:#1B1F23;letter-spacing:-0.02em;">Documentos adicionales según el caso</p>
+              <table width="100%" cellpadding="0" cellspacing="0" border="0" role="presentation" style="font-size:13.5px;line-height:1.65;color:#5A6570;">
+                <tr><td style="padding:10px 0;border-top:1px solid #EDEFF2;border-bottom:1px solid #EDEFF2;"><strong style="color:#1B1F23;">Odontología por accidente:</strong> radiografía previa con fractura visible · ficha odontológica completa · radiografía posterior al tratamiento.</td></tr>
+                <tr><td style="padding:10px 0;border-bottom:1px solid #EDEFF2;"><strong style="color:#1B1F23;">Fallecimiento:</strong> carta del beneficiario · certificado oficial de defunción · IDs · si fue accidente, expediente judicial con alcoholemia/tóxicos · Autorización Consulta Expedientes.</td></tr>
               </table>
             </td>
           </tr>
 
-          <!-- NÚMEROS CLAVE -->
+          <!-- Números y correos clave -->
           <tr>
-            <td style="padding:8px 28px 22px;">
-              <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#143F4A;border-radius:6px;">
+            <td style="padding:10px 30px 14px;">
+              <table width="100%" cellpadding="0" cellspacing="0" border="0" role="presentation" bgcolor="${cajaNum.bg}" style="background:${cajaNum.bg};border-radius:18px;">
                 <tr>
-                  <td style="padding:18px 22px;color:#ffffff;">
-                    <p style="margin:0 0 12px;font-size:10px;color:#C7DBE0;letter-spacing:0.08em;text-transform:uppercase;font-weight:bold;">Números y correos clave</p>
-                    <table width="100%" cellpadding="0" cellspacing="0" border="0" style="font-size:12.5px;line-height:1.85;">
-                      <tr><td style="color:#94aab0;padding:2px 14px 2px 0;width:170px;">Tele-INS (consultas)</td><td style="font-family:Courier New,Courier,monospace;color:#ffffff;font-weight:600;font-size:14px;">${INS_CONTACTOS.tele_ins}</td></tr>
-                      <tr><td style="color:#94aab0;padding:2px 14px 2px 0;">Red Médica</td><td style="font-family:Courier New,Courier,monospace;color:#ffffff;font-weight:600;font-size:14px;">${INS_CONTACTOS.red_medica} (800-MEDICAL)</td></tr>
-                      <tr><td style="color:#94aab0;padding:2px 14px 2px 0;">Línea local</td><td style="font-family:Courier New,Courier,monospace;color:#ffffff;font-weight:600;">${INS_CONTACTOS.linea_local}</td></tr>
-                      <tr><td colspan="2" style="padding:6px 0 0;"><div style="height:1px;background:rgba(255,255,255,.08);"></div></td></tr>
-                      <tr><td style="color:#94aab0;padding:6px 14px 2px 0;">Reembolsos</td><td style="font-family:Courier New,Courier,monospace;color:#ffffff;font-weight:600;padding-top:6px;">${INS_CONTACTOS.reembolso_email}</td></tr>
-                      <tr><td style="color:#94aab0;padding:2px 14px 2px 0;">Autorizaciones</td><td style="font-family:Courier New,Courier,monospace;color:#ffffff;font-weight:600;">${INS_CONTACTOS.autorizaciones_email}</td></tr>
-                      <tr><td style="color:#94aab0;padding:2px 14px 2px 0;">Consultas generales</td><td style="font-family:Courier New,Courier,monospace;color:#ffffff;font-weight:600;">${INS_CONTACTOS.consultas_email}</td></tr>
+                  <td style="padding:22px 24px;">
+                    <p style="margin:0 0 12px;font-size:13px;color:${cajaNum.tit};font-weight:bold;">Números y correos clave</p>
+                    <table width="100%" cellpadding="0" cellspacing="0" border="0" role="presentation" style="font-size:13px;line-height:1.85;">
+                      <tr><td style="color:${cajaNum.k};padding:2px 14px 2px 0;width:170px;">Tele-INS (consultas)</td><td style="${numVal}font-size:15px;">${INS_CONTACTOS.tele_ins}</td></tr>
+                      <tr><td style="color:${cajaNum.k};padding:2px 14px 2px 0;">Red Médica</td><td style="${numVal}font-size:15px;">${INS_CONTACTOS.red_medica} (800-MEDICAL)</td></tr>
+                      <tr><td style="color:${cajaNum.k};padding:2px 14px 2px 0;">Línea local</td><td style="${numVal}">${INS_CONTACTOS.linea_local}</td></tr>
+                      <tr><td colspan="2" style="padding:8px 0 4px;"><table width="100%" cellpadding="0" cellspacing="0" border="0" role="presentation"><tr><td style="border-top:1px solid ${cajaNum.sep};font-size:0;line-height:0;">&nbsp;</td></tr></table></td></tr>
+                      <tr><td style="color:${cajaNum.k};padding:2px 14px 2px 0;">Reembolsos</td><td style="${numVal}">${INS_CONTACTOS.reembolso_email}</td></tr>
+                      <tr><td style="color:${cajaNum.k};padding:2px 14px 2px 0;">Autorizaciones</td><td style="${numVal}">${INS_CONTACTOS.autorizaciones_email}</td></tr>
+                      <tr><td style="color:${cajaNum.k};padding:2px 14px 2px 0;">Consultas generales</td><td style="${numVal}">${INS_CONTACTOS.consultas_email}</td></tr>
                     </table>
                   </td>
                 </tr>
@@ -3436,52 +3485,30 @@ ${payload.agente.nombre}${lic}`;
             </td>
           </tr>
 
-          <!-- DERECHOS DEL ASEGURADO -->
+          <!-- Sus derechos como asegurado -->
           <tr>
-            <td style="padding:8px 28px 22px;">
-              <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#FFF4D6;border-left:4px solid #C18A2C;border-radius:6px;">
+            <td style="padding:${enColor ? "10px 30px 22px" : "22px 30px 22px"};">
+              ${enColor ? "" : _reglaCorreoLC()}
+              <table width="100%" cellpadding="0" cellspacing="0" border="0" role="presentation" ${enColor ? `bgcolor="${cajaDer.bg}" style="background:${cajaDer.bg};border-radius:18px;"` : ""}>
                 <tr>
-                  <td style="padding:14px 18px;">
-                    <p style="margin:0 0 4px;font-size:10px;color:#7A5B0E;letter-spacing:0.06em;text-transform:uppercase;font-weight:bold;">Sus derechos como asegurado</p>
-                    <p style="margin:6px 0 0;font-size:12.5px;color:#34464D;line-height:1.7;"><strong>El INS resuelve cada reclamo en máximo ${INS_CONTACTOS.plazo_resolucion_dias} días naturales</strong> (Ley 8956 art. 16). Si su reclamo es declinado parcial o totalmente, usted tiene derecho a presentar <strong>recurso de revocatoria</strong> ante el departamento que dictó la resolución y, después, <strong>apelación</strong> al superior jerárquico. También puede solicitar <strong>revisión del monto indemnizado</strong>.</p>
+                  <td style="padding:${enColor ? "20px 24px" : "0"};">
+                    <p style="margin:0 0 4px;${enColor ? `font-size:13px;color:${cajaDer.tit};` : "font-size:17px;color:#1B1F23;letter-spacing:-0.02em;"}font-weight:bold;">Sus derechos como asegurado</p>
+                    <p style="margin:${enColor ? "6px" : "8px"} 0 0;font-size:13.5px;color:${cajaDer.tx};line-height:1.7;"><strong>El INS resuelve cada reclamo en máximo ${INS_CONTACTOS.plazo_resolucion_dias} días naturales</strong> (Ley 8956 art. 16). Si su reclamo es declinado parcial o totalmente, usted tiene derecho a presentar <strong>recurso de revocatoria</strong> ante el departamento que dictó la resolución y, después, <strong>apelación</strong> al superior jerárquico. También puede solicitar <strong>revisión del monto indemnizado</strong>.</p>
                   </td>
                 </tr>
               </table>
             </td>
           </tr>
 
-          <!-- CIERRE -->
+          <!-- Cierre -->
           <tr>
-            <td style="padding:14px 28px 28px;border-top:1px solid #EBEDEE;">
-              <p style="margin:18px 0 12px;font-size:14.5px;color:#34464D;line-height:1.7;">Si tiene una duda en cualquier momento, escríbame directo y le acompaño en el proceso.</p>
-              <p style="margin:0;font-size:14px;color:#0E2127;font-style:italic;font-weight:500;">— ${_escEmail(a.nombre)}</p>
-              <p style="margin:4px 0 0;font-size:12.5px;color:#6A7A80;">WhatsApp ${_escEmail(a.whatsapp)} &middot; Lic. SUGESE ${_escEmail(a.licencia || '08-1318')}</p>
+            <td style="padding:22px 34px 34px;border-top:1px solid #EDEFF2;">
+              <p style="margin:12px 0 12px;font-size:14.5px;color:#5A6570;line-height:1.7;">Si tiene una duda en cualquier momento, escríbame directo y le acompaño en el proceso.</p>
+              <p style="margin:0;font-size:14.5px;color:#1B1F23;font-weight:bold;">${_escEmail(a.nombre)}</p>
+              <p style="margin:3px 0 0;font-size:12.5px;color:#6B7681;">WhatsApp ${_escEmail(a.whatsapp)} &middot; Lic. SUGESE ${_escEmail(a.licencia || '08-1318')}</p>
             </td>
           </tr>
-
-          <!-- FOOTER SDI -->
-          <tr>
-            <td bgcolor="#143F4A" style="background:#143F4A;padding:24px 24px 20px;text-align:center;color:#ffffff;">
-              <table cellpadding="0" cellspacing="0" border="0" align="center" style="margin:0 auto 14px;">
-                <tr>
-                  <td valign="middle" style="font-family:Georgia,'Times New Roman',serif;font-weight:500;font-size:22px;letter-spacing:-0.01em;color:#ffffff;line-height:1;">Seguros&nbsp;Digitales</td>
-                  <td valign="middle" style="padding-left:12px;">
-                    <table cellpadding="0" cellspacing="0" border="0">
-                      <tr><td bgcolor="#ffffff" style="background:#ffffff;height:3px;width:20px;line-height:3px;font-size:0;">&nbsp;</td></tr>
-                      <tr><td style="height:3px;line-height:3px;font-size:0;">&nbsp;</td></tr>
-                      <tr><td bgcolor="#ffffff" style="background:#ffffff;height:3px;width:20px;line-height:3px;font-size:0;">&nbsp;</td></tr>
-                      <tr><td style="height:3px;line-height:3px;font-size:0;">&nbsp;</td></tr>
-                      <tr><td bgcolor="#ffffff" style="background:#ffffff;height:3px;width:20px;line-height:3px;font-size:0;">&nbsp;</td></tr>
-                    </table>
-                  </td>
-                </tr>
-              </table>
-              <p style="margin:0;font-size:14px;font-weight:bold;color:#ffffff;">${_escEmail(a.nombre)}</p>
-              <p style="margin:4px 0 0;font-size:11px;color:#C7DBE0;">Agente autorizado INS · Lic. SUGESE ${_escEmail(a.licencia || '08-1318')} · WhatsApp ${_escEmail(a.whatsapp)}${a.email ? " · " + _escEmail(a.email) : ""}</p>
-              <p style="margin:14px 0 0;font-size:10.5px;color:#94aab0;font-style:italic;line-height:1.55;">Esta comunicación es de carácter informativo y se basa en las Condiciones Generales del seguro Vital 360 del INS (registro SUGESE P20-76-A01-1097 V3). La operación de las coberturas se rige por dichas condiciones generales y por las particulares de su póliza.</p>
-              <p style="margin:10px 0 0;font-size:10px;color:#6A7A80;">Un producto de <strong style="color:#ffffff;font-weight:600;">SDI &middot; Seguros Digitales</strong> &middot; &copy; 2026 Propiedad intelectual de <strong style="color:#ffffff;font-weight:600;">Juan Carlos Hern&aacute;ndez Vargas</strong></p>
-            </td>
-          </tr>
+          ${_pieCorreoLC(a, "Esta comunicación es de carácter informativo y se basa en las Condiciones Generales del seguro Vital 360 del INS (registro SUGESE P20-76-A01-1097 V3). La operación de las coberturas se rige por dichas condiciones generales y por las particulares de su póliza.")}
 
         </table>
       </td>
