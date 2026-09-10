@@ -379,6 +379,8 @@ ya prometía "(adjunto en este correo)". Reglas:
   Si se quita un formulario de `formulariosINS`, quitar también su "(adjunto…)" del correo.
 - Nombres de archivo con tilde → RFC 2231 (`filename*=UTF-8''Autorizaci%C3%B3n…`), verificado en el
   MIME armado. El modal de la guía (C) NO precarga nada.
+- ✅ **Smoke real de JC hecho el 10 sep 2026 — NO volver a pedirlo:** se mandó un correo de póliza
+  vigente con "Enviar ahora desde Gmail" a su casilla de pruebas y **llegaron los tres PDF**.
 
 **🔴 Lección DURABLE del race de FileReader — alcance: CUALQUIER cotizador con adjuntos por Gmail API, no solo Vital 360.** Enviar mientras un `readAsDataURL` asíncrono no terminó mandaba el correo **sin el adjunto, en silencio** (el usuario cree que lo mandó). Fix: contador `leyendo` + `isReady()` que bloquea el botón de envío hasta que todos los FileReader resolvieron. Aplica igual a **cotizador-autos** y **hogar comprensivo** (y a cualquier flujo futuro que adjunte archivos a un correo). Es el mismo patrón de fondo que `feedback_engine_write_proxy_no_fallback`: **nunca actuar sobre un estado asíncrono incompleto.** Si se agrega adjuntos a otro cotizador, replicar el guard antes que la feature.
 
