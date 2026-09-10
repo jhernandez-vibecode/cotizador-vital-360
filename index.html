@@ -1444,8 +1444,9 @@
         <p class="sdi-foot-line">Un producto de <strong>SDI · Seguros Digitales</strong></p>
         <p class="sdi-foot-line sub">© 2026 · Propiedad intelectual de <strong>Juan Carlos Hernández Vargas</strong></p>
         <details class="sdi-changelog">
-          <summary>Última actualización: 10 sep 2026 — la guía de uso y reclamos, con la cara nueva</summary>
+          <summary>Última actualización: 10 sep 2026 — el correo de póliza vigente adjunta solo los formularios del INS</summary>
           <ul>
+            <li><strong>10 sep 2026</strong> — El correo de póliza vigente adjunta solos los 3 formularios del INS: Solicitud de Beneficios, Autorización para Consulta de Expedientes y Condiciones Generales. Ya no hay que bajarlos y volverlos a subir.</li>
             <li><strong>10 sep 2026</strong> — La guía de uso y reclamos que abre el cliente estrena la cara nueva. Además, su pie ya no muestra una licencia fija: la licencia que aparece es la del agente que la envió.</li>
             <li><strong>10 sep 2026</strong> — Los correos de póliza vigente y de la guía de uso y reclamos estrenan la cara nueva, igual que el de la cotización. Las coberturas, los pasos, los plazos y los contactos del INS dicen exactamente lo mismo.</li>
             <li><strong>10 sep 2026</strong> — Corregido el aviso legal al pie de la cotización: ahora dice que los montos ya incluyen el IVA del 2 %. Antes decía lo contrario, aunque las cifras sí lo incluían desde el 27 de julio.</li>
@@ -3337,7 +3338,7 @@ ${_botonCorreoLC(link, "Ver mi cotizaci&oacute;n completa &rarr;")}
           <li style="padding:1px 0;">Factura electrónica cancelada (en CR autorizada por Hacienda · archivo XML).</li>
           <li style="padding:1px 0;">Prescripciones y recetas médicas del médico tratante.</li>
           <li style="padding:1px 0;">Resultados de exámenes asociados al reclamo.</li>
-          <li style="padding:1px 0;">Formulario <strong style="color:#1B1F23;">Autorización para Consulta de Expedientes</strong> firmado por el asegurado.</li>
+          <li style="padding:1px 0;">Formulario <strong style="color:#1B1F23;">Autorización para Consulta de Expedientes</strong> firmado por el asegurado <em>(adjunto en este correo)</em>.</li>
           <li style="padding:1px 0;">Si fue accidente de tránsito: copia de licencia, parte oficial y prueba de alcoholemia.</li>
         </ul>
         <table cellpadding="0" cellspacing="0" border="0" role="presentation" style="margin-top:4px;"><tr>
@@ -3631,12 +3632,15 @@ ${_botonCorreoLC(link, "Ver mi cotizaci&oacute;n completa &rarr;")}
 
     function openEmailPolizaPreviewModal({ to, html, payload, polizaData }){
       const subject = "Su póliza Vital 360 está vigente · N.º " + polizaData.numero + " · Guía de uso y reclamos";
-      const adjuntos = [
-        { nombre: "Solicitud de Beneficios (reembolso)", archivo: "docs/solicitud-beneficios.pdf" },
-        { nombre: "Autorización Consulta Expedientes",   archivo: "docs/autorizacion-expedientes.pdf" },
-        { nombre: "Condiciones Generales Vital 360",     archivo: "docs/condiciones-generales.pdf" }
+      // Los 3 formularios en blanco del INS se ADJUNTAN SOLOS (pedido de JC,
+      // 10 sep 2026). Antes eran enlaces para que el agente los bajara y los
+      // volviera a subir, y el correo ya le decía al cliente "(adjunto en este
+      // correo)": si el agente no lo hacía, la promesa quedaba en falso.
+      const formulariosINS = [
+        { archivo: "docs/solicitud-beneficios.pdf",     nombreArchivo: "Solicitud de Beneficios.pdf" },
+        { archivo: "docs/autorizacion-expedientes.pdf", nombreArchivo: "Autorización para Consulta de Expedientes.pdf" },
+        { archivo: "docs/condiciones-generales.pdf",    nombreArchivo: "Condiciones Generales Vital 360.pdf" }
       ];
-      const adjuntosHtml = adjuntos.map(a => `<li><a href="${a.archivo}" download style="color:var(--ins-teal-deep);text-decoration:none;font-weight:500;">${escapeHtml(a.nombre)}</a></li>`).join('');
       const gmailComposeUrl = "https://mail.google.com/mail/?view=cm&fs=1"
         + "&to=" + encodeURIComponent(to)
         + "&su=" + encodeURIComponent(subject)
@@ -3656,9 +3660,8 @@ ${_botonCorreoLC(link, "Ver mi cotizaci&oacute;n completa &rarr;")}
             <button class="x" data-action="cancel-email-modal" title="Cerrar">×</button>
           </div>
           <div class="email-modal-hint">
-            <strong>📎 Adjunte los documentos del cliente</strong> con <strong>➕ Adjuntar PDF</strong> (abajo) antes de enviar: las Condiciones Particulares y demás documentos de emisión que le pasó el INS. Se mandan dentro del mismo correo.
-            <p style="margin:8px 0 0;color:var(--ink-3);">¿Necesita los formularios en blanco del INS? Descárguelos aquí:</p>
-            <ul style="margin:4px 0 0;padding-left:22px;line-height:1.7;">${adjuntosHtml}</ul>
+            <strong>Los 3 formularios del INS ya van adjuntos</strong>: Solicitud de Beneficios, Autorización para Consulta de Expedientes y Condiciones Generales (los ve abajo; puede quitar cualquiera con la ×).
+            <p style="margin:6px 0 0;">Agregue con <strong>➕ Adjuntar PDF</strong> las <strong>Condiciones Particulares</strong> y demás documentos de emisión del cliente. Todo viaja en el mismo correo <strong>solo si usa "Enviar ahora desde Gmail" o "Descargar .eml"</strong>.</p>
           </div>
           <div class="email-modal-actions">
             <button class="btn btn-primary" data-action="send-direct">🚀 Enviar ahora desde Gmail</button>
@@ -3672,7 +3675,7 @@ ${_botonCorreoLC(link, "Ver mi cotizaci&oacute;n completa &rarr;")}
         </div>
       `;
       document.body.appendChild(wrap);
-      const adjCtrl = setupAdjuntosControl(wrap.querySelector('.email-modal'));
+      const adjCtrl = setupAdjuntosControl(wrap.querySelector('.email-modal'), { precargar: formulariosINS });
       wrap.addEventListener('click', e => {
         if(e.target === wrap || e.target.dataset.action === 'cancel-email-modal'){
           wrap.remove();
@@ -3688,6 +3691,7 @@ ${_botonCorreoLC(link, "Ver mi cotizaci&oacute;n completa &rarr;")}
           window.open(gmailComposeUrl, '_blank');
         }
         if(e.target.dataset.action === 'copy-html'){
+          if(adjCtrl.count() > 0 && !confirm('Atención: "Copiar correo" copia solo el texto; los PDF adjuntos NO viajan al pegarlo, y el correo le dice al cliente que van adjuntos. Para que se envíen use "Enviar ahora desde Gmail".\n\n¿Copiar de todos modos (sin adjuntos)?')) return;
           manejarCopiarHtml(e.target, html, "📋 Copiar correo");
         }
         if(e.target.dataset.action === 'download-eml'){
@@ -4184,6 +4188,30 @@ ${_botonCorreoLC(link, "Ver mi cotizaci&oacute;n completa &rarr;")}
           render();
         }
       });
+
+      // Precarga de archivos del propio sitio (los formularios del INS de docs/).
+      // Pasan por el MISMO contador `leyendo` que los que elige el agente: el
+      // botón de envío queda bloqueado hasta que terminen (lección del race del
+      // FileReader, 22 jun 2026: nunca enviar con un adjunto a medio leer).
+      // Si uno falla se AVISA: el correo le promete al cliente que va adjunto.
+      async function precargar(lista){
+        for(const item of lista){
+          leyendo++; syncSendBtn(); render();
+          try {
+            const r = await fetch(item.archivo, { cache: 'no-cache' });
+            if(!r.ok) throw new Error('HTTP ' + r.status);
+            const blob = await r.blob();
+            const base64 = await _leerArchivoBase64(blob);
+            adjuntos.push({ filename: item.nombreArchivo, mimeType: 'application/pdf', base64, size: blob.size });
+          } catch(err){
+            alert('No se pudo adjuntar automáticamente "' + item.nombreArchivo + '" (' + err.message + ').\n\nAdjúntelo a mano con ➕ Adjuntar PDF antes de enviar: el correo le dice al cliente que va adjunto.');
+          } finally {
+            leyendo--; syncSendBtn();
+          }
+          render();
+        }
+      }
+      if(opts.precargar && opts.precargar.length) precargar(opts.precargar);
 
       render();
       return {
