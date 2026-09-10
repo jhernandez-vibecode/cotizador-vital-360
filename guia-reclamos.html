@@ -6,7 +6,7 @@
   <title>Guía de Reclamos · Vital 360 INS</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Serif:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
     :root {
       --ins-teal:      #1F5C6B;
@@ -544,6 +544,225 @@
     .int-phones tr:last-child td { border-bottom: none; }
     .int-phones td:first-child { font-weight: 600; color: var(--ink); }
     .int-phones td a { color: var(--ins-teal); text-decoration: none; font-family: "IBM Plex Mono"; }
+
+    /* =====================================================================
+       LÍNEA CLARA · re-skin de la guía (10 sep 2026), mismo sistema que la
+       app y los correos. Va DE ÚLTIMO para ganar por orden de fuente; los
+       !important son solo contra estilos EN LÍNEA del HTML (fondos de color
+       de íconos y etiquetas) y contra los que pone cpSinDocumento().
+       Criterio que eligió JC para el correo B: la información operativa se
+       destaca por AISLAMIENTO, no por color.
+       ===================================================================== */
+    :root{
+      --lc-blue:#0369A1; --lc-blue-ink:#02557F; --lc-blue-soft:#E8F1F8;
+      --lc-band:#EEF4F9; --lc-line:#DADCE0; --lc-line-btn:#8A939C; --lc-line-soft:#EDEFF2;
+      --lc-ink:#1B1F23; --lc-ink-2:#5A6570; --lc-ink-3:#6B7681;
+      --lc-ok-bg:#E9F5F0; --lc-ok-tx:#037D61; --lc-warn:#B26A00; --lc-alto:#C5221F;
+      --lc-prod:#1F5C6B; --lc-prod-tint:#EDF3F4;
+      --f-disp:'Space Grotesk',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+      --f-body:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+      --f-mono:'JetBrains Mono',ui-monospace,'SFMono-Regular',Menlo,Consolas,monospace;
+    }
+    body{font-family:var(--f-body);background:#fff;color:var(--lc-ink);font-size:14.5px}
+    .serif{font-family:var(--f-disp)}
+    .mono{font-family:var(--f-mono)}
+    .page{max-width:760px;padding:0 20px 64px}
+
+    /* Píldoras (R2/R7): un solo acento, 44 px */
+    .lc-pill{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 22px;
+      border-radius:999px;font-family:var(--f-body);font-size:14.5px;font-weight:600;text-decoration:none;
+      border:1px solid transparent;white-space:nowrap;transition:background .15s ease}
+    .lc-pill-fill{background:var(--lc-blue);color:#fff;border-color:var(--lc-blue)}
+    .lc-pill-fill:hover{background:var(--lc-blue-ink)}
+    .lc-pill-out{background:#fff;color:var(--lc-blue);border-color:var(--lc-blue)}
+    .lc-pill-out:hover{background:var(--lc-blue-soft)}
+
+    /* R3 · barra, nivel 1: INS y la llamada de emergencia (se queda fija) */
+    .top-bar{background:#fff;color:var(--lc-ink);height:auto;padding:12px 20px;box-shadow:none;
+      border-bottom:1px solid var(--lc-line-soft)}
+    .top-bar-brand img{height:26px;filter:brightness(0);opacity:.86}
+    .top-bar-sos{background:var(--lc-blue);color:#fff;border-radius:999px;min-height:40px;padding:0 18px;
+      font-size:13.5px;font-weight:600}
+    .top-bar-sos:hover{background:var(--lc-blue-ink)}
+    /* R3 · nivel 2: el producto y las secciones */
+    .lc-nav{display:flex;align-items:center;gap:22px;padding:10px 20px;background:#fff;
+      border-bottom:1px solid var(--lc-line);overflow-x:auto;scrollbar-width:none}
+    .lc-nav::-webkit-scrollbar{display:none}
+    .lc-nav .top-bar-title{font-family:var(--f-disp);font-size:18px;font-weight:600;letter-spacing:-.02em;
+      color:var(--lc-ink);white-space:nowrap}
+    .lc-nav .top-bar-title span{color:var(--lc-ink-3);font-family:var(--f-body);font-size:13.5px;font-weight:500;margin-left:4px}
+    .lc-nav-links{display:flex;gap:20px;margin-left:auto}
+    .lc-nav-links a{color:var(--lc-ink-2);text-decoration:none;font-size:13.5px;font-weight:500;padding:5px 0;
+      border-bottom:2px solid transparent;white-space:nowrap}
+    .lc-nav-links a:hover{color:var(--lc-blue);border-bottom-color:var(--lc-blue)}
+
+    /* R1/R2 · hero blanco, titular grande y centrado */
+    .hero{background:#fff;color:var(--lc-ink);padding:52px 4px 34px;text-align:center}
+    .hero-eyebrow{text-transform:none;letter-spacing:.01em;font-size:13px;font-weight:500;color:var(--lc-ink-3);margin-bottom:10px}
+    .hero-title{font-family:var(--f-disp);font-size:44px;font-weight:600;letter-spacing:-.03em;line-height:1.06;
+      margin-bottom:0;color:var(--lc-ink);text-wrap:balance}
+    .hero-note{margin:16px auto 0;font-size:16px;color:var(--lc-ink-2);line-height:1.6;max-width:46ch}
+    .hero-cta{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:28px}
+    /* R5 · la póliza: panel blanco r32 sobre banda pálida */
+    .lc-band{background:var(--lc-band);border-radius:32px;padding:22px}
+    .hero-card{background:#fff;border:1px solid var(--lc-line);border-radius:24px;padding:22px 26px;
+      max-width:none;gap:16px 28px}
+    .hero-field label{text-transform:none;letter-spacing:.01em;font-size:12px;font-weight:500;color:var(--lc-ink-3);margin-bottom:3px}
+    .hero-field value{font-family:var(--f-mono);font-size:14.5px;font-weight:600;color:var(--lc-ink)}
+    /* R8 · la mono es para cifras; el nombre y el plan van en la letra de texto */
+    #g-asegurado,#g-plan{font-family:var(--f-body);font-size:15px}
+
+    /* Títulos de sección: R6 · regla corta de 28×3 en el color del producto */
+    .section-label{padding:46px 0 16px;text-transform:none;letter-spacing:-.02em;font-family:var(--f-disp);
+      font-size:25px;font-weight:600;color:var(--lc-ink);scroll-margin-top:76px}
+    .section-label::before{content:"";display:block;width:28px;height:3px;border-radius:2px;background:var(--lc-prod);margin-bottom:14px}
+    #agente{scroll-margin-top:76px}
+
+    /* Escenarios: tarjetas r20 con hairline; el número reemplaza al ícono de color */
+    .scenarios{padding:0;gap:10px;counter-reset:esc}
+    .scenario-card{border:1px solid var(--lc-line);border-radius:20px;counter-increment:esc;transition:border-color .15s ease}
+    .scenario-card.open{border-color:var(--lc-blue);box-shadow:inset 0 0 0 1px var(--lc-blue)}
+    .scenario-trigger{padding:18px 20px;gap:16px}
+    .scenario-trigger:hover{background:var(--lc-prod-tint)}                /* R6 · tinte al pasar */
+    .scenario-card.open .scenario-trigger{background:var(--lc-blue-soft)}
+    .scenario-icon{width:36px;height:36px;border-radius:50%;background:var(--lc-band)!important;
+      font-size:0;color:transparent}                                           /* R10 · sin chips de icono de color */
+    .scenario-icon::before{content:counter(esc);font-family:var(--f-mono);font-size:15px;font-weight:600;color:var(--lc-ink-2)}
+    .scenario-name{font-family:var(--f-disp);font-size:17px;font-weight:600;letter-spacing:-.02em}
+    .scenario-sub{font-size:13px;color:var(--lc-ink-3);margin-top:2px}
+    .scenario-arrow{color:var(--lc-ink-3)}
+    .scenario-card.open .scenario-arrow{color:var(--lc-blue)}
+    .scenario-body{padding:4px 22px 22px;border-top:1px solid var(--lc-line-soft)}
+
+    .steps{margin:18px 0;gap:14px}
+    .step-num{background:var(--lc-band);color:var(--lc-ink-2);font-family:var(--f-mono);width:26px;height:26px;font-size:12.5px}
+    .step-content strong{font-size:14.5px;color:var(--lc-ink)}
+    /* La hoja vieja ponía display:block a TODA negrita del paso: la que va dentro
+       de la frase ("Usted llena la Parte I (datos…)") salía partida en su renglón. */
+    .step-content p strong{display:inline;font-size:inherit;margin:0}
+    .step-content p{font-size:13.5px;color:var(--lc-ink-2);line-height:1.6}
+    .step-sep{border-top:1px solid var(--lc-line-soft)}
+
+    /* Avisos: banda pálida y un PUNTO de color, no la caja entera (criterio de la B) */
+    .alert{background:var(--lc-band)!important;border:none!important;border-radius:16px;color:var(--lc-ink-2)!important;
+      padding:13px 16px;font-size:13.5px;gap:10px;align-items:baseline}
+    .alert strong{color:var(--lc-ink)}
+    .alert-icon{font-size:0;width:8px;flex:0 0 8px}
+    .alert-icon::before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--lc-ink-3)}
+    .alert-warn .alert-icon::before{background:var(--lc-warn)}
+    .alert-red  .alert-icon::before{background:var(--lc-alto)}
+    .alert-info .alert-icon::before{background:var(--lc-blue)}
+    /* R4 · lo que es un ESTADO (no hay que tramitar nada) va en verde */
+    .alert-ok{background:var(--lc-ok-bg)!important;color:var(--lc-ok-tx)!important}
+    .alert-ok strong{color:var(--lc-ok-tx)}
+    .alert-ok .alert-icon::before{background:var(--lc-ok-tx)}
+
+    /* Botones de los pasos: el primero lleno, los demás de contorno (R7) */
+    .cta-row{gap:10px;margin-top:16px}
+    .cta-btn{border-radius:999px;min-height:42px;padding:0 18px;font-size:13.5px;border-width:1px}
+    .cta-teal,.cta-navy,.cta-coral,.cta-green,.cta-gold{background:var(--lc-blue);border-color:var(--lc-blue);color:#fff}
+    .cta-teal:hover,.cta-navy:hover,.cta-coral:hover,.cta-green:hover{background:var(--lc-blue-ink);border-color:var(--lc-blue-ink)}
+    .cta-outline-teal{background:#fff;color:var(--lc-blue);border-color:var(--lc-blue)}
+    .cta-outline-teal:hover{background:var(--lc-blue-soft)}
+
+    /* Formularios dentro de los pasos: chip neutro, sin ícono */
+    .step-docs{gap:8px}
+    .doc-pill{background:#fff;border:1px solid var(--lc-line-btn);border-radius:999px;padding:6px 13px;
+      font-size:12.5px;color:var(--lc-ink-2)}
+    .doc-pill:hover{background:var(--lc-blue-soft);border-color:var(--lc-blue);color:var(--lc-blue)}
+    .doc-pill-icon{display:none}
+
+    .phone-block{background:#fff;border:1px solid var(--lc-line);border-radius:16px;padding:12px 16px}
+    .phone-block .ph-label{text-transform:none;letter-spacing:.01em;font-size:12px;color:var(--lc-ink-3)}
+    .phone-block .ph-num{font-family:var(--f-mono);font-size:16px;color:var(--lc-ink)}
+    .int-phones{border:1px solid var(--lc-line);border-radius:14px;border-collapse:separate;border-spacing:0;overflow:hidden}
+    .int-phones th{background:#fff;color:var(--lc-ink-3);border-bottom:1px solid var(--lc-line);font-size:12px}
+    .int-phones td{border-bottom:1px solid var(--lc-line-soft);font-size:13px}
+    .int-phones td a{color:var(--lc-blue);font-family:var(--f-mono)}
+
+    /* Documentos: los dos contratos a lo ancho, los 6 formularios en rejilla.
+       #doc-particulares por ID (no por .featured) porque cpSinDocumento() le
+       quita la clase y la rejilla no puede quedar con un hueco. */
+    .docs-grid{padding:0;gap:10px}
+    .docs-grid > a:nth-of-type(-n+2){grid-column:span 2}
+    .doc-card{border:1px solid var(--lc-line);border-radius:20px;padding:16px 18px;gap:6px;
+      transition:background .15s ease,border-color .15s ease}
+    .doc-card:hover{background:var(--lc-prod-tint);border-color:#C6D4D8;box-shadow:none}
+    .doc-card.featured{border-width:1px;border-color:var(--lc-line);background:#fff}
+    .doc-card.featured:hover{background:var(--lc-prod-tint);box-shadow:none}
+    .doc-card-icon{width:36px;height:36px;border-radius:12px;background:var(--lc-band)!important;color:transparent!important;
+      font-size:0;position:relative}
+    .doc-card-icon::before{content:"PDF";position:absolute;inset:0;display:grid;place-items:center;
+      font-family:var(--f-mono);font-size:9.5px;font-weight:600;color:var(--lc-ink-3)}
+    #doc-particulares .doc-card-icon::before{content:"↗";font-size:15px}
+    .doc-card-name{font-size:14px;color:var(--lc-ink)}
+    .doc-card-desc{font-size:12.5px;color:var(--lc-ink-3)}
+    .doc-card-badge{background:var(--lc-band)!important;color:var(--lc-ink-2)!important;text-transform:none;
+      letter-spacing:.01em;font-size:11.5px;border-radius:999px;padding:3px 10px}
+    /* R6 · el color del producto solo como chip: la etiqueta "Su póliza" */
+    .doc-card.featured .doc-card-badge{background:var(--lc-prod-tint)!important;color:var(--lc-prod)!important}
+
+    /* Contactos */
+    .contacts-list{padding:0;gap:10px}
+    .contact-row{border:1px solid var(--lc-line);border-radius:18px;padding:15px 18px;gap:14px}
+    .contact-icon{display:none}
+    .contact-label{text-transform:none;letter-spacing:.01em;font-size:12px;font-weight:500;color:var(--lc-ink-3)}
+    .contact-value{font-family:var(--f-mono);font-size:15px;color:var(--lc-ink)}
+    .contact-desc{font-size:12.5px;color:var(--lc-ink-3)}
+    .contact-cta{border-radius:999px;min-height:40px;padding:0 16px;font-size:13px;border-width:1px}
+    .cc-teal,.cc-green{color:var(--lc-blue);border-color:var(--lc-blue);background:#fff}
+    .cc-teal:hover,.cc-green:hover{background:var(--lc-blue-soft)}
+
+    /* Su agente: panel blanco sobre banda pálida; el INS como sello en tinta */
+    .spacer{display:none}
+    .agent-card{margin:0;background:#fff;color:var(--lc-ink);border:1px solid var(--lc-line);border-radius:24px;padding:22px 24px;gap:16px}
+    .agent-label{display:none}                       /* el título de sección ya dice "Su agente" */
+    .agent-name{font-family:var(--f-disp);font-size:19px;letter-spacing:-.02em;color:var(--lc-ink)}
+    .agent-lic{font-size:13px;color:var(--lc-ink-3)}
+    .agent-cta{background:var(--lc-blue);border:1px solid var(--lc-blue);color:#fff;border-radius:999px;
+      min-height:44px;padding:0 22px;font-size:14px}
+    .agent-cta:hover{background:var(--lc-blue-ink)}
+    .agent-seal{border-top:1px solid var(--lc-line-soft);padding-top:14px}
+    .agent-seal span{text-transform:none;letter-spacing:.01em;font-size:12px;font-weight:500;color:var(--lc-ink-3)}
+    .agent-seal img{filter:brightness(0);opacity:.86}
+
+    /* Pie: banda pálida, marca SDI oficial y la leyenda de propiedad intelectual */
+    .footer{margin-top:44px;padding:30px 26px;background:var(--lc-band);border-radius:32px;border-top:0;
+      font-size:12.5px;color:var(--lc-ink-3);line-height:1.7}
+    .footer p{margin:10px 0 0}
+    .footer a{color:var(--lc-blue);text-decoration:none;font-family:var(--f-mono)}
+    .footer strong{color:var(--lc-ink-2)}
+    .footer .lc-ip{margin-top:16px;color:var(--lc-ink-2)}
+    .footer .lc-ip strong{color:var(--lc-ink)}
+    .footer .lc-ip span{font-size:11.5px;color:var(--lc-ink-3)}
+    .lc-sdi{display:block;width:96px;height:47px;margin:0 auto 6px;
+      background:url("img/sdi-logo-compacto.svg") center/contain no-repeat}
+
+    /* R9 · movimiento: nada que animar más allá del acordeón; respetar la preferencia */
+    @media (prefers-reduced-motion:reduce){ *{transition-duration:.001ms!important;scroll-behavior:auto!important} }
+
+    /* Móvil */
+    @media (max-width:640px){
+      .page{padding:0 14px 48px}
+      .top-bar{padding:10px 14px}
+      .top-bar-sos{padding:0 14px;font-size:13px}
+      .lc-nav{padding:9px 14px;gap:16px}
+      .lc-nav .top-bar-title span{display:none}
+      .hero{padding:36px 2px 26px}
+      .hero-title{font-size:32px}
+      .hero-note{font-size:15px}
+      .hero-cta{flex-direction:column;align-items:stretch}
+      .lc-band{padding:12px;border-radius:26px}
+      .hero-card{padding:18px;grid-template-columns:1fr 1fr;gap:14px 16px}
+      .section-label{font-size:22px;padding-top:38px}
+      .scenario-trigger{padding:16px}
+      .scenario-body{padding:4px 16px 18px}
+      .docs-grid{grid-template-columns:1fr}
+      .docs-grid > a:nth-of-type(-n+2){grid-column:auto}
+      .agent-row{flex-wrap:wrap}
+      .agent-cta{width:100%;justify-content:center}
+      .footer{padding:26px 18px;border-radius:26px}
+    }
   </style>
 </head>
 <body>
@@ -551,11 +770,19 @@
 <!-- ══ TOP BAR ══════════════════════════════════════════════ -->
 <div class="top-bar">
   <div class="top-bar-brand">
-    <img src="https://cotizador.appsegurosdigitales.com/img/ins-logo.png" alt="INS">
-    <div class="top-bar-title">Vital 360 <span>· Guía de Reclamos</span></div>
+    <img src="https://cotizador.appsegurosdigitales.com/img/ins-logo.png" alt="Instituto Nacional de Seguros">
   </div>
-  <a href="tel:8008353467" class="top-bar-sos">🆘 800-TELE-INS</a>
+  <a href="tel:8008353467" class="top-bar-sos">Llamar al 800-TELE-INS</a>
 </div>
+<nav class="lc-nav">
+  <div class="top-bar-title">Vital 360 <span>· Guía de reclamos</span></div>
+  <div class="lc-nav-links">
+    <a href="#situaciones">Situaciones</a>
+    <a href="#documentos">Documentos</a>
+    <a href="#contactos">Contactos</a>
+    <a href="#agente">Su agente</a>
+  </div>
+</nav>
 
 <div class="page">
 
@@ -563,6 +790,13 @@
   <div class="hero">
     <div class="hero-eyebrow">Su seguro de salud</div>
     <h1 class="hero-title serif">Guía de uso y reclamos<br>Vital 360</h1>
+    <p class="hero-note">Esta guía es su referencia personal. Guárdela en favoritos para tenerla siempre a mano.</p>
+    <div class="hero-cta">
+      <a class="lc-pill lc-pill-fill" href="#situaciones">Qué hacer según su situación</a>
+      <a class="lc-pill lc-pill-out" href="#documentos">Documentos de su póliza</a>
+    </div>
+  </div>
+  <div class="lc-band">
     <div class="hero-card">
       <div class="hero-field">
         <label>Asegurado</label>
@@ -585,11 +819,10 @@
         <value id="g-suma">USD 100,000 · ₡65,000,000</value>
       </div>
     </div>
-    <p class="hero-note">Esta guía es su referencia personal. Guárdela en favoritos para tenerla siempre a mano.</p>
   </div>
 
   <!-- ══ ESCENARIOS ══════════════════════════════════════════ -->
-  <div class="section-label">¿Qué tipo de situación tiene?</div>
+  <div class="section-label" id="situaciones">¿Qué tipo de situación tiene?</div>
   <div class="scenarios">
 
     <!-- 1. MEDICINA VIRTUAL -->
@@ -631,9 +864,9 @@
           </div>
         </div>
         <div class="cta-row">
-          <a href="https://play.google.com/store/apps/details?id=com.grupoins.insmovil" class="cta-btn cta-teal" target="_blank">📱 App Android</a>
-          <a href="https://apps.apple.com/cr/app/ins-m%C3%B3vil/id1489381174" class="cta-btn cta-teal" target="_blank">📱 App iOS</a>
-          <a href="docs/medicina-virtual-360.pdf" class="cta-btn cta-outline-teal" download>📄 Guía Medicina Virtual</a>
+          <a href="https://play.google.com/store/apps/details?id=com.grupoins.insmovil" class="cta-btn cta-teal" target="_blank">App Android</a>
+          <a href="https://apps.apple.com/cr/app/ins-m%C3%B3vil/id1489381174" class="cta-btn cta-teal" target="_blank">App iOS</a>
+          <a href="docs/medicina-virtual-360.pdf" class="cta-btn cta-outline-teal" download>Guía Medicina Virtual</a>
         </div>
       </div>
     </div>
@@ -685,8 +918,8 @@
           <span><strong>Plazo límite: 60 días naturales</strong> desde el inicio del tratamiento. Después de ese plazo el INS puede rechazar el reclamo.</span>
         </div>
         <div class="cta-row">
-          <a href="mailto:clientescgsp@grupoins.com?subject=Reclamo Vital 360 - Póliza VT-2025-001234" class="cta-btn cta-teal">✉️ clientescgsp@grupoins.com</a>
-          <a href="tel:8008353467" class="cta-btn cta-outline-teal">📞 800-TELE-INS</a>
+          <a href="mailto:clientescgsp@grupoins.com?subject=Reclamo Vital 360 - Póliza VT-2025-001234" class="cta-btn cta-teal">clientescgsp@grupoins.com</a>
+          <a href="tel:8008353467" class="cta-btn cta-outline-teal">800-TELE-INS</a>
         </div>
       </div>
     </div>
@@ -743,8 +976,8 @@
           </div>
         </div>
         <div class="cta-row">
-          <a href="mailto:autorizacionesins@grupoins.com?subject=Pre-autorización Vital 360 - Póliza VT-2025-001234" class="cta-btn cta-teal">✉️ autorizacionesins@grupoins.com</a>
-          <a href="tel:8008353467" class="cta-btn cta-outline-teal">📞 800-TELE-INS</a>
+          <a href="mailto:autorizacionesins@grupoins.com?subject=Pre-autorización Vital 360 - Póliza VT-2025-001234" class="cta-btn cta-teal">autorizacionesins@grupoins.com</a>
+          <a href="tel:8008353467" class="cta-btn cta-outline-teal">800-TELE-INS</a>
         </div>
       </div>
     </div>
@@ -792,8 +1025,8 @@
           </div>
         </div>
         <div class="cta-row">
-          <a href="mailto:clientescgsp@grupoins.com" class="cta-btn cta-teal">✉️ Reclamo al INS</a>
-          <a href="tel:8008353467" class="cta-btn cta-outline-teal">📞 800-TELE-INS</a>
+          <a href="mailto:clientescgsp@grupoins.com" class="cta-btn cta-teal">Reclamo al INS</a>
+          <a href="tel:8008353467" class="cta-btn cta-outline-teal">800-TELE-INS</a>
         </div>
       </div>
     </div>
@@ -855,7 +1088,7 @@
           </div>
         </div>
         <div class="cta-row">
-          <a href="mailto:insinternacional@grupoins.com" class="cta-btn cta-navy">✉️ insinternacional@grupoins.com</a>
+          <a href="mailto:insinternacional@grupoins.com" class="cta-btn cta-navy">insinternacional@grupoins.com</a>
         </div>
       </div>
     </div>
@@ -902,7 +1135,7 @@
           </div>
         </div>
         <div class="cta-row">
-          <a href="mailto:clientescgsp@grupoins.com" class="cta-btn cta-teal">✉️ Reclamo al INS</a>
+          <a href="mailto:clientescgsp@grupoins.com" class="cta-btn cta-teal">Reclamo al INS</a>
         </div>
       </div>
     </div>
@@ -910,7 +1143,7 @@
   </div><!-- /scenarios -->
 
   <!-- ══ DOCUMENTOS ══════════════════════════════════════════ -->
-  <div class="section-label">Documentos de su póliza</div>
+  <div class="section-label" id="documentos">Documentos de su póliza</div>
   <div class="docs-grid">
 
     <!-- 1 · Condiciones Particulares — el documento personalizado del cliente (link Drive del agente, vía ?p=) -->
@@ -976,7 +1209,7 @@
   </div>
 
   <!-- ══ CONTACTOS CLAVE ══════════════════════════════════════ -->
-  <div class="section-label">Contactos clave INS</div>
+  <div class="section-label" id="contactos">Contactos clave INS</div>
   <div class="contacts-list">
 
     <div class="contact-row">
@@ -1033,6 +1266,7 @@
 
   <!-- ══ AGENTE ══════════════════════════════════════════════ -->
   <div class="spacer"></div>
+  <div class="section-label" id="agente">Su agente</div>
   <div class="agent-card">
     <div class="agent-row">
       <div class="agent-info">
@@ -1040,8 +1274,7 @@
         <div class="agent-name" id="g-agente-nombre">Juan Carlos Hernández</div>
         <div class="agent-lic" id="g-agente-lic">Licencia SUGESE 08-1318 · Seguros Digitales SDI</div>
       </div>
-      <a href="https://web.whatsapp.com/send/?phone=50688221348" class="agent-cta" id="g-agente-wa" target="_blank">
-        💬 WhatsApp
+      <a href="https://web.whatsapp.com/send/?phone=50688221348" class="agent-cta" id="g-agente-wa" target="_blank">WhatsApp
       </a>
     </div>
     <div class="agent-seal">
@@ -1052,13 +1285,12 @@
 
   <!-- ══ FOOTER ══════════════════════════════════════════════ -->
   <div class="footer">
-    <strong>Seguros Digitales SDI</strong> · Propiedad intelectual de Juan Carlos Hernández Vargas<br>
-    Agente Autorizado INS · Licencia SUGESE 08-1318<br>
-    <br>
-    Este seguro está regulado por <strong>SUGESE</strong> bajo norma P20-76-A01-1097 V3.<br>
-    Para quejas ante SUGESE: <a href="tel:22431074" style="color:var(--ins-teal);">2243-1074</a> · Para apelaciones: Contraloría de Servicios INS<br>
-    <br>
-    La guía es de carácter informativo. Las Condiciones Generales y Particulares de su póliza son el documento vinculante.
+    <span class="lc-sdi" role="img" aria-label="Seguros Digitales SDI"></span>
+    <p>Este seguro está regulado por <strong>SUGESE</strong> bajo norma P20-76-A01-1097 V3.<br>
+    Para quejas ante SUGESE: <a href="tel:22431074">2243-1074</a> · Para apelaciones: Contraloría de Servicios INS</p>
+    <p>La guía es de carácter informativo. Las Condiciones Generales y Particulares de su póliza son el documento vinculante.</p>
+    <p class="lc-ip">Un producto de <strong>SDI · Seguros Digitales</strong><br>
+    <span>© 2026 · Propiedad intelectual de <strong>Juan Carlos Hernández Vargas</strong></span></p>
   </div>
 
 </div><!-- /page -->
