@@ -6,7 +6,8 @@
   <title>Vital 360 · Cotizador · Seguros Digitales</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <!-- Tipografía SDI v1.3 (10 sep 2026): Google Sans Flex + Google Sans Code. Inter va SOLO para prestar el ₡, que Flex no trae. -->
+  <link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,wght@6..144,400..700&family=Google+Sans+Code:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <style>
     :root{
@@ -778,13 +779,16 @@
       --lc-r-lg:24px;
       --lc-r-md:20px;             /* R5 · tarjeta */
       --lc-shadow:0 1px 2px rgba(27,31,35,.05);
-      /* R10 · fuentes SDI */
-      --font-display:'Space Grotesk',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
-      --font-body:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
-      --font-mono:'JetBrains Mono',ui-monospace,'SFMono-Regular',Menlo,Consolas,monospace;
+      /* R10 · fuentes SDI v1.3 (10 sep 2026): la familia de Google Ads, ya libre (OFL).
+         Inter queda segunda SOLO para prestar el ₡ (U+20A1), que Google Sans Flex no trae. */
+      --font-display:'Google Sans Flex','Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+      --font-body:'Google Sans Flex','Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+      --font-mono:'Google Sans Code',ui-monospace,'SFMono-Regular',Menlo,Consolas,monospace;
+      /* la cifra protagonista vuelve a la letra de títulos, como en Google Ads (el ₡ sale de Inter) */
+      --font-big:'Google Sans Flex','Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
     }
     html,body{background:#fff;color:var(--lc-ink)}
-    body{font-size:14px;letter-spacing:0}
+    body{font-size:14px;letter-spacing:0;font-optical-sizing:auto}
     .mono,.v7 .m{font-variant-numeric:tabular-nums lining-nums}
 
     /* --- R2/R7 · píldoras -------------------------------------------- */
@@ -853,9 +857,9 @@
     .hero-eyebrow{background:var(--lc-ok-bg);color:var(--lc-ok-tx);text-transform:none;
       letter-spacing:.01em;font-size:12.5px;font-weight:600;padding:7px 15px;margin-bottom:22px}
     .hero-eyebrow::before{background:currentColor;width:7px;height:7px}
-    .hero h1{font-family:var(--font-display);font-weight:600;font-size:50px;letter-spacing:-.03em;
+    .hero h1{font-family:var(--font-display);font-weight:500;font-size:50px;letter-spacing:-.025em;
       line-height:1.06;color:var(--lc-ink);text-wrap:balance}
-    .hero h1 .accent{color:var(--lc-ink);font-style:normal;font-weight:600}
+    .hero h1 .accent{color:var(--lc-ink);font-style:normal;font-weight:500}
     .hero .lead{font-size:17px;color:var(--lc-ink-2);margin:16px auto 0;max-width:56ch;line-height:1.6;text-wrap:balance}
     .hero-cta{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:30px}
     .hero-fam{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:34px}
@@ -886,7 +890,7 @@
     .v7-k{font-size:12px;letter-spacing:.02em;text-transform:none;color:var(--lc-ink-3);font-weight:600}
     .v7-k::before{content:"";display:block;width:28px;height:3px;border-radius:2px;
       background:var(--lc-prod);margin-bottom:12px}
-    .v7-h{font-family:var(--font-display);font-size:28px;font-weight:600;letter-spacing:-.025em;
+    .v7-h{font-family:var(--font-display);font-size:28px;font-weight:500;letter-spacing:-.025em;
       color:var(--lc-ink);margin-top:6px;line-height:1.18}
     .v7-fine{font-size:13px;color:var(--lc-ink-3);margin-top:10px;line-height:1.6}
 
@@ -897,14 +901,14 @@
       padding:38px 40px 34px;box-shadow:var(--lc-shadow)}
     .v7-flag{background:var(--lc-prod-tint);color:var(--lc-prod);border-radius:999px;padding:5px 13px;
       font-size:11.5px;font-weight:600;letter-spacing:.01em;text-transform:none}
-    .v7-rec-nm{font-family:var(--font-display);font-size:38px;font-weight:600;letter-spacing:-.03em;
+    .v7-rec-nm{font-family:var(--font-display);font-size:38px;font-weight:500;letter-spacing:-.03em;
       color:var(--lc-ink);margin-top:16px}
     .v7-rec-amb{font-size:14px;color:var(--lc-ink-2);margin-top:6px}
     .v7-rec-tot{margin-top:26px;padding-top:24px;border-top:1px solid var(--lc-line-soft)}
     .v7-rec-tot .lbl{font-size:12.5px;letter-spacing:.01em;text-transform:none;color:var(--lc-ink-3);font-weight:500}
-    /* R8 · la protagonista, grande y con punto de miles */
-    .v7-rec-tot .big{font-family:var(--font-mono);font-size:50px;font-weight:600;letter-spacing:-.035em;
-      color:var(--lc-ink);margin-top:10px;font-variant-numeric:tabular-nums}
+    /* R8 · la protagonista, grande y con punto de miles (v1.3: en la letra de títulos, tabular) */
+    .v7-rec-tot .big{font-family:var(--font-big);font-size:50px;font-weight:500;letter-spacing:-.02em;
+      color:var(--lc-ink);margin-top:10px;font-variant-numeric:tabular-nums lining-nums}
     .v7-rec-tot .eq{font-size:13px;color:var(--lc-ink-3);margin-top:12px}
     .v7-rec-tot .eq b{color:var(--lc-ink-2);font-weight:600}
     .v7-rec-tot .eq .m{font-family:var(--font-mono);font-size:12.5px}
@@ -943,8 +947,8 @@
     .v7-chips button.on{background:var(--lc-blue);border-color:var(--lc-blue);color:#fff}
     .v7-chips button.on:hover{background:var(--lc-blue-ink);color:#fff}
     .v7-pago-now{margin-top:20px}
-    .v7-pago-now .amt{font-family:var(--font-mono);font-size:36px;font-weight:600;letter-spacing:-.03em;
-      color:var(--lc-ink);font-variant-numeric:tabular-nums}
+    .v7-pago-now .amt{font-family:var(--font-big);font-size:36px;font-weight:500;letter-spacing:-.02em;
+      color:var(--lc-ink);font-variant-numeric:tabular-nums lining-nums}
     .v7-pago-now .cad{font-size:14px;color:var(--lc-ink-3);margin-top:7px}
 
     /* escalera de planes ------------------------------------------------ */
@@ -1021,7 +1025,7 @@
     .carac{padding:30px 34px}
     .carac-h{border-bottom:1px solid var(--lc-line-soft);padding-bottom:18px;margin-bottom:22px}
     .carac-h h3,.wait h3,.included h3,.docs-c-h h3{font-family:var(--font-display);font-size:26px;
-      font-weight:600;letter-spacing:-.025em;color:var(--lc-ink)}
+      font-weight:500;letter-spacing:-.025em;color:var(--lc-ink)}
     .carac-h .sub,.wait .sub,.included .sub,.docs-c-h .sub{font-size:14px;color:var(--lc-ink-2);line-height:1.6}
     .carac-grid{gap:16px}
     .carac-item{background:#fff;border:1px solid var(--lc-line);border-radius:var(--lc-r-md);padding:18px 20px;gap:16px}
@@ -1079,7 +1083,7 @@
     .cta-strip{background:#fff;color:var(--lc-ink);border:1px solid var(--lc-line);border-radius:var(--lc-r-xl);
       padding:44px 48px;display:block;text-align:center;margin-bottom:22px}
     .cta-strip::after{display:none}
-    .cta-strip h3{font-family:var(--font-display);font-size:34px;font-weight:600;letter-spacing:-.03em;
+    .cta-strip h3{font-family:var(--font-display);font-size:34px;font-weight:500;letter-spacing:-.03em;
       color:var(--lc-ink);line-height:1.1}
     .cta-strip h3 em{font-style:normal;color:var(--lc-ink)}
     .cta-strip p{color:var(--lc-ink-2);font-size:15px;margin:14px auto 0;max-width:52ch}
@@ -1166,7 +1170,7 @@
     .cur-tog button.on{background:var(--lc-blue);color:#fff}
 
     /* paso 2 · scanner de 7 planes -------------------------------------- */
-    .scanner-h .t{font-family:var(--font-display);font-size:24px;font-weight:600;letter-spacing:-.025em}
+    .scanner-h .t{font-family:var(--font-display);font-size:24px;font-weight:500;letter-spacing:-.025em}
     .scanner-h .num2{background:var(--lc-band);color:var(--lc-ink-2);font-family:var(--font-mono);width:26px;height:26px}
     .scanner-h .selector{color:var(--lc-ink-3)}
     .scanner-h .selector .pill{background:var(--lc-prod-tint);color:var(--lc-prod);border-radius:999px;
@@ -1207,7 +1211,7 @@
     .send-l{padding:34px 38px}
     .send-l .h{color:var(--lc-ink-3);text-transform:none;letter-spacing:.01em;font-size:12.5px;font-weight:600}
     .send-l .num3{background:#fff;color:var(--lc-ink-2);font-family:var(--font-mono);width:20px;height:20px}
-    .send-l .t{font-family:var(--font-display);font-size:28px;font-weight:600;letter-spacing:-.03em;color:var(--lc-ink)}
+    .send-l .t{font-family:var(--font-display);font-size:28px;font-weight:500;letter-spacing:-.03em;color:var(--lc-ink)}
     .send-l p{color:var(--lc-ink-2);font-size:14px}
     .send-l .empty{font-family:var(--font-body);font-style:normal;color:var(--lc-ink-3);font-size:15px}
     .send-l .sl-chip{background:#fff;border:1px solid var(--lc-line);border-radius:999px;color:var(--lc-ink-2);
@@ -1227,7 +1231,7 @@
     .send-r .btn-copy:hover{color:var(--lc-blue)}
 
     /* historial y pólizas vigentes -------------------------------------- */
-    .hist-h h2{font-family:var(--font-display);font-size:26px;font-weight:600;letter-spacing:-.025em}
+    .hist-h h2{font-family:var(--font-display);font-size:26px;font-weight:500;letter-spacing:-.025em}
     .hist-h .sub{color:var(--lc-ink-3);font-size:13px}
     .hist-filter button{border:1px solid var(--lc-line-btn);border-radius:999px;min-height:36px;padding:0 16px;
       color:var(--lc-ink-2);font-size:13px}
@@ -1304,7 +1308,7 @@
     .aviso-cliente strong{color:var(--lc-ink)}
     .lc-solo{max-width:560px;margin:96px auto;padding:48px 44px;text-align:center;background:#fff;
       border:1px solid var(--lc-line);border-radius:var(--lc-r-xl)}
-    .lc-solo h2{font-family:var(--font-display);font-size:30px;font-weight:600;letter-spacing:-.03em;
+    .lc-solo h2{font-family:var(--font-display);font-size:30px;font-weight:500;letter-spacing:-.03em;
       color:var(--lc-ink);margin-bottom:12px}
     .lc-solo p{color:var(--lc-ink-2);font-size:14.5px;line-height:1.65}
     .lc-solo-logo{width:104px;height:51px;margin:0 auto 24px;display:block;
@@ -1444,8 +1448,9 @@
         <p class="sdi-foot-line">Un producto de <strong>SDI · Seguros Digitales</strong></p>
         <p class="sdi-foot-line sub">© 2026 · Propiedad intelectual de <strong>Juan Carlos Hernández Vargas</strong></p>
         <details class="sdi-changelog">
-          <summary>Última actualización: 10 sep 2026 — el correo de póliza vigente adjunta solo los formularios del INS</summary>
+          <summary>Última actualización: 10 sep 2026 — nueva letra de marca SDI en toda la cara (cotizador y guía)</summary>
           <ul>
+            <li><strong>10 sep 2026</strong> — Nueva letra de marca SDI en el cotizador, la vista del cliente y la guía de reclamos: Google Sans Flex para títulos y texto, Google Sans Code para cifras y códigos. La cifra grande de la cotización ya no es monoespaciada. Los correos no cambian (Gmail usa su propia letra). Cero cambios en cálculos o datos.</li>
             <li><strong>10 sep 2026</strong> — El correo de póliza vigente adjunta solos los 3 formularios del INS: Solicitud de Beneficios, Autorización para Consulta de Expedientes y Condiciones Generales. Ya no hay que bajarlos y volverlos a subir.</li>
             <li><strong>10 sep 2026</strong> — La guía de uso y reclamos que abre el cliente estrena la cara nueva. Además, su pie ya no muestra una licencia fija: la licencia que aparece es la del agente que la envió.</li>
             <li><strong>10 sep 2026</strong> — Los correos de póliza vigente y de la guía de uso y reclamos estrenan la cara nueva, igual que el de la cotización. Las coberturas, los pasos, los plazos y los contactos del INS dicen exactamente lo mismo.</li>

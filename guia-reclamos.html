@@ -6,7 +6,8 @@
   <title>Guía de Reclamos · Vital 360 INS</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <!-- Tipografía SDI v1.3 (10 sep 2026): Google Sans Flex + Google Sans Code. Inter va SOLO para prestar el ₡, que Flex no trae. -->
+  <link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,wght@6..144,400..700&family=Google+Sans+Code:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
     :root {
       --ins-teal:      #1F5C6B;
@@ -559,11 +560,12 @@
       --lc-ink:#1B1F23; --lc-ink-2:#5A6570; --lc-ink-3:#6B7681;
       --lc-ok-bg:#E9F5F0; --lc-ok-tx:#037D61; --lc-warn:#B26A00; --lc-alto:#C5221F;
       --lc-prod:#1F5C6B; --lc-prod-tint:#EDF3F4;
-      --f-disp:'Space Grotesk',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
-      --f-body:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
-      --f-mono:'JetBrains Mono',ui-monospace,'SFMono-Regular',Menlo,Consolas,monospace;
+      /* tipografía SDI v1.3 (10 sep 2026); Inter solo presta el ₡ */
+      --f-disp:'Google Sans Flex','Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+      --f-body:'Google Sans Flex','Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+      --f-mono:'Google Sans Code',ui-monospace,'SFMono-Regular',Menlo,Consolas,monospace;
     }
-    body{font-family:var(--f-body);background:#fff;color:var(--lc-ink);font-size:14.5px}
+    body{font-family:var(--f-body);background:#fff;color:var(--lc-ink);font-size:14.5px;font-optical-sizing:auto}
     .serif{font-family:var(--f-disp)}
     .mono{font-family:var(--f-mono)}
     .page{max-width:760px;padding:0 20px 64px}
@@ -599,7 +601,7 @@
     /* R1/R2 · hero blanco, titular grande y centrado */
     .hero{background:#fff;color:var(--lc-ink);padding:52px 4px 34px;text-align:center}
     .hero-eyebrow{text-transform:none;letter-spacing:.01em;font-size:13px;font-weight:500;color:var(--lc-ink-3);margin-bottom:10px}
-    .hero-title{font-family:var(--f-disp);font-size:44px;font-weight:600;letter-spacing:-.03em;line-height:1.06;
+    .hero-title{font-family:var(--f-disp);font-size:44px;font-weight:500;letter-spacing:-.025em;line-height:1.06;
       margin-bottom:0;color:var(--lc-ink);text-wrap:balance}
     .hero-note{margin:16px auto 0;font-size:16px;color:var(--lc-ink-2);line-height:1.6;max-width:46ch}
     .hero-cta{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:28px}
