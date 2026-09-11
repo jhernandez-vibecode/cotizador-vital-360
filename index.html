@@ -1448,8 +1448,9 @@
         <p class="sdi-foot-line">Un producto de <strong>SDI · Seguros Digitales</strong></p>
         <p class="sdi-foot-line sub">© 2026 · Propiedad intelectual de <strong>Juan Carlos Hernández Vargas</strong></p>
         <details class="sdi-changelog">
-          <summary>Última actualización: 11 sep 2026 — el correo de la cotización muestra las opciones en tarjetas</summary>
+          <summary>Última actualización: 11 sep 2026 — correo de la cotización: opciones en tarjetas y el botón debajo</summary>
           <ul>
+            <li><strong>11 sep 2026</strong> — En el correo de la cotización, el botón "Ver mi cotización completa" pasa a ir justo debajo de las tarjetas de opciones.</li>
             <li><strong>11 sep 2026</strong> — El correo de la cotización presenta las opciones como tarjetas, igual que en la consola: ámbito, nombre del plan, suma anual y total del año con IVA. La opción propuesta va ancha, marcada con una estrella como "Opción a valorar" y con el aporte de cada asegurado; las demás en pares. Mismos montos, mismo enlace.</li>
             <li><strong>10 sep 2026</strong> — Nueva letra de marca SDI en el cotizador, la vista del cliente y la guía de reclamos: Google Sans Flex para títulos y texto, Google Sans Code para cifras y códigos. La cifra grande de la cotización ya no es monoespaciada. Los correos no cambian (Gmail usa su propia letra). Cero cambios en cálculos o datos.</li>
             <li><strong>10 sep 2026</strong> — El correo de póliza vigente adjunta solos los 3 formularios del INS: Solicitud de Beneficios, Autorización para Consulta de Expedientes y Condiciones Generales. Ya no hay que bajarlos y volverlos a subir.</li>
@@ -3019,7 +3020,7 @@ ${payload.agente.nombre}${lic}`;
 
           <!-- 3. Titular grande y centrado, con las dos acciones -->
           <tr>
-            <td align="center" style="padding:40px 34px 6px;">
+            <td align="center" style="padding:40px 34px 36px;">
 ${_estadoCorreoLC(`Cotizaci&oacute;n vigente ${_escEmail(payload.vigenciaDias)} d&iacute;as`)}
               <h1 style="margin:0;font-size:30px;line-height:1.15;font-weight:bold;color:#1B1F23;letter-spacing:-0.02em;">Su cotizaci&oacute;n Vital 360 est&aacute; lista</h1>
               <p style="margin:14px auto 0;font-size:15px;line-height:1.6;color:#5A6570;max-width:430px;">
@@ -3027,11 +3028,7 @@ ${_estadoCorreoLC(`Cotizaci&oacute;n vigente ${_escEmail(payload.vigenciaDias)} 
               </p>
             </td>
           </tr>
-          <tr>
-            <td align="center" style="padding:26px 34px 36px;">
-${_botonCorreoLC(link, "Ver mi cotizaci&oacute;n completa &rarr;")}
-            </td>
-          </tr>
+
 
           <!-- 4. Las opciones en tarjetas (11 sep 2026): la propuesta va ancha,
                con su desglose por persona; las demás en pares. Es la misma
@@ -3105,6 +3102,11 @@ ${_botonCorreoLC(link, "Ver mi cotizaci&oacute;n completa &rarr;")}
                 })()}
               </table>
               <p style="margin:4px 0 0;font-size:11.5px;color:#6B7681;line-height:1.6;">Debajo de cada total, en gris, la prima y el IVA por separado. En la cotizaci&oacute;n completa ver&aacute; el detalle por persona de cada plan y el pago en 2 o 4 cuotas.</p>`}
+            </td>
+          </tr>
+          <tr>
+            <td align="center" style="padding:28px 34px 6px;">
+${_botonCorreoLC(link, "Ver mi cotizaci&oacute;n completa &rarr;")}
             </td>
           </tr>
 
