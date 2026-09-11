@@ -505,6 +505,7 @@ Mismo patrón que cotizador-autos:
 8. **Documentos linkeados / resumidos** — pedirle a JC que precise el alcance.
 
 **Otros pendientes:**
+- 🔴 **Filete SDI en el encabezado — PENDIENTE (pedido de JC, 11 sep 2026).** Línea de 4 px con los 4 colores de la barra del logo (`#0369A1` · `#0D9488` · `#EA580C` · `#C9A227`) arriba de la barra de la consola, del encabezado del cliente y de los correos. Ya está hecho en INS Medical (`linea-clara.css`, variable `--lc-filete`; en el correo, una fila de 4 celdas de 25 %): copiar de ahí. JC dijo "luego podemos volver".
 - ✅ ~~Línea clara en `guia-reclamos.html`~~ — hecho y en producción el 10 sep (`aff5459`). Con esto no queda nada de la cara vieja.
 - ✅ ~~La B prometía "(adjunto en este correo)" sin adjuntar nada~~ — resuelto el 10 sep (`88a6889`): los 3 formularios del INS se adjuntan solos.
 - ✅ ~~Disclaimer del IVA~~ — corregido el 10 sep (`54ee093`): "Los montos mostrados ya incluyen el impuesto al valor agregado (IVA 2 %…), calculado sobre la prima".
