@@ -136,8 +136,9 @@ los dos bloques anteriores (panel del recomendado + tabla "Las N opciones") por 
   (regla #11), pie por `_pieCorreoLC` con el `sdi-logo-color.png` (es el compacto v1.2 del kit,
   verificado contra `SDI-BRAND-KIT/logos/02-sdi-logo-compacto.svg`).
 - El mockup `mockup-correo-tarjetas.html` queda en disco e ignorado por git, como el de pólizas.
-- Verificado en localhost con 7, 3 y 1 planes y smoke tests OK. **Falta que JC vea uno real en
-  Gmail del teléfono** (Outlook cuadra las píldoras y el borde redondeado; degradación aceptada).
+- Verificado en localhost con 7, 3 y 1 planes y smoke tests OK. ✅ **Smoke real de JC hecho el 11 sep
+  2026** (tarjetas, botón debajo y filete vistos en su Gmail) — no volver a pedirlo. Outlook cuadra las
+  píldoras y el borde redondeado; degradación aceptada.
 
 ### La guía · `guia-reclamos.html` · `aff5459` (10 sep)
 Mismo sistema, en un bloque LÍNEA CLARA al final de su `<style>`, con el criterio que JC
