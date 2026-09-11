@@ -21,3 +21,6 @@ node_modules/
 
 # Mockup viejo, ya reemplazado por la pestania real de Polizas vigentes
 mockup-tab-polizas.html
+
+# Mockup local del correo A con tarjetas (11 sep 2026), no va al repo
+mockup-correo-tarjetas.html

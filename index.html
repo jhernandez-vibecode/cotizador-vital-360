@@ -1448,8 +1448,9 @@
         <p class="sdi-foot-line">Un producto de <strong>SDI · Seguros Digitales</strong></p>
         <p class="sdi-foot-line sub">© 2026 · Propiedad intelectual de <strong>Juan Carlos Hernández Vargas</strong></p>
         <details class="sdi-changelog">
-          <summary>Última actualización: 10 sep 2026 — nueva letra de marca SDI en toda la cara (cotizador y guía)</summary>
+          <summary>Última actualización: 11 sep 2026 — el correo de la cotización muestra las opciones en tarjetas</summary>
           <ul>
+            <li><strong>11 sep 2026</strong> — El correo de la cotización presenta las opciones como tarjetas, igual que en la consola: ámbito, nombre del plan, suma anual y total del año con IVA. La opción propuesta va ancha, marcada con una estrella como "Opción a valorar" y con el aporte de cada asegurado; las demás en pares. Mismos montos, mismo enlace.</li>
             <li><strong>10 sep 2026</strong> — Nueva letra de marca SDI en el cotizador, la vista del cliente y la guía de reclamos: Google Sans Flex para títulos y texto, Google Sans Code para cifras y códigos. La cifra grande de la cotización ya no es monoespaciada. Los correos no cambian (Gmail usa su propia letra). Cero cambios en cálculos o datos.</li>
             <li><strong>10 sep 2026</strong> — El correo de póliza vigente adjunta solos los 3 formularios del INS: Solicitud de Beneficios, Autorización para Consulta de Expedientes y Condiciones Generales. Ya no hay que bajarlos y volverlos a subir.</li>
             <li><strong>10 sep 2026</strong> — La guía de uso y reclamos que abre el cliente estrena la cara nueva. Además, su pie ya no muestra una licencia fija: la licencia que aparece es la del agente que la envió.</li>
@@ -2997,6 +2998,7 @@ ${payload.agente.nombre}${lic}`;
         return { id: pl.id, plan: pl, isRec: pl.id === planRecId, t };
       });
       const desRec = desgloseMiembros(planRecId, mon, payload.asegurados);
+      const otras = planesData.filter(pd => !pd.isRec);
 
       const F = _LC_F, M = _LC_M;
 
@@ -3031,71 +3033,80 @@ ${_botonCorreoLC(link, "Ver mi cotizaci&oacute;n completa &rarr;")}
             </td>
           </tr>
 
-          <!-- 4. El recomendado: panel blanco sobre banda pálida -->
+          <!-- 4. Las opciones en tarjetas (11 sep 2026): la propuesta va ancha,
+               con su desglose por persona; las demás en pares. Es la misma
+               tarjeta de la consola del agente (ámbito · nombre · suma anual)
+               pasada a tablas. Con una sola opción no hay pares. -->
           <tr>
-            <td bgcolor="#EEF4F9" style="background:#EEF4F9;padding:26px 22px;">
-              <table width="100%" cellpadding="0" cellspacing="0" border="0" role="presentation" style="background:#ffffff;border:1px solid #DADCE0;border-radius:20px;">
+            <td bgcolor="#EEF4F9" style="background:#EEF4F9;padding:26px 22px 14px;">
+              <p style="margin:0 0 3px;font-size:12px;color:#6B7681;">${planesData.length === 1 ? "Su opci&oacute;n" : "Las " + planesData.length + " opciones"} &middot; ${numAseg} ${numAseg === 1 ? "asegurado" : "asegurados"}</p>
+              <p style="margin:0 0 16px;font-size:20px;font-weight:bold;color:#1B1F23;letter-spacing:-0.02em;">Total del a&ntilde;o, con IVA</p>
+
+              <table width="100%" cellpadding="0" cellspacing="0" border="0" role="presentation" style="background:#ffffff;border:2px solid #0369A1;border-radius:20px;margin:0 0 12px;">
                 <tr>
-                  <td style="padding:24px 24px 18px;">
-                    <table cellpadding="0" cellspacing="0" border="0" role="presentation">
-                      <tr><td bgcolor="#EDF3F4" style="background:#EDF3F4;border-radius:999px;padding:5px 13px;font-size:11.5px;font-weight:bold;color:#1F5C6B;white-space:nowrap;">Lo que le recomiendo</td></tr>
-                    </table>
-                    <p style="margin:14px 0 3px;font-size:26px;font-weight:bold;color:#1B1F23;line-height:1.1;letter-spacing:-0.02em;">${_escEmail(planRec.nombre)}</p>
-                    <p style="margin:0;font-size:13px;color:#5A6570;">${_escEmail(planRec.ambito)} &middot; suma asegurada ${_escEmail(fmtMoneda(mon === "USD" ? planRec.sumaUSD : planRec.sumaCRC, mon))} por persona</p>
-                  </td>
-                </tr>
-                <tr>
-                  <td style="padding:0 24px;"><table width="100%" cellpadding="0" cellspacing="0" border="0" role="presentation"><tr><td style="border-top:1px solid #EDEFF2;font-size:0;line-height:0;">&nbsp;</td></tr></table></td>
-                </tr>
-                <tr>
-                  <td style="padding:18px 24px 6px;">
-                    <p style="margin:0;font-size:12.5px;color:#6B7681;">Total del a&ntilde;o &middot; ${numAseg} ${numAseg === 1 ? "asegurado" : "asegurados"}</p>
-                    <p style="margin:8px 0 0;font-family:${M};font-size:30px;font-weight:bold;color:#1B1F23;line-height:1.1;">${_escEmail(fmtMoneda(desRec.totales.total, mon))}</p>
-                    <p style="margin:9px 0 0;font-size:11.5px;color:#6B7681;">prima <span style="font-family:${M};">${_escEmail(fmtMoneda(desRec.totales.prima, mon))}</span> + IVA 2 % <span style="font-family:${M};">${_escEmail(fmtMoneda(desRec.totales.iva, mon))}</span></p>
-                  </td>
-                </tr>
-                <tr>
-                  <td style="padding:16px 24px 8px;">
-                    <p style="margin:0 0 4px;font-size:12.5px;color:#6B7681;">Cu&aacute;nto aporta cada uno</p>
+                  <td style="padding:20px 22px 0;">
                     <table width="100%" cellpadding="0" cellspacing="0" border="0" role="presentation">
-                      ${desRec.filas.map(f => `<tr>
-                        <td style="padding:9px 0;border-bottom:1px solid #EDEFF2;font-size:13.5px;color:#5A6570;">${_escEmail(f.nombre || "Asegurado")} <span style="color:#6B7681;font-size:12px;">&middot; ${_escEmail(f.edad)} a&ntilde;os</span></td>
-                        <td align="right" style="padding:9px 0;border-bottom:1px solid #EDEFF2;font-family:${M};font-size:13.5px;font-weight:bold;color:#1B1F23;white-space:nowrap;">${_escEmail(fmtMoneda(f.aporte, mon))}</td>
+                      <tr>
+                        <td valign="top">
+                          <p style="margin:0 0 6px;font-size:12px;color:#6B7681;">${_escEmail(planRec.ambito)}</p>
+                          <p style="margin:0;font-size:24px;font-weight:bold;color:#1B1F23;line-height:1.1;letter-spacing:-0.02em;">${_escEmail(planRec.nombre)}</p>
+                          <p style="margin:8px 0 0;font-size:12px;color:#6B7681;">suma anual</p>
+                          <p style="margin:2px 0 0;font-family:${M};font-size:14px;font-weight:bold;color:#1B1F23;">${_escEmail(fmtMoneda(mon === "USD" ? planRec.sumaUSD : planRec.sumaCRC, mon))}</p>
+                        </td>
+                        <td valign="top" align="right">
+                          <table cellpadding="0" cellspacing="0" border="0" role="presentation" align="right">
+                            <tr><td bgcolor="#EDF3F4" style="background:#EDF3F4;border-radius:999px;padding:5px 13px 5px 11px;font-size:11.5px;font-weight:bold;color:#1F5C6B;white-space:nowrap;"><span style="color:#F4B400;font-size:12px;">&#9733;</span>&nbsp;Opci&oacute;n a valorar</td></tr>
+                          </table>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding:14px 22px 0;"><table width="100%" cellpadding="0" cellspacing="0" border="0" role="presentation"><tr><td style="border-top:1px solid #EDEFF2;font-size:0;line-height:0;">&nbsp;</td></tr></table></td>
+                </tr>
+                <tr>
+                  <td style="padding:12px 22px 18px;">
+                    <p style="margin:0;font-size:12px;color:#6B7681;">Total del a&ntilde;o</p>
+                    <p style="margin:6px 0 0;font-family:${M};font-size:28px;font-weight:bold;color:#1B1F23;line-height:1.1;">${_escEmail(fmtMoneda(desRec.totales.total, mon))}</p>
+                    <p style="margin:7px 0 0;font-size:11.5px;color:#6B7681;">prima <span style="font-family:${M};">${_escEmail(fmtMoneda(desRec.totales.prima, mon))}</span> + IVA 2 % <span style="font-family:${M};">${_escEmail(fmtMoneda(desRec.totales.iva, mon))}</span></p>
+                    <table width="100%" cellpadding="0" cellspacing="0" border="0" role="presentation" style="margin-top:14px;">
+                      ${desRec.filas.map((f, i) => `<tr>
+                        <td style="padding:8px 0;border-bottom:1px solid #EDEFF2;${i === 0 ? "border-top:1px solid #EDEFF2;" : ""}font-size:13px;color:#5A6570;">${_escEmail(f.nombre || "Asegurado")} <span style="color:#6B7681;font-size:12px;">&middot; ${_escEmail(f.edad)} a&ntilde;os</span></td>
+                        <td align="right" style="padding:8px 0;border-bottom:1px solid #EDEFF2;${i === 0 ? "border-top:1px solid #EDEFF2;" : ""}font-family:${M};font-size:13px;font-weight:bold;color:#1B1F23;white-space:nowrap;">${_escEmail(fmtMoneda(f.aporte, mon))}</td>
                       </tr>`).join("")}
                     </table>
-                    <p style="margin:12px 0 6px;font-size:11.5px;color:#6B7681;line-height:1.6;">La prima depende solo de la edad de cada persona; sumadas dan el total. No hay cargos por grupo.</p>
+                    <p style="margin:12px 0 0;font-size:11.5px;color:#6B7681;line-height:1.6;">La prima depende solo de la edad de cada persona; sumadas dan el total. No hay cargos por grupo.</p>
                   </td>
                 </tr>
               </table>
-            </td>
-          </tr>
 
-          <!-- 5. Las demás opciones, agrupadas por ámbito -->
-          ${planesData.length < 2 ? "" : `
-          <tr>
-            <td style="padding:32px 34px 8px;">
-              ${_reglaCorreoLC()}
-              <p style="margin:0 0 3px;font-size:12px;color:#6B7681;">Las ${planesData.length} opciones</p>
-              <p style="margin:0 0 16px;font-size:20px;font-weight:bold;color:#1B1F23;letter-spacing:-0.02em;">Total del a&ntilde;o, con IVA</p>
-              <table width="100%" cellpadding="0" cellspacing="0" border="0" role="presentation" style="border:1px solid #DADCE0;border-radius:14px;">
+              ${otras.length === 0 ? "" : `
+              <table width="100%" cellpadding="0" cellspacing="0" border="0" role="presentation">
                 ${(() => {
-                  let out = "", grupo = "";
-                  for(const pd of planesData){
-                    if(pd.plan.ambito !== grupo){
-                      grupo = pd.plan.ambito;
-                      out += `<tr><td colspan="2" bgcolor="#F7FAFC" style="background:#F7FAFC;padding:7px 16px;font-size:11px;color:#6B7681;border-bottom:1px solid #EDEFF2;">${_escEmail(grupo)}</td></tr>`;
-                    }
+                  const tarjeta = pd => `<table width="100%" cellpadding="0" cellspacing="0" border="0" role="presentation" style="background:#ffffff;border:1px solid #DADCE0;border-radius:20px;"><tr><td style="padding:18px 20px 16px;">
+                    <p style="margin:0 0 5px;font-size:12px;color:#6B7681;">${_escEmail(pd.plan.ambito)}</p>
+                    <p style="margin:0;font-size:20px;font-weight:bold;color:#1B1F23;letter-spacing:-0.02em;">${_escEmail(pd.plan.nombre)}</p>
+                    <p style="margin:8px 0 0;font-size:12px;color:#6B7681;">suma anual</p>
+                    <p style="margin:2px 0 0;font-family:${M};font-size:13.5px;font-weight:bold;color:#1B1F23;">${_escEmail(fmtMoneda(mon === "USD" ? pd.plan.sumaUSD : pd.plan.sumaCRC, mon))}</p>
+                    <table width="100%" cellpadding="0" cellspacing="0" border="0" role="presentation" style="margin:12px 0 10px;"><tr><td style="border-top:1px solid #EDEFF2;font-size:0;line-height:0;">&nbsp;</td></tr></table>
+                    <p style="margin:0;font-size:11.5px;color:#6B7681;">Total del a&ntilde;o</p>
+                    <p style="margin:4px 0 0;font-family:${M};font-size:19px;font-weight:bold;color:#1B1F23;">${_escEmail(fmtMoneda(pd.t.total, mon))}</p>
+                    <p style="margin:5px 0 0;font-size:11px;color:#6B7681;">${_escEmail(fmtMoneda(pd.t.prima, mon))} + IVA ${_escEmail(fmtMoneda(pd.t.iva, mon))}</p>
+                  </td></tr></table>`;
+                  let out = "";
+                  for(let i = 0; i < otras.length; i += 2){
                     out += `<tr>
-                      <td style="padding:12px 16px;border-bottom:1px solid #EDEFF2;font-size:14px;color:#1B1F23;${pd.isRec ? "font-weight:bold;" : ""}">${_escEmail(pd.plan.nombre)}<br /><span style="font-size:11.5px;color:#6B7681;font-weight:normal;">Suma ${_escEmail(fmtMoneda(mon === "USD" ? pd.plan.sumaUSD : pd.plan.sumaCRC, mon))}</span></td>
-                      <td align="right" style="padding:12px 16px;border-bottom:1px solid #EDEFF2;white-space:nowrap;font-family:${M};font-size:14px;font-weight:bold;color:#1B1F23;">${_escEmail(fmtMoneda(pd.t.total, mon))}<br /><span style="font-size:10.5px;color:#6B7681;font-weight:normal;">${_escEmail(fmtMoneda(pd.t.prima, mon))} + ${_escEmail(fmtMoneda(pd.t.iva, mon))}</span></td>
+                      <td width="50%" valign="top" style="padding:0 6px 12px 0;">${tarjeta(otras[i])}</td>
+                      <td width="50%" valign="top" style="padding:0 0 12px 6px;">${otras[i + 1] ? tarjeta(otras[i + 1]) : "&nbsp;"}</td>
                     </tr>`;
                   }
                   return out;
                 })()}
               </table>
-              <p style="margin:12px 0 0;font-size:11.5px;color:#6B7681;line-height:1.6;">Debajo de cada total, en gris, la prima y el IVA por separado. En la cotizaci&oacute;n completa ver&aacute; el detalle por persona de cada plan y el pago en 2 o 4 cuotas.</p>
+              <p style="margin:4px 0 0;font-size:11.5px;color:#6B7681;line-height:1.6;">Debajo de cada total, en gris, la prima y el IVA por separado. En la cotizaci&oacute;n completa ver&aacute; el detalle por persona de cada plan y el pago en 2 o 4 cuotas.</p>`}
             </td>
-          </tr>`}
+          </tr>
 
           <!-- 6. Qué trae la cotización completa -->
           <tr>
