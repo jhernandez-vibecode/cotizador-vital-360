@@ -1377,6 +1377,14 @@
       .lc-sec{padding:0 20px}
       .lc-sec-end{padding-top:36px;padding-bottom:52px}
     }
+    /* ---------- filete SDI en el encabezado (pedido de JC, 11 sep 2026; ya en INS Medical) ----------
+       Los 4 colores de la barra del logo del kit (azul · verde · naranja · dorado), 4 px a lo ancho. */
+    :root{--sdi-azul:#0369A1;--sdi-verde:#0D9488;--sdi-naranja:#EA580C;--sdi-dorado:#C9A227;
+      --lc-filete:linear-gradient(90deg,var(--sdi-azul) 0 25%,var(--sdi-verde) 25% 50%,var(--sdi-naranja) 50% 75%,var(--sdi-dorado) 75% 100%)}
+    .masthead-agente,.hero-top{border-top:4px solid transparent;background-clip:padding-box;position:relative}
+    .masthead-agente::before,.hero-top::before{content:"";position:absolute;left:0;right:0;top:-4px;height:4px;background:var(--lc-filete)}
+    .lc-solo{position:relative;overflow:hidden}
+    .lc-solo::before{content:"";position:absolute;left:0;right:0;top:0;height:4px;background:var(--lc-filete)}
   </style>
 </head>
 <body>
@@ -1448,8 +1456,9 @@
         <p class="sdi-foot-line">Un producto de <strong>SDI · Seguros Digitales</strong></p>
         <p class="sdi-foot-line sub">© 2026 · Propiedad intelectual de <strong>Juan Carlos Hernández Vargas</strong></p>
         <details class="sdi-changelog">
-          <summary>Última actualización: 11 sep 2026 — correo de la cotización: opciones en tarjetas y el botón debajo</summary>
+          <summary>Última actualización: 11 sep 2026 — filete de colores SDI en el encabezado</summary>
           <ul>
+            <li><strong>11 sep 2026</strong> — Filete con los cuatro colores SDI arriba del encabezado del cotizador, de la página del cliente, del acceso y de los tres correos, igual que en INS Medical.</li>
             <li><strong>11 sep 2026</strong> — En el correo de la cotización, el botón "Ver mi cotización completa" pasa a ir justo debajo de las tarjetas de opciones.</li>
             <li><strong>11 sep 2026</strong> — El correo de la cotización presenta las opciones como tarjetas, igual que en la consola: ámbito, nombre del plan, suma anual y total del año con IVA. La opción propuesta va ancha, marcada con una estrella como "Opción a valorar" y con el aporte de cada asegurado; las demás en pares. Mismos montos, mismo enlace.</li>
             <li><strong>10 sep 2026</strong> — Nueva letra de marca SDI en el cotizador, la vista del cliente y la guía de reclamos: Google Sans Flex para títulos y texto, Google Sans Code para cifras y códigos. La cifra grande de la cotización ya no es monoespaciada. Los correos no cambian (Gmail usa su propia letra). Cero cambios en cálculos o datos.</li>
@@ -2912,6 +2921,16 @@ ${payload.agente.nombre}${lic}`;
     // o de póliza), abajo el producto. `derecha` llega YA escapado.
     function _barraCorreoLC(derecha){
       return `
+          <tr>
+            <td style="padding:0;border-radius:16px 16px 0 0;overflow:hidden;">
+              <table width="100%" cellpadding="0" cellspacing="0" border="0" role="presentation"><tr>
+                <td width="25%" bgcolor="#0369A1" style="background:#0369A1;height:4px;font-size:0;line-height:0;">&nbsp;</td>
+                <td width="25%" bgcolor="#0D9488" style="background:#0D9488;height:4px;font-size:0;line-height:0;">&nbsp;</td>
+                <td width="25%" bgcolor="#EA580C" style="background:#EA580C;height:4px;font-size:0;line-height:0;">&nbsp;</td>
+                <td width="25%" bgcolor="#C9A227" style="background:#C9A227;height:4px;font-size:0;line-height:0;">&nbsp;</td>
+              </tr></table>
+            </td>
+          </tr>
           <tr>
             <td style="padding:14px 26px;border-bottom:1px solid #EDEFF2;">
               <table width="100%" cellpadding="0" cellspacing="0" border="0" role="presentation">
