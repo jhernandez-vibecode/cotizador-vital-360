@@ -854,6 +854,7 @@
 
     /* R2 · titular grande y centrado ----------------------------------- */
     .hero-body{max-width:840px;padding:56px 28px 52px;display:block;text-align:center}
+    .hero-body .v7-ruta{margin-top:30px}
     .hero-eyebrow{background:var(--lc-ok-bg);color:var(--lc-ok-tx);text-transform:none;
       letter-spacing:.01em;font-size:12.5px;font-weight:600;padding:7px 15px;margin-bottom:22px}
     .hero-eyebrow::before{background:currentColor;width:7px;height:7px}
@@ -987,6 +988,58 @@
     .v7-pgr .md{font-size:14px;font-weight:600;color:var(--lc-ink)}
     .v7-pgr .cu{font-size:12px;color:var(--lc-ink-3);margin-top:3px}
     .v7-pgr .tt{font-size:15px;font-weight:600;color:var(--lc-ink);font-family:var(--font-mono)}
+
+    /* paso 1 · opciones en tarjetas (14 sep 2026) ------------------------ */
+    .v7-opc{background:var(--lc-band);padding:44px 0 40px}
+    .v7-opc + .v7-rec{padding-top:8px}
+    .v7-opc + .v7-rec .v7-rec-in{border-top:1px solid #DCE4EA;padding-top:40px}
+    .v7-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:16px 10px;margin-top:22px;align-items:stretch}
+    .v7-cards.n2{grid-template-columns:repeat(2,1fr)}
+    .v7-cards.n3,.v7-cards.n5,.v7-cards.n6{grid-template-columns:repeat(3,1fr)}
+    .v7-cards.n4{grid-template-columns:repeat(2,1fr)}
+    .v7-card{position:relative;display:flex;flex-direction:column;background:#fff;border:1px solid var(--lc-line);
+      border-radius:var(--lc-r-md);color:var(--lc-ink);text-decoration:none;min-width:0;
+      transition:background .15s ease,border-color .15s ease}
+    .v7-card:hover{background:var(--lc-prod-tint);border-color:#C6D4D8}
+    .v7-card.rec{border:2px solid var(--lc-blue)}
+    .v7-card-btn{all:unset;display:flex;flex-direction:column;flex:1 1 auto;padding:18px 20px;cursor:pointer;box-sizing:border-box;min-width:0}
+    .v7-card-btn:focus-visible{outline:2px solid var(--lc-blue);outline-offset:-2px;border-radius:var(--lc-r-md)}
+    .v7-card.rec{padding:17px 19px}
+    .v7-card > span,.v7-card-btn > span,.v7-card .tot > span{display:block}
+    .v7-card .amb{font-size:11.5px;color:var(--lc-ink-3);font-weight:500}
+    .v7-card .nm{font-family:var(--font-display);font-size:19px;font-weight:600;letter-spacing:-.02em;margin-top:2px;color:var(--lc-ink)}
+    .v7-card .sm{font-size:12.5px;color:var(--lc-ink-3);margin-top:2px}
+    .v7-card .sm + .sm{margin-top:0}
+    .v7-card .tot{margin-top:12px;padding-top:12px;border-top:1px solid var(--lc-line-soft)}
+    .v7-card .lbl{font-size:11.5px;color:var(--lc-ink-3);font-weight:500}
+    .v7-card .big{font-family:var(--font-mono);font-size:21px;font-weight:600;letter-spacing:-.02em;margin-top:2px;color:var(--lc-ink)}
+    .v7-card .eq{font-size:11.5px;color:var(--lc-ink-3);font-family:var(--font-mono);margin-top:3px}
+    .v7-card .ver{margin-top:auto;padding-top:12px;font-size:13px;color:var(--lc-blue);font-weight:600}
+    .v7-card .flag{position:absolute;top:-12px;right:16px;line-height:16px;background:var(--lc-blue);color:#fff;
+      font-size:11px;font-weight:600;padding:4px 10px;border-radius:999px}
+    .v7-card .flag i{font-style:normal;color:#F4B400;margin-right:4px}
+    /* regla #12 · la tarjeta abierta se ensancha y envuelve su panel */
+    .v7-card.open{grid-column:1/-1;border:2px solid var(--lc-blue);background:var(--lc-blue-soft)}
+    .v7-card.open .v7-card-btn{flex:0 0 auto}
+    .v7-card .v7-anchor{border:0;border-top:1px solid #C9DCEA;border-radius:0 0 var(--lc-r-md) var(--lc-r-md);margin-bottom:0}
+    .v7-opc-foot{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;margin-top:22px}
+    .v7-opc-foot .v7-fine{margin:0;flex:1 1 260px}
+    /* mapa de 3 pasos bajo el hero: es una secuencia real, por eso lleva números */
+    .v7-ruta{list-style:none;margin:26px auto 0;padding:0;max-width:840px;display:grid;grid-template-columns:repeat(3,1fr);gap:10px;counter-reset:paso;text-align:left}
+    .v7-ruta li{border:1px solid var(--lc-line);border-radius:var(--lc-r-md);padding:16px 18px;counter-increment:paso;display:flex;gap:12px;align-items:flex-start;background:#fff}
+    .v7-ruta li::before{content:counter(paso);flex:0 0 28px;height:28px;border-radius:50%;background:var(--paso-bg);color:var(--paso-tx);
+      font-weight:600;font-size:13px;display:inline-flex;align-items:center;justify-content:center}
+    .v7-ruta li:nth-child(1){--paso-bg:#E8F1F8;--paso-tx:#0369A1}   /* azul SDI */
+    .v7-ruta li:nth-child(2){--paso-bg:#E6F4F2;--paso-tx:#0D7A6F}   /* teal */
+    .v7-ruta li:nth-child(3){--paso-bg:#FDEEE6;--paso-tx:#C2410C}   /* naranja */
+    .v7-ruta b{display:block;font-weight:600;font-size:14px;color:var(--lc-ink)}
+    .v7-ruta small{display:block;color:var(--lc-ink-3);font-size:12.5px;margin-top:2px;line-height:1.45}
+    @media (max-width:1000px){ .v7-cards,.v7-cards.n3,.v7-cards.n5,.v7-cards.n6{grid-template-columns:repeat(2,1fr)} }
+    @media (max-width:640px){
+      .v7-cards,.v7-cards.n2,.v7-cards.n3,.v7-cards.n4,.v7-cards.n5,.v7-cards.n6{grid-template-columns:1fr}
+      .v7-ruta{grid-template-columns:1fr}
+      .v7-opc-foot .lc-pill{white-space:normal;text-align:center;padding-block:10px}
+    }
 
     /* comparador -------------------------------------------------------- */
     .v7-cmp-pick{gap:9px;margin-top:16px}
@@ -1456,8 +1509,9 @@
         <p class="sdi-foot-line">Un producto de <strong>SDI · Seguros Digitales</strong></p>
         <p class="sdi-foot-line sub">© 2026 · Propiedad intelectual de <strong>Juan Carlos Hernández Vargas</strong></p>
         <details class="sdi-changelog">
-          <summary>Última actualización: 11 sep 2026 — filete de colores SDI en el encabezado</summary>
+          <summary>Última actualización: 14 sep 2026 — la página del cliente muestra primero las opciones y después la opción a valorar</summary>
           <ul>
+            <li><strong>14 sep 2026</strong> — La página del cliente cambia de orden: primero todas las opciones en tarjetas uniformes (alcance, suma, deducible y total del año con IVA), después la opción a valorar con su porqué calculado, y al final el comparador, que ya viene con esa opción y sus dos vecinas marcadas. Bajo el saludo hay un mapa de 3 pasos. "Lo que le recomiendo" pasa a llamarse "Opción a valorar", como en el correo. Si hay un solo asegurado, el saludo dice "para cuidar su salud" en vez de "a su familia". Mismos montos y mismos cálculos.</li>
             <li><strong>11 sep 2026</strong> — Filete con los cuatro colores SDI arriba del encabezado del cotizador, de la página del cliente, del acceso y de los tres correos, igual que en INS Medical.</li>
             <li><strong>11 sep 2026</strong> — En el correo de la cotización, el botón "Ver mi cotización completa" pasa a ir justo debajo de las tarjetas de opciones.</li>
             <li><strong>11 sep 2026</strong> — El correo de la cotización presenta las opciones como tarjetas, igual que en la consola: ámbito, nombre del plan, suma anual y total del año con IVA. La opción propuesta va ancha, marcada con una estrella como "Opción a valorar" y con el aporte de cada asegurado; las demás en pares. Mismos montos, mismo enlace.</li>
@@ -5232,8 +5286,13 @@ ${_botonCorreoLC(link, "Ver mi cotizaci&oacute;n completa &rarr;")}
         modalidad: "anual",   // chips de forma de pago
         planFoco: null,       // fila de la escalera abierta (anclada)
         cobExpandida: false,  // las 28 coberturas del plan recomendado
-        comparar: rec ? [rec] : []   // selección del CLIENTE para comparar, máx 3
+        comparar: []          // selección del CLIENTE para comparar, máx 3
       };
+      // Arranca con la opción a valorar y sus dos vecinas de precio (JC, 14 sep
+      // 2026): la tabla nunca aparece vacía. El cliente puede cambiarlas.
+      const ordenIni = planesOrdenados();
+      const iRec = ordenIni.indexOf(planRecomendadoId());
+      cli.comparar = [ordenIni[iRec - 1], ordenIni[iRec], ordenIni[iRec + 1]].filter(Boolean);
       renderClienteHero();
       renderClienteToggle();
       renderClienteMain();
@@ -5248,6 +5307,8 @@ ${_botonCorreoLC(link, "Ver mi cotizaci&oacute;n completa &rarr;")}
         return `<span><b>${escapeHtml(a.nombre)}</b><i>${escapeHtml(a.edad)} a.</i><em>${rel}</em></span>`;
       }).join('');
       const varios = p.planes.length > 1;
+      const fam = p.asegurados.length > 1;          // "su familia" vs "su salud"
+      const nA = p.asegurados.length;
 
       document.getElementById('cli-hero').innerHTML = `
         <div class="hero-top">
@@ -5263,10 +5324,9 @@ ${_botonCorreoLC(link, "Ver mi cotizaci&oacute;n completa &rarr;")}
           <div class="hero-nav-inner">
             <span class="hero-prod">Vital 360</span>
             <nav class="hero-links">
-              <a href="#lc-plan">Su plan</a>
-              <a href="#lc-pago">Formas de pago</a>
-              <a href="#lc-cobertura">Qué cubre</a>
-              ${varios ? '<a href="#lc-opciones">Las otras opciones</a>' : ''}
+              ${varios ? '<a href="#lc-opciones">Las opciones</a>' : ''}
+              <a href="#lc-plan">${varios ? 'Opción a valorar' : 'Su plan'}</a>
+              ${varios ? '<a href="#lc-comparar">Comparar</a>' : '<a href="#lc-cobertura">Qué cubre</a>'}
               <a href="#lc-documentos">Documentos</a>
             </nav>
             <a class="lc-pill lc-pill-fill lc-pill-sm" href="${waLinkAgente()}" target="_blank" rel="noopener">Escribir por WhatsApp</a>
@@ -5274,15 +5334,22 @@ ${_botonCorreoLC(link, "Ver mi cotizaci&oacute;n completa &rarr;")}
         </div>
         <div class="hero-body lc-in">
           <span class="hero-eyebrow">Cotización N.º ${escapeHtml(p.id)} · vigente ${escapeHtml(p.vigenciaDias)} días</span>
-          <h1>${varios ? p.planes.length + " caminos para cuidar a su familia" : "Una opción para cuidar a su familia"}</h1>
-          <p class="lead">${escapeHtml(p.cliente.nombre || "Cliente Vital 360")}, preparé ${varios ? p.planes.length + " planes" : "una opción"} Vital 360 del INS pensando en usted. Compare con calma: cada monto es el total del año, con el IVA ya incluido.</p>
+          <h1>${varios ? p.planes.length + " opciones" : "Una opción"} ${fam ? "para cuidar a su familia" : "para cuidar su salud"}</h1>
+          <p class="lead">${escapeHtml(p.cliente.nombre || "Cliente Vital 360")}, Vital 360 es el seguro de gastos médicos del INS: hospitalización, cirugías, consultas y medicamentos, con renovación de por vida. ${varios
+            ? `Preparé ${p.planes.length} planes ${fam ? "para su familia" : "para usted"}, para que vea primero todas las opciones y después cuál vale la pena valorar y por qué.`
+            : `Preparé una opción ${fam ? "para su familia" : "para usted"}.`} Cada monto es el total del año, con el IVA ya incluido.</p>
           <div class="hero-cta">
-            <a class="lc-pill lc-pill-fill" href="#lc-plan">Ver el plan que le recomiendo</a>
-            ${varios ? '<a class="lc-pill lc-pill-out" href="#lc-comparar">Comparar las opciones</a>'
-                     : '<a class="lc-pill lc-pill-out" href="#lc-cobertura">Ver qué cubre</a>'}
+            ${varios ? '<a class="lc-pill lc-pill-fill" href="#lc-opciones">Ver las opciones</a><a class="lc-pill lc-pill-out" href="#lc-plan">Ir a la opción a valorar</a>'
+                     : '<a class="lc-pill lc-pill-fill" href="#lc-plan">Ver el plan</a><a class="lc-pill lc-pill-out" href="#lc-cobertura">Ver qué cubre</a>'}
           </div>
           <div class="hero-fam">${familia}</div>
         </div>
+        ${varios ? `
+        <ol class="v7-ruta lc-in lc-in-2">
+          <li><div><b>Conozca las opciones</b><small>Cada plan con su alcance, su suma asegurada y lo que cuesta al año ${fam ? "para los " + nA : "para usted"}.</small></div></li>
+          <li><div><b>Vea la opción a valorar y por qué</b><small>La comparo con la opción anterior y la siguiente, con cifras del INS.</small></div></li>
+          <li><div><b>Compare las que le interesen</b><small>Marque hasta 3 y véalas lado a lado, cobertura por cobertura.</small></div></li>
+        </ol>` : ''}
       `;
     }
 
@@ -5343,7 +5410,7 @@ ${_botonCorreoLC(link, "Ver mi cotizaci&oacute;n completa &rarr;")}
           // Regla #12: la fila tocada se queda a la vista y el panel entra en
           // pantalla. Sin esto, en un teléfono el cliente toca y no ve nada.
           if(abriendo){
-            const fila = main.querySelector('.v7-row.open');
+            const fila = main.querySelector('.v7-card.open');
             if(fila) fila.scrollIntoView({ behavior:'smooth', block:'start' });
           }
         }
@@ -5391,16 +5458,17 @@ ${_botonCorreoLC(link, "Ver mi cotizaci&oacute;n completa &rarr;")}
 
     function renderClienteMain(){
       const main = document.getElementById('cli-main');
-      // Orden cerrado con JC el 27 jul 2026 (ver SKILL, Pendientes #2):
-      // recomendado → recibo → pago → cobertura → escalera → comparador,
-      // y después todo lo que no depende del plan.
+      // Orden cerrado con JC el 14 sep 2026 (antes, 27 jul, el recomendado iba
+      // primero): opciones en tarjetas → opción a valorar con su porqué →
+      // recibo → pago → cobertura → comparador, y después todo lo que no
+      // depende del plan. El cliente ve DE QUÉ se le habla antes del porqué.
       main.innerHTML =
         '<div class="v7">' +
+        renderClienteEscalera() +
         renderClienteRecomendado() +
         renderClienteRecibo() +
         renderClientePagoV7() +
         renderClienteCobertura() +
-        renderClienteEscalera() +
         renderClienteComparador() +
         '</div>' +
         // R1 · la banda pálida agrupa lo informativo (no decora): producto,
@@ -5753,11 +5821,16 @@ ${_botonCorreoLC(link, "Ver mi cotizaci&oacute;n completa &rarr;")}
       const t = totalesPlan(id, cli.moneda, p.asegurados, "anual");
       const j = justificacionPlan(id, cli.moneda, p.asegurados, planesOrdenados());
       const varios = planesOrdenados().length > 1;
+      const n = planesOrdenados().length;
       return `
         <section class="v7-rec" id="lc-plan">
           <div class="v7-rec-in">
+           ${varios ? `
+           <div class="v7-k">Paso 2 · Opción a valorar</div>
+           <div class="v7-h">De las ${n}, la opción a valorar es ${escapeHtml(plan.nombre)}</div>
+           <div class="v7-fine">El porqué lo calcula el sistema contra la opción anterior y la siguiente, con los montos oficiales del INS.</div>` : ''}
            <div class="lc-panel">
-            ${varios ? '<span class="v7-flag">Lo que le recomiendo</span>' : ''}
+            ${varios ? '<span class="v7-flag">&#9733; Opción a valorar</span>' : ''}
             <div class="v7-rec-nm">${escapeHtml(plan.nombre)}</div>
             <div class="v7-rec-amb">${escapeHtml(plan.ambito)} · suma asegurada ${fmtMoneda(cli.moneda==='USD'?plan.sumaUSD:plan.sumaCRC, cli.moneda)} por persona</div>
             <div class="v7-rec-tot">
@@ -5783,8 +5856,8 @@ ${_botonCorreoLC(link, "Ver mi cotizaci&oacute;n completa &rarr;")}
         </div>`).join('');
       return `
         <section class="v7-sec" style="margin-top:26px">
-          <div class="v7-k">Quiénes están cubiertos</div>
-          <div class="v7-h">Cuánto aporta cada uno</div>
+          <div class="v7-k">${p.asegurados.length > 1 ? 'Quiénes están cubiertos' : 'Quién está cubierto'}</div>
+          <div class="v7-h">${p.asegurados.length > 1 ? 'Cuánto aporta cada uno' : 'Cuánto aporta usted'}</div>
           <div class="v7-rcpt">
             ${filas}
             <div class="v7-rcpt-r tot"><span class="nm">Total del año</span><span class="vl m">${fmtMoneda(d.totales.total, cli.moneda)}</span></div>
@@ -5884,46 +5957,64 @@ ${_botonCorreoLC(link, "Ver mi cotizaci&oacute;n completa &rarr;")}
         <thead><tr><th>Cobertura</th>${ths}</tr></thead><tbody>${rows}</tbody></table></div>`;
     }
 
+    // Paso 1 · TODAS las opciones en tarjetas uniformes, de menor a mayor
+    // alcance, incluida la opción a valorar (con estrella, enlaza al paso 2).
+    // Reemplaza la escalera de filas por ámbito (27 jul → 14 sep 2026). La
+    // tarjeta tocada se abre ahí mismo, a lo ancho, con su panel adentro
+    // (regla crítica #12: la fila y el panel son una sola pieza).
     function renderClienteEscalera(){
       const p = cli.payload;
       const rec = planRecomendadoId();
-      const lista = planesOrdenados().filter(id => id !== rec);
-      if(!lista.length) return "";
+      const lista = planesOrdenados();
+      if(lista.length < 2) return "";
       const mon = cli.moneda;
-      const totRec = totalesPlan(rec, mon, p.asegurados, "anual").total;
+      const fam = p.asegurados.length > 1;
 
-      let html = "", grupoActual = "";
-      for(const id of lista){
+      const tarjeta = id => {
         const plan = PLANES.find(pl => pl.id === id);
         const t = totalesPlan(id, mon, p.asegurados, "anual");
-        const dif = t.total - totRec;
-        if(plan.ambito !== grupoActual){
-          grupoActual = plan.ambito;
-          html += `<div class="v7-grp">${escapeHtml(grupoActual)}</div>`;
+        const ded = mon === 'USD' ? plan.deducibleUSD : plan.deducibleCRC;
+        const cuerpo = `
+            <span class="amb">${escapeHtml(plan.ambito)}</span>
+            <span class="nm">${escapeHtml(plan.nombre)}</span>
+            <span class="sm">${fmtMoneda(mon==='USD'?plan.sumaUSD:plan.sumaCRC, mon)} por persona</span>
+            <span class="sm">${ded === 0 ? 'Sin deducible' : 'Deducible ' + fmtMoneda(ded, mon)}</span>
+            <span class="tot">
+              <span class="lbl">Total del año</span>
+              <span class="big m">${fmtMoneda(t.total, mon)}</span>
+              <span class="eq">prima ${fmtMoneda(t.prima, mon)} + IVA ${fmtMoneda(t.iva, mon)}</span>
+            </span>`;
+        if(id === rec){
+          return `
+          <a class="v7-card rec" href="#lc-plan">
+            <span class="flag"><i>&#9733;</i>Opción a valorar</span>
+            ${cuerpo}
+            <span class="ver">Ver por qué vale la pena valorarla ›</span>
+          </a>`;
         }
         const abierto = cli.planFoco === id;
-        html += `
-          <button class="v7-row ${abierto?'open':''}" data-action="v7-plan" data-plan="${id}" aria-expanded="${abierto?'true':'false'}">
-            <span class="l">
-              <span class="nm">${escapeHtml(plan.nombre)}</span>
-              <span class="sm">Suma ${fmtMoneda(mon==='USD'?plan.sumaUSD:plan.sumaCRC, mon)} · ${
-                (mon==='USD'?plan.deducibleUSD:plan.deducibleCRC) === 0 ? 'sin deducible'
-                : 'deducible ' + fmtMoneda(mon==='USD'?plan.deducibleUSD:plan.deducibleCRC, mon)}</span>
-            </span>
-            <span class="rt">
-              <span class="big">${fmtMoneda(t.total, mon)}</span>
-              <span class="sm">${dif > 0 ? '+' : '−'}${fmtMoneda(Math.abs(dif), mon)} vs ${escapeHtml(PLANES.find(x=>x.id===rec).nombre)}</span>
-            </span>
-            <span class="v7-chev">${abierto ? '⌄' : '›'}</span>
-          </button>
-          ${abierto ? renderPanelPlan(id) : ''}`;
-      }
+        return `
+          <div class="v7-card ${abierto?'open':''}">
+            <button class="v7-card-btn" data-action="v7-plan" data-plan="${id}" aria-expanded="${abierto?'true':'false'}">
+              ${cuerpo}
+              <span class="ver">${abierto ? 'Cerrar ⌄' : 'Ver detalle ›'}</span>
+            </button>
+            ${abierto ? renderPanelPlan(id) : ''}
+          </div>`;
+      };
+
       return `
-        <section class="v7-sec" id="lc-opciones" style="margin-top:34px">
-          <div class="v7-k">Las otras opciones</div>
-          <div class="v7-h">${lista.length === 1 ? 'La otra que le cotizé' : 'Las otras ' + lista.length + ', a la vista'}</div>
-          <div class="v7-fine">Total del año con IVA, para ${p.asegurados.length} ${p.asegurados.length===1?'asegurado':'asegurados'}. Toque cualquiera para abrirla.</div>
-          <div class="v7-lad">${html}</div>
+        <section class="v7-opc" id="lc-opciones">
+          <div class="v7-rec-in">
+            <div class="v7-k">Paso 1 · Las opciones</div>
+            <div class="v7-h">Así se ven las ${lista.length}, de menor a mayor alcance</div>
+            <div class="v7-fine">Total del año con IVA ${fam ? 'para ' + p.asegurados.length + ' asegurados' : 'para usted'}. La primera línea de cada tarjeta dice dónde lo atienden: solo Costa Rica, Centroamérica o el mundo. Toque cualquiera para abrirla.</div>
+            <div class="v7-cards n${lista.length}">${lista.map(tarjeta).join('')}</div>
+            <div class="v7-opc-foot">
+              <a class="lc-pill lc-pill-fill" href="#lc-plan">Ver la opción a valorar y por qué</a>
+              <span class="v7-fine">Al tocar una tarjeta se abre su detalle ahí mismo: contra la opción a valorar, cuánto aporta cada uno y cómo pagarla.</span>
+            </div>
+          </div>
         </section>`;
     }
 
@@ -5996,8 +6087,9 @@ ${_botonCorreoLC(link, "Ver mi cotizaci&oacute;n completa &rarr;")}
       }).join('');
       return `
         <section class="v7-sec" id="lc-comparar" style="margin-top:34px">
-          <div class="v7-k">¿Quiere comparar?</div>
-          <div class="v7-h">Elija hasta 3 y véalos lado a lado</div>
+          <div class="v7-k">Paso 3 · Compare</div>
+          <div class="v7-h">Elija hasta 3 y véalas lado a lado</div>
+          <div class="v7-fine">Vienen marcadas la opción a valorar y sus dos vecinas. Puede cambiarlas.</div>
           <div class="v7-cmp-pick">${chips}</div>
           ${sel.length ? renderTabla28(PLANES.filter(p=>sel.indexOf(p.id)!==-1).map(p=>p.id))
                        : '<div class="v7-fine">Marque al menos un plan para ver la tabla.</div>'}
