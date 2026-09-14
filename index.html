@@ -228,6 +228,8 @@
     .hist-actions button:hover,.hist-actions a:hover{border-color:var(--ins-teal);color:var(--ins-teal-deep)}
     .hist-actions button.danger:hover{border-color:var(--ins-coral);color:var(--ins-coral-deep)}
     .hist-actions button.ok:hover{border-color:var(--green-ok);color:var(--green-ok)}
+    .hist-actions button.mail{background:var(--lc-blue,#0369A1);color:#fff;border-color:var(--lc-blue,#0369A1);font-weight:600}
+    .hist-actions button.mail:hover{background:var(--lc-blue-ink,#02557F);border-color:var(--lc-blue-ink,#02557F)}
     .hist-actions button.poliza{background:var(--ins-gold);color:#fff;border-color:var(--ins-gold);font-weight:600}
     .hist-actions button.poliza.reenviar{background:var(--paper);color:var(--ins-gold);border-color:var(--ins-gold)}
     .hist-actions button.poliza:hover{background:#A67120;border-color:#A67120}
@@ -1510,8 +1512,9 @@
         <p class="sdi-foot-line">Un producto de <strong>SDI · Seguros Digitales</strong></p>
         <p class="sdi-foot-line sub">© 2026 · Propiedad intelectual de <strong>Juan Carlos Hernández Vargas</strong></p>
         <details class="sdi-changelog">
-          <summary>Última actualización: 14 sep 2026 — reenviar el correo de póliza vigente sin volver a digitar los datos</summary>
+          <summary>Última actualización: 14 sep 2026 — reenviar la cotización por correo desde Mis cotizaciones</summary>
           <ul>
+            <li><strong>14 sep 2026</strong> — En <strong>Mis cotizaciones</strong> cada fila tiene el botón "✉ Correo": abre el mismo correo de la cotización que se manda desde el paso 3, con las opciones y el enlace originales, listo para enviarlo de nuevo al cliente. Si la cotización no tiene correo del cliente, avisa.</li>
             <li><strong>14 sep 2026</strong> — En <strong>Pólizas vigentes</strong> hay un botón "Enviar póliza" / "Reenviar póliza" junto al de la guía, con una columna que dice cuándo salió el correo. Al reenviar, el formulario viene lleno con el N.º de póliza, la fecha, el plan y la moneda que ya capturó; solo revisa y genera. En Mis cotizaciones el botón dorado también dice "Reenviar" cuando el correo ya salió.</li>
             <li><strong>14 sep 2026</strong> — El correo de la cotización presenta las opciones con las mismas fichas que la página del cliente: todas iguales y alineadas en filas completas (alcance, plan, suma por persona, deducible, total del año con IVA y prima + IVA), la opción a valorar con borde azul y estrella. El aporte por asegurado de esa opción va en una tarjeta aparte, debajo. Mismos montos, mismo enlace.</li>
             <li><strong>14 sep 2026</strong> — La página del cliente cambia de orden: primero todas las opciones en tarjetas uniformes (alcance, suma, deducible y total del año con IVA), después la opción a valorar con su porqué calculado, y al final el comparador, que ya viene con esa opción y sus dos vecinas marcadas. Bajo el saludo hay un mapa de 3 pasos. "Lo que le recomiendo" pasa a llamarse "Opción a valorar", como en el correo. Si hay un solo asegurado, el saludo dice "para cuidar su salud" en vez de "a su familia". Mismos montos y mismos cálculos.</li>
@@ -5184,6 +5187,7 @@ ${_botonCorreoLC(link, "Ver mi cotizaci&oacute;n completa &rarr;")}
             ${h.estado === "aceptada" ? `<button class="poliza ${h.polizaEnviada ? 'reenviar' : ''}" data-action="enviar-poliza" data-id="${h.id}">📨 ${h.polizaEnviada ? 'Reenviar póliza vigente' : 'Enviar póliza vigente'}</button>` : ""}
             ${h.estado !== "pendiente" ? `<button data-action="pendiente" data-id="${h.id}">⌛ Pendiente</button>` : ""}
             <a href="${h.link}" target="_blank">👁 Ver</a>
+            <button class="mail" data-action="reenviar-email" data-id="${h.id}">✉ Correo</button>
             <button data-action="copy" data-id="${h.id}">🔗 Copiar</button>
             ${tieneWa ? `<button class="wa" data-action="wa-reenviar" data-id="${h.id}">📱 WA</button>` : ""}
             <button data-action="reabrir" data-id="${h.id}">✎ Editar</button>
@@ -5242,6 +5246,20 @@ ${_botonCorreoLC(link, "Ver mi cotizaci&oacute;n completa &rarr;")}
         if(action === 'enviar-poliza'){
           const h = historial.find(x => x.id === id);
           if(h) abrirEnvioPoliza(h);
+        }
+        // Reenviar la COTIZACIÓN por correo (JC, 14 sep 2026): el mismo correo A
+        // del paso 3, armado desde el registro guardado sin tocar el state del
+        // cotizador. Conserva el ?c= largo del registro (regla crítica #11).
+        if(action === 'reenviar-email'){
+          const h = historial.find(x => x.id === id);
+          if(!h) return;
+          const cliEmail = (h.payload && h.payload.cliente && h.payload.cliente.email) || "";
+          if(!cliEmail){
+            alert('Esta cotización no tiene email del cliente registrado. Reábrala (✎ Editar), agregue el email del titular y vuelva a guardarla.');
+            return;
+          }
+          const link = h.link || buildLinkCliente(h.payload);
+          openEmailPreviewModal({ to: cliEmail, html: buildEmailVital360(h.payload, link), payload: h.payload });
         }
         if(action === 'copy'){
           const h = historial.find(x => x.id === id);
