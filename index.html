@@ -1509,8 +1509,9 @@
         <p class="sdi-foot-line">Un producto de <strong>SDI · Seguros Digitales</strong></p>
         <p class="sdi-foot-line sub">© 2026 · Propiedad intelectual de <strong>Juan Carlos Hernández Vargas</strong></p>
         <details class="sdi-changelog">
-          <summary>Última actualización: 14 sep 2026 — la página del cliente muestra primero las opciones y después la opción a valorar</summary>
+          <summary>Última actualización: 14 sep 2026 — el correo de la cotización muestra las opciones como las tarjetas de la página</summary>
           <ul>
+            <li><strong>14 sep 2026</strong> — El correo de la cotización presenta las opciones con las mismas fichas que la página del cliente: todas iguales y alineadas en filas completas (alcance, plan, suma por persona, deducible, total del año con IVA y prima + IVA), la opción a valorar con borde azul y estrella. El aporte por asegurado de esa opción va en una tarjeta aparte, debajo. Mismos montos, mismo enlace.</li>
             <li><strong>14 sep 2026</strong> — La página del cliente cambia de orden: primero todas las opciones en tarjetas uniformes (alcance, suma, deducible y total del año con IVA), después la opción a valorar con su porqué calculado, y al final el comparador, que ya viene con esa opción y sus dos vecinas marcadas. Bajo el saludo hay un mapa de 3 pasos. "Lo que le recomiendo" pasa a llamarse "Opción a valorar", como en el correo. Si hay un solo asegurado, el saludo dice "para cuidar su salud" en vez de "a su familia". Mismos montos y mismos cálculos.</li>
             <li><strong>11 sep 2026</strong> — Filete con los cuatro colores SDI arriba del encabezado del cotizador, de la página del cliente, del acceso y de los tres correos, igual que en INS Medical.</li>
             <li><strong>11 sep 2026</strong> — En el correo de la cotización, el botón "Ver mi cotización completa" pasa a ir justo debajo de las tarjetas de opciones.</li>
@@ -3063,16 +3064,19 @@ ${payload.agente.nombre}${lic}`;
       const numAseg = payload.asegurados.length;
 
       // Totales del año YA CON IVA (regla de JC, 27 jul 2026). Ordenados como
-      // la escalera de la vista cliente para que el cliente vea lo mismo en los
-      // dos lados. Con 7 planes las tarjetas horizontales de 33 % no caben:
-      // esto es un índice vertical agrupado por ámbito.
+      // las tarjetas de la vista cliente para que el cliente vea lo mismo en
+      // los dos lados: MISMA rejilla uniforme que la página (14 sep 2026).
       const mon = payload.monedaInicial;
       const planesData = PLANES.filter(p => payload.planes.indexOf(p.id) !== -1).map(pl => {
         const t = totalesPlan(pl.id, mon, payload.asegurados, "anual");
         return { id: pl.id, plan: pl, isRec: pl.id === planRecId, t };
       });
       const desRec = desgloseMiembros(planRecId, mon, payload.asegurados);
-      const otras = planesData.filter(pd => !pd.isRec);
+      // Misma regla de filas que .v7-cards en la página: 1-3 en una fila,
+      // 4 en 2×2, 5-6 de a 3, 7 de a 4 (4+3). Todas las celdas del mismo ancho.
+      const nP = planesData.length;
+      const cols = nP <= 3 ? nP : nP === 4 ? 2 : nP <= 6 ? 3 : 4;
+      const estrecho = cols === 4;
 
       const F = _LC_F, M = _LC_M;
 
@@ -3103,78 +3107,78 @@ ${_estadoCorreoLC(`Cotizaci&oacute;n vigente ${_escEmail(payload.vigenciaDias)} 
           </tr>
 
 
-          <!-- 4. Las opciones en tarjetas (11 sep 2026): la propuesta va ancha,
-               con su desglose por persona; las demás en pares. Es la misma
-               tarjeta de la consola del agente (ámbito · nombre · suma anual)
-               pasada a tablas. Con una sola opción no hay pares. -->
+          <!-- 4. Las opciones en tarjetas UNIFORMES (14 sep 2026), como en la
+               página del cliente: ámbito · nombre · suma por persona · deducible
+               · total con IVA · prima + IVA. La opción a valorar lleva borde azul
+               y la píldora con estrella; todas las tarjetas reservan la fila de
+               la píldora para medir igual. Debajo, el aporte por persona de la
+               opción a valorar (pedido de JC del 11 sep, que antes iba dentro). -->
           <tr>
             <td bgcolor="#EEF4F9" style="background:#EEF4F9;padding:26px 22px 14px;">
-              <p style="margin:0 0 3px;font-size:12px;color:#6B7681;">${planesData.length === 1 ? "Su opci&oacute;n" : "Las " + planesData.length + " opciones"} &middot; ${numAseg} ${numAseg === 1 ? "asegurado" : "asegurados"}</p>
-              <p style="margin:0 0 16px;font-size:20px;font-weight:bold;color:#1B1F23;letter-spacing:-0.02em;">Total del a&ntilde;o, con IVA</p>
+              <p style="margin:0 0 3px;font-size:12px;color:#6B7681;">${nP === 1 ? "Su opci&oacute;n" : "Las " + nP + " opciones"} &middot; ${numAseg} ${numAseg === 1 ? "asegurado" : "asegurados"}</p>
+              <p style="margin:0 0 16px;font-size:20px;font-weight:bold;color:#1B1F23;letter-spacing:-0.02em;">${nP === 1 ? "Total del a&ntilde;o, con IVA" : "As&iacute; se ven, de menor a mayor alcance"}</p>
 
-              <table width="100%" cellpadding="0" cellspacing="0" border="0" role="presentation" style="background:#ffffff;border:2px solid #0369A1;border-radius:20px;margin:0 0 12px;">
-                <tr>
-                  <td style="padding:20px 22px 0;">
-                    <table width="100%" cellpadding="0" cellspacing="0" border="0" role="presentation">
-                      <tr>
-                        <td valign="top">
-                          <p style="margin:0 0 6px;font-size:12px;color:#6B7681;">${_escEmail(planRec.ambito)}</p>
-                          <p style="margin:0;font-size:24px;font-weight:bold;color:#1B1F23;line-height:1.1;letter-spacing:-0.02em;">${_escEmail(planRec.nombre)}</p>
-                          <p style="margin:8px 0 0;font-size:12px;color:#6B7681;">suma anual</p>
-                          <p style="margin:2px 0 0;font-family:${M};font-size:14px;font-weight:bold;color:#1B1F23;">${_escEmail(fmtMoneda(mon === "USD" ? planRec.sumaUSD : planRec.sumaCRC, mon))}</p>
-                        </td>
-                        <td valign="top" align="right">
-                          <table cellpadding="0" cellspacing="0" border="0" role="presentation" align="right">
-                            <tr><td bgcolor="#EDF3F4" style="background:#EDF3F4;border-radius:999px;padding:5px 13px 5px 11px;font-size:11.5px;font-weight:bold;color:#1F5C6B;white-space:nowrap;"><span style="color:#F4B400;font-size:12px;">&#9733;</span>&nbsp;Opci&oacute;n a valorar</td></tr>
-                          </table>
-                        </td>
-                      </tr>
-                    </table>
-                  </td>
-                </tr>
-                <tr>
-                  <td style="padding:14px 22px 0;"><table width="100%" cellpadding="0" cellspacing="0" border="0" role="presentation"><tr><td style="border-top:1px solid #EDEFF2;font-size:0;line-height:0;">&nbsp;</td></tr></table></td>
-                </tr>
-                <tr>
-                  <td style="padding:12px 22px 18px;">
-                    <p style="margin:0;font-size:12px;color:#6B7681;">Total del a&ntilde;o</p>
-                    <p style="margin:6px 0 0;font-family:${M};font-size:28px;font-weight:bold;color:#1B1F23;line-height:1.1;">${_escEmail(fmtMoneda(desRec.totales.total, mon))}</p>
-                    <p style="margin:7px 0 0;font-size:11.5px;color:#6B7681;">prima <span style="font-family:${M};">${_escEmail(fmtMoneda(desRec.totales.prima, mon))}</span> + IVA 2 % <span style="font-family:${M};">${_escEmail(fmtMoneda(desRec.totales.iva, mon))}</span></p>
-                    <table width="100%" cellpadding="0" cellspacing="0" border="0" role="presentation" style="margin-top:14px;">
-                      ${desRec.filas.map((f, i) => `<tr>
-                        <td style="padding:8px 0;border-bottom:1px solid #EDEFF2;${i === 0 ? "border-top:1px solid #EDEFF2;" : ""}font-size:13px;color:#5A6570;">${_escEmail(f.nombre || "Asegurado")} <span style="color:#6B7681;font-size:12px;">&middot; ${_escEmail(f.edad)} a&ntilde;os</span></td>
-                        <td align="right" style="padding:8px 0;border-bottom:1px solid #EDEFF2;${i === 0 ? "border-top:1px solid #EDEFF2;" : ""}font-family:${M};font-size:13px;font-weight:bold;color:#1B1F23;white-space:nowrap;">${_escEmail(fmtMoneda(f.aporte, mon))}</td>
-                      </tr>`).join("")}
-                    </table>
-                    <p style="margin:12px 0 0;font-size:11.5px;color:#6B7681;line-height:1.6;">La prima depende solo de la edad de cada persona; sumadas dan el total. No hay cargos por grupo.</p>
-                  </td>
-                </tr>
-              </table>
-
-              ${otras.length === 0 ? "" : `
-              <table width="100%" cellpadding="0" cellspacing="0" border="0" role="presentation">
+              <table width="100%" cellpadding="0" cellspacing="0" border="0" role="presentation" style="margin:0 0 12px;">
                 ${(() => {
-                  const tarjeta = pd => `<table width="100%" cellpadding="0" cellspacing="0" border="0" role="presentation" style="background:#ffffff;border:1px solid #DADCE0;border-radius:20px;"><tr><td style="padding:18px 20px 16px;">
-                    <p style="margin:0 0 5px;font-size:12px;color:#6B7681;">${_escEmail(pd.plan.ambito)}</p>
-                    <p style="margin:0;font-size:20px;font-weight:bold;color:#1B1F23;letter-spacing:-0.02em;">${_escEmail(pd.plan.nombre)}</p>
-                    <p style="margin:8px 0 0;font-size:12px;color:#6B7681;">suma anual</p>
-                    <p style="margin:2px 0 0;font-family:${M};font-size:13.5px;font-weight:bold;color:#1B1F23;">${_escEmail(fmtMoneda(mon === "USD" ? pd.plan.sumaUSD : pd.plan.sumaCRC, mon))}</p>
+                  const tarjeta = pd => {
+                    const pl = pd.plan;
+                    const ded = mon === "USD" ? pl.deducibleUSD : pl.deducibleCRC;
+                    const borde = pd.isRec ? "2px solid #0369A1" : "1px solid #DADCE0";
+                    const pad = pd.isRec ? (estrecho ? "13px 13px 13px" : "17px 19px 15px") : (estrecho ? "14px 14px 14px" : "18px 20px 16px");
+                    const ambito = estrecho ? pl.ambito.split(" · ")[0] : pl.ambito;
+                    const pildora = (pd.isRec && nP > 1)
+                      ? `<table cellpadding="0" cellspacing="0" border="0" role="presentation"><tr><td bgcolor="#0369A1" style="background:#0369A1;border-radius:999px;padding:3px 9px 3px 8px;font-size:10.5px;font-weight:bold;color:#ffffff;white-space:nowrap;line-height:1.3;"><span style="color:#F4B400;">&#9733;</span>&nbsp;Opci&oacute;n a valorar</td></tr></table>`
+                      : `<p style="margin:0;font-size:10.5px;line-height:1.3;padding:3px 0;">&nbsp;</p>`;
+                    return `<td width="${w}" valign="top" bgcolor="#ffffff" style="background:#ffffff;border:${borde};border-radius:20px;padding:${pad};">
+                    ${pildora}
+                    <p style="margin:8px 0 0;font-size:11.5px;color:#6B7681;">${_escEmail(ambito)}</p>
+                    <p style="margin:2px 0 0;font-size:${estrecho ? 17 : 20}px;font-weight:bold;color:#1B1F23;letter-spacing:-0.02em;line-height:1.15;">${_escEmail(pl.nombre)}</p>
+                    <p style="margin:6px 0 0;font-size:${estrecho ? 11 : 12.5}px;color:#6B7681;line-height:1.4;">${_escEmail(fmtMoneda(mon === "USD" ? pl.sumaUSD : pl.sumaCRC, mon))} por persona</p>
+                    <p style="margin:0;font-size:${estrecho ? 11 : 12.5}px;color:#6B7681;line-height:1.4;">${ded === 0 ? "Sin deducible" : "Deducible " + _escEmail(fmtMoneda(ded, mon))}</p>
                     <table width="100%" cellpadding="0" cellspacing="0" border="0" role="presentation" style="margin:12px 0 10px;"><tr><td style="border-top:1px solid #EDEFF2;font-size:0;line-height:0;">&nbsp;</td></tr></table>
                     <p style="margin:0;font-size:11.5px;color:#6B7681;">Total del a&ntilde;o</p>
-                    <p style="margin:4px 0 0;font-family:${M};font-size:19px;font-weight:bold;color:#1B1F23;">${_escEmail(fmtMoneda(pd.t.total, mon))}</p>
-                    <p style="margin:5px 0 0;font-size:11px;color:#6B7681;">${_escEmail(fmtMoneda(pd.t.prima, mon))} + IVA ${_escEmail(fmtMoneda(pd.t.iva, mon))}</p>
-                  </td></tr></table>`;
+                    <p style="margin:4px 0 0;font-family:${M};font-size:${estrecho ? 17 : 20}px;font-weight:bold;color:#1B1F23;letter-spacing:-0.02em;">${_escEmail(fmtMoneda(pd.t.total, mon))}</p>
+                    <p style="margin:5px 0 0;font-family:${M};font-size:${estrecho ? 10 : 11}px;color:#6B7681;line-height:1.4;">prima ${_escEmail(fmtMoneda(pd.t.prima, mon))} + IVA ${_escEmail(fmtMoneda(pd.t.iva, mon))}</p>
+                  </td>`;
+                  };
+                  // Cada tarjeta ES una celda de la fila: así todas miden lo mismo
+                  // de alto (una tabla anidada no se estira). Separadores de 10 px.
+                  const w = Math.floor((100 - (cols - 1) * 2) / cols) + "%";
+                  const sep = `<td width="10" style="width:10px;font-size:0;line-height:0;">&nbsp;</td>`;
+                  const vacio = `<td width="${w}" style="font-size:0;line-height:0;">&nbsp;</td>`;
                   let out = "";
-                  for(let i = 0; i < otras.length; i += 2){
-                    out += `<tr>
-                      <td width="50%" valign="top" style="padding:0 6px 12px 0;">${tarjeta(otras[i])}</td>
-                      <td width="50%" valign="top" style="padding:0 0 12px 6px;">${otras[i + 1] ? tarjeta(otras[i + 1]) : "&nbsp;"}</td>
-                    </tr>`;
+                  for(let i = 0; i < planesData.length; i += cols){
+                    out += "<tr>";
+                    for(let j = 0; j < cols; j++){
+                      const pd = planesData[i + j];
+                      out += (j ? sep : "") + (pd ? tarjeta(pd) : vacio);
+                    }
+                    out += "</tr>";
+                    if(i + cols < planesData.length) out += `<tr><td colspan="${cols * 2 - 1}" style="height:12px;font-size:0;line-height:0;">&nbsp;</td></tr>`;
                   }
                   return out;
                 })()}
               </table>
-              <p style="margin:4px 0 0;font-size:11.5px;color:#6B7681;line-height:1.6;">Debajo de cada total, en gris, la prima y el IVA por separado. En la cotizaci&oacute;n completa ver&aacute; el detalle por persona de cada plan y el pago en 2 o 4 cuotas.</p>`}
+
+              <table width="100%" cellpadding="0" cellspacing="0" border="0" role="presentation" style="background:#ffffff;border:1px solid #DADCE0;border-radius:20px;margin:4px 0 0;">
+                <tr>
+                  <td style="padding:16px 20px 16px;">
+                    <p style="margin:0;font-size:12px;color:#6B7681;">${numAseg === 1 ? "Cu&aacute;nto aporta usted" : "Cu&aacute;nto aporta cada uno"} en ${_escEmail(planRec.nombre)}${nP > 1 ? ", la opci&oacute;n a valorar" : ""}</p>
+                    <table width="100%" cellpadding="0" cellspacing="0" border="0" role="presentation" style="margin-top:8px;">
+                      ${desRec.filas.map((f, i) => `<tr>
+                        <td style="padding:8px 0;border-bottom:1px solid #EDEFF2;${i === 0 ? "border-top:1px solid #EDEFF2;" : ""}font-size:13px;color:#5A6570;">${_escEmail(f.nombre || "Asegurado")} <span style="color:#6B7681;font-size:12px;">&middot; ${_escEmail(f.edad)} a&ntilde;os</span></td>
+                        <td align="right" style="padding:8px 0;border-bottom:1px solid #EDEFF2;${i === 0 ? "border-top:1px solid #EDEFF2;" : ""}font-family:${M};font-size:13px;font-weight:bold;color:#1B1F23;white-space:nowrap;">${_escEmail(fmtMoneda(f.aporte, mon))}</td>
+                      </tr>`).join("")}
+                      <tr>
+                        <td style="padding:9px 0 0;font-size:13px;font-weight:bold;color:#1B1F23;">Total del a&ntilde;o</td>
+                        <td align="right" style="padding:9px 0 0;font-family:${M};font-size:14px;font-weight:bold;color:#1B1F23;white-space:nowrap;">${_escEmail(fmtMoneda(desRec.totales.total, mon))}</td>
+                      </tr>
+                    </table>
+                    <p style="margin:10px 0 0;font-size:11.5px;color:#6B7681;line-height:1.6;">Incluye <span style="font-family:${M};">${_escEmail(fmtMoneda(desRec.totales.iva, mon))}</span> de IVA (2 %) sobre una prima de <span style="font-family:${M};">${_escEmail(fmtMoneda(desRec.totales.prima, mon))}</span>. La prima depende solo de la edad de cada persona.</p>
+                  </td>
+                </tr>
+              </table>
+              ${nP > 1 ? `<p style="margin:12px 0 0;font-size:11.5px;color:#6B7681;line-height:1.6;">En la cotizaci&oacute;n completa ver&aacute; por qu&eacute; vale la pena valorar ${_escEmail(planRec.nombre)}, el detalle por persona de cada plan y el pago en 2 o 4 cuotas.</p>` : ""}
             </td>
           </tr>
           <tr>
