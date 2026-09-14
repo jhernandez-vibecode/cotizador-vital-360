@@ -229,6 +229,7 @@
     .hist-actions button.danger:hover{border-color:var(--ins-coral);color:var(--ins-coral-deep)}
     .hist-actions button.ok:hover{border-color:var(--green-ok);color:var(--green-ok)}
     .hist-actions button.poliza{background:var(--ins-gold);color:#fff;border-color:var(--ins-gold);font-weight:600}
+    .hist-actions button.poliza.reenviar{background:var(--paper);color:var(--ins-gold);border-color:var(--ins-gold)}
     .hist-actions button.poliza:hover{background:#A67120;border-color:#A67120}
 
     /* Pólizas vigentes (Tab 3) — reutiliza .hist-table y .hist-actions */
@@ -1509,8 +1510,9 @@
         <p class="sdi-foot-line">Un producto de <strong>SDI · Seguros Digitales</strong></p>
         <p class="sdi-foot-line sub">© 2026 · Propiedad intelectual de <strong>Juan Carlos Hernández Vargas</strong></p>
         <details class="sdi-changelog">
-          <summary>Última actualización: 14 sep 2026 — el correo de la cotización muestra las opciones como las tarjetas de la página</summary>
+          <summary>Última actualización: 14 sep 2026 — reenviar el correo de póliza vigente sin volver a digitar los datos</summary>
           <ul>
+            <li><strong>14 sep 2026</strong> — En <strong>Pólizas vigentes</strong> hay un botón "Enviar póliza" / "Reenviar póliza" junto al de la guía, con una columna que dice cuándo salió el correo. Al reenviar, el formulario viene lleno con el N.º de póliza, la fecha, el plan y la moneda que ya capturó; solo revisa y genera. En Mis cotizaciones el botón dorado también dice "Reenviar" cuando el correo ya salió.</li>
             <li><strong>14 sep 2026</strong> — El correo de la cotización presenta las opciones con las mismas fichas que la página del cliente: todas iguales y alineadas en filas completas (alcance, plan, suma por persona, deducible, total del año con IVA y prima + IVA), la opción a valorar con borde azul y estrella. El aporte por asegurado de esa opción va en una tarjeta aparte, debajo. Mismos montos, mismo enlace.</li>
             <li><strong>14 sep 2026</strong> — La página del cliente cambia de orden: primero todas las opciones en tarjetas uniformes (alcance, suma, deducible y total del año con IVA), después la opción a valorar con su porqué calculado, y al final el comparador, que ya viene con esa opción y sus dos vecinas marcadas. Bajo el saludo hay un mapa de 3 pasos. "Lo que le recomiendo" pasa a llamarse "Opción a valorar", como en el correo. Si hay un solo asegurado, el saludo dice "para cuidar su salud" en vez de "a su familia". Mismos montos y mismos cálculos.</li>
             <li><strong>11 sep 2026</strong> — Filete con los cuatro colores SDI arriba del encabezado del cotizador, de la página del cliente, del acceso y de los tres correos, igual que en INS Medical.</li>
@@ -3645,18 +3647,21 @@ ${_botonCorreoLC(link, "Ver mi cotizaci&oacute;n completa &rarr;")}
     // - Si no, usa state actual (caso legacy: desde Paso 3).
     // El selector "Plan contratado" expone los 7 planes — el cliente puede haber
     // comprado un plan distinto al cotizado originalmente.
-    function openPolizaCaptureModal({ cliEmail, payloadOverride, registroId } = {}){
+    // prefill = polizaData ya guardada (reenvío, 14 sep 2026): el agente no vuelve
+    // a digitar N.º, fecha, plan ni moneda; solo revisa y genera el correo.
+    function openPolizaCaptureModal({ cliEmail, payloadOverride, registroId, prefill } = {}){
       const usaOverride = !!payloadOverride;
+      const reenvio = !!(prefill && prefill.numero);
       const planesCotizados = usaOverride
         ? (payloadOverride.planes || [])
         : (state.planesSeleccionados || []);
-      const planRecId = usaOverride
+      const planRecId = (prefill && prefill.planId) || (usaOverride
         ? (payloadOverride.planRecomendado || planesCotizados[0])
-        : (state.planRecomendado || planesCotizados[0]);
-      const monedaDefault = usaOverride
+        : (state.planRecomendado || planesCotizados[0]));
+      const monedaDefault = (prefill && prefill.moneda) || (usaOverride
         ? (payloadOverride.monedaInicial || "CRC")
-        : (state.moneda || "CRC");
-      const fechaHoy = new Date().toISOString().slice(0,10);
+        : (state.moneda || "CRC"));
+      const fechaHoy = (prefill && prefill.fechaInicio) || new Date().toISOString().slice(0,10);
 
       // Selector de plan: los 7 planes; marcamos cuál fue cotizado y cuál recomendado.
       const optionsPlan = PLANES.map(pl => {
@@ -3671,10 +3676,12 @@ ${_botonCorreoLC(link, "Ver mi cotizaci&oacute;n completa &rarr;")}
       const html = `
         <div class="aseg-modal-bg open" id="poliza-modal-bg">
           <div class="aseg-modal" style="width:480px;">
-            <h3>Datos de la póliza emitida</h3>
-            <p style="font-size:12.5px;color:var(--ink-3);margin-bottom:14px;line-height:1.55;">Capture los datos finales del INS para generar la guía de reclamos que se envía al cliente.</p>
+            <h3>${reenvio ? "Reenviar la póliza vigente" : "Datos de la póliza emitida"}</h3>
+            <p style="font-size:12.5px;color:var(--ink-3);margin-bottom:14px;line-height:1.55;">${reenvio
+              ? "Estos son los datos que capturó la vez anterior. Revíselos y genere el correo de nuevo: va al mismo cliente, con los 3 formularios del INS adjuntos."
+              : "Capture los datos finales del INS para generar la guía de reclamos que se envía al cliente."}</p>
             <div class="row two-col">
-              <div><label>N.º de póliza</label><input id="pm-numero" placeholder="ej. 01-101-0123456" autofocus></div>
+              <div><label>N.º de póliza</label><input id="pm-numero" placeholder="ej. 01-101-0123456" value="${escapeAttr(reenvio ? prefill.numero : "")}" autofocus></div>
               <div><label>Vigencia desde</label><input id="pm-fecha" type="date" value="${fechaHoy}"></div>
             </div>
             <div class="row"><label>Plan contratado <span style="color:var(--ink-3);font-weight:400;text-transform:none;letter-spacing:0">(elija el plan final emitido, puede diferir del cotizado)</span></label>
@@ -3720,12 +3727,12 @@ ${_botonCorreoLC(link, "Ver mi cotizaci&oacute;n completa &rarr;")}
           // "Pólizas vigentes" los refleje (N.º póliza + emisión + plan emitido).
           if(registroId) guardarDatosPoliza(registroId, polizaData);
           const htmlEmail = buildEmailPolizaVigente(base, polizaData);
-          openEmailPolizaPreviewModal({ to: cliEmail, html: htmlEmail, payload: base, polizaData });
+          openEmailPolizaPreviewModal({ to: cliEmail, html: htmlEmail, payload: base, polizaData, registroId });
         }
       });
     }
 
-    function openEmailPolizaPreviewModal({ to, html, payload, polizaData }){
+    function openEmailPolizaPreviewModal({ to, html, payload, polizaData, registroId }){
       const subject = "Su póliza Vital 360 está vigente · N.º " + polizaData.numero + " · Guía de uso y reclamos";
       // Los 3 formularios en blanco del INS se ADJUNTAN SOLOS (pedido de JC,
       // 10 sep 2026). Antes eran enlaces para que el agente los bajara y los
@@ -3779,7 +3786,8 @@ ${_botonCorreoLC(link, "Ver mi cotizaci&oacute;n completa &rarr;")}
         if(e.target.dataset.action === 'send-direct'){
           if(!adjCtrl.isReady()){ alert('Espere a que terminen de cargar los archivos adjuntos antes de enviar.'); return; }
           if(adjCtrl.overLimit()){ alert('Los adjuntos superan los 25 MB que admite Gmail. Quite alguno antes de enviar.'); return; }
-          enviarEmailDirecto({ to, subject, html, attachments: adjCtrl.get(), btnEl: e.target, wrapEl: wrap });
+          enviarEmailDirecto({ to, subject, html, attachments: adjCtrl.get(), btnEl: e.target, wrapEl: wrap,
+            onEnviado: () => { if(registroId) marcarPolizaEnviada(registroId); } });
         }
         if(e.target.dataset.action === 'open-gmail-manual'){
           if(adjCtrl.count() > 0 && !confirm('Atención: "Abrir Gmail manualmente" NO adjunta los PDF; tendría que agregarlos a mano en Gmail. Para que se envíen automáticamente use "Enviar ahora desde Gmail".\n\n¿Abrir Gmail de todos modos (sin adjuntos)?')) return;
@@ -4128,7 +4136,7 @@ ${_botonCorreoLC(link, "Ver mi cotizaci&oacute;n completa &rarr;")}
     }
 
     // Acción principal: arma MIME, obtiene token (popup si necesario) y envía.
-    async function enviarEmailDirecto({ to, subject, html, attachments, btnEl, wrapEl }){
+    async function enviarEmailDirecto({ to, subject, html, attachments, btnEl, wrapEl, onEnviado }){
       const oauthSinSetup = GOOGLE_CLIENT_ID.startsWith('REEMPLAZAR');
       if(oauthSinSetup){
         alert('Para enviar directo desde Gmail, primero configurá el Google OAuth Client ID en index.html y agregale el scope gmail.send en Google Cloud Console.');
@@ -4150,6 +4158,9 @@ ${_botonCorreoLC(link, "Ver mi cotizaci&oacute;n completa &rarr;")}
           : buildMimeVital360({ to, from, subject, html });
         const resp = await sendGmailRaw(raw);
         if(btnEl){ btnEl.textContent = '✓ Enviado · ID ' + (resp.id || 'ok'); btnEl.classList.add('ok'); }
+        // Solo después de que Gmail aceptó el mensaje (no antes): el historial
+        // no puede decir "enviada" sobre un correo que no salió.
+        if(typeof onEnviado === 'function'){ try { onEnviado(resp); } catch(err){ console.error(err); } }
         // Cerrar el modal después de 1.5s (usa la referencia capturada, no el id duplicado)
         setTimeout(() => {
           if(wrapEl && wrapEl.remove) { wrapEl.remove(); return; }
@@ -4514,7 +4525,7 @@ ${_botonCorreoLC(link, "Ver mi cotizaci&oacute;n completa &rarr;")}
         <div class="hist-h">
           <div>
             <h2>Pólizas vigentes</h2>
-            <div class="sub">${lista.length} ${lista.length === 1 ? 'póliza emitida' : 'pólizas emitidas'} · envíe la guía de uso y reclamos a sus clientes</div>
+            <div class="sub">${lista.length} ${lista.length === 1 ? 'póliza emitida' : 'pólizas emitidas'} · envíe o reenvíe el correo de póliza vigente y la guía de uso y reclamos</div>
           </div>
         </div>
       `;
@@ -4530,14 +4541,17 @@ ${_botonCorreoLC(link, "Ver mi cotizaci&oacute;n completa &rarr;")}
         const planId = pol ? pol.planId : (p.planRecomendado || p.planes[0]);
         const planObj = PLANES.find(pl => pl.id === planId);
         const guiaEnviada = !!h.guiaEnviada;
+        const polEnviada = !!h.polizaEnviada;
         return `
           <tr>
             <td><div class="nm">${escapeHtml(p.cliente.nombre || "(sin nombre)")}</div><div class="meta">${escapeHtml(p.cliente.email || p.cliente.telefono || "sin contacto")}</div></td>
             <td><span class="vig-plan">${escapeHtml(planObj ? planObj.nombre : "—")}</span></td>
             <td>${pol ? `<span class="vig-poliza">${escapeHtml(pol.numero)}</span>` : `<span class="vig-poliza sin">por capturar</span>`}</td>
-            <td><span class="fecha">${pol ? pol.fechaInicio : "—"}</span></td>
+            <td><span class="fecha">${pol ? escapeHtml(pol.fechaInicio) : "—"}</span></td>
+            <td><span class="vig-guia ${polEnviada ? 'enviada' : 'pendiente'}">${polEnviada ? 'Enviada' + (h.polizaEnviadaAt ? ' ' + h.polizaEnviadaAt.slice(0,10) : '') : 'Pendiente'}</span></td>
             <td><span class="vig-guia ${guiaEnviada ? 'enviada' : 'pendiente'}">${guiaEnviada ? 'Enviada' + (h.guiaEnviadaAt ? ' ' + h.guiaEnviadaAt.slice(0,10) : '') : 'Pendiente'}</span></td>
             <td><div class="hist-actions">
+              <button class="poliza ${polEnviada ? 'reenviar' : ''}" data-action="enviar-poliza-vig" data-id="${h.id}">📨 ${polEnviada ? 'Reenviar póliza' : 'Enviar póliza'}</button>
               <button class="guia ${guiaEnviada ? 'reenviar' : ''}" data-action="enviar-guia" data-id="${h.id}">📚 ${guiaEnviada ? 'Reenviar guía' : 'Enviar guía'}</button>
             </div></td>
           </tr>
@@ -4546,7 +4560,7 @@ ${_botonCorreoLC(link, "Ver mi cotizaci&oacute;n completa &rarr;")}
 
       body.innerHTML = header + `
         <table class="hist-table">
-          <thead><tr><th>Cliente</th><th>Plan</th><th>N.º Póliza</th><th>Emisión</th><th>Guía</th><th>Acciones</th></tr></thead>
+          <thead><tr><th>Cliente</th><th>Plan</th><th>N.º Póliza</th><th>Emisión</th><th>Correo póliza</th><th>Guía</th><th>Acciones</th></tr></thead>
           <tbody>${rows}</tbody>
         </table>
       `;
@@ -4563,13 +4577,42 @@ ${_botonCorreoLC(link, "Ver mi cotizaci&oacute;n completa &rarr;")}
           const h = historial.find(x => x.id === btn.dataset.id);
           if(h) openGuiaModal(h);
         }
+        if(btn.dataset.action === 'enviar-poliza-vig'){
+          const h = historial.find(x => x.id === btn.dataset.id);
+          if(h) abrirEnvioPoliza(h);
+        }
       });
+    }
+
+    // Un solo camino para "Enviar / Reenviar póliza vigente" desde las dos
+    // pestañas: exige el email del cliente y precarga lo ya capturado.
+    function abrirEnvioPoliza(h){
+      const cliEmail = (h.payload && h.payload.cliente && h.payload.cliente.email) || "";
+      if(!cliEmail){
+        alert('Esta cotización no tiene email del cliente registrado. Reábrala (✎ Editar), agregue el email del titular y vuelva a Aceptar.');
+        return;
+      }
+      openPolizaCaptureModal({ cliEmail, payloadOverride: h.payload, registroId: h.id, prefill: h.polizaData || null });
     }
 
     // Persiste solo los datos de la póliza emitida (N.º, fecha, plan, moneda) en el
     // registro del historial, SIN marcar la guía como enviada. Lo usa el flujo de
     // correo "Póliza vigente" para que la pestaña Pólizas vigentes muestre el N.º
     // de póliza en vez de "por capturar". La guía web mantiene su estado aparte.
+    // Marca en el historial que el correo "Póliza vigente" SALIÓ por Gmail (14 sep
+    // 2026). Alimenta la columna "Póliza" de Pólizas vigentes y el rótulo
+    // "Reenviar". Solo lo llama enviarEmailDirecto tras el 200 de Gmail.
+    function marcarPolizaEnviada(id){
+      const h = historial.find(x => x.id === id);
+      if(!h) return;
+      h.polizaEnviada = true;
+      h.polizaEnviadaAt = new Date().toISOString();
+      h.updatedAt = new Date().toISOString();
+      saveHistorial();
+      renderHistorial();
+      renderPolizasVigentes();
+    }
+
     function guardarDatosPoliza(id, polizaData){
       const h = historial.find(x => x.id === id);
       if(!h) return;
@@ -5138,7 +5181,7 @@ ${_botonCorreoLC(link, "Ver mi cotizaci&oacute;n completa &rarr;")}
           ? `<button data-action="restaurar" data-id="${h.id}">↺ Restaurar</button>`
           : `
             ${h.estado !== "aceptada" ? `<button class="ok" data-action="aceptar" data-id="${h.id}">✓ Aceptar</button>` : ""}
-            ${h.estado === "aceptada" ? `<button class="poliza" data-action="enviar-poliza" data-id="${h.id}">📨 Enviar póliza vigente</button>` : ""}
+            ${h.estado === "aceptada" ? `<button class="poliza ${h.polizaEnviada ? 'reenviar' : ''}" data-action="enviar-poliza" data-id="${h.id}">📨 ${h.polizaEnviada ? 'Reenviar póliza vigente' : 'Enviar póliza vigente'}</button>` : ""}
             ${h.estado !== "pendiente" ? `<button data-action="pendiente" data-id="${h.id}">⌛ Pendiente</button>` : ""}
             <a href="${h.link}" target="_blank">👁 Ver</a>
             <button data-action="copy" data-id="${h.id}">🔗 Copiar</button>
@@ -5198,13 +5241,7 @@ ${_botonCorreoLC(link, "Ver mi cotizaci&oacute;n completa &rarr;")}
         if(action === 'reabrir')   reabrirCotizacion(id);
         if(action === 'enviar-poliza'){
           const h = historial.find(x => x.id === id);
-          if(!h) return;
-          const cliEmail = (h.payload && h.payload.cliente && h.payload.cliente.email) || "";
-          if(!cliEmail){
-            alert('Esta cotización no tiene email del cliente registrado. Reábrala (✎ Editar), agregue el email del titular y vuelva a Aceptar.');
-            return;
-          }
-          openPolizaCaptureModal({ cliEmail, payloadOverride: h.payload, registroId: h.id });
+          if(h) abrirEnvioPoliza(h);
         }
         if(action === 'copy'){
           const h = historial.find(x => x.id === id);
