@@ -584,7 +584,7 @@ Mismo patrón que cotizador-autos:
 
 ## El botón "Enviar por WhatsApp" es verde (21 sep 2026, `8e0df43`) — EN PROD
 
-Pedido de JC (mismo día en Autos y la consola de Asistencia Viajero). `.send-r .btn-wa` del bloque LÍNEA CLARA pasó de `--lc-blue` a `#047857` (hover `#065f46`; 5,48:1 con blanco). Única excepción al acento único azul. NO se tocaron el "📱 WA" de las filas de Mis cotizaciones, el "💬 WhatsApp" del modal de la guía ni `.cta-strip-r .btn-wa` de la cara del cliente: JC no los pidió. Solo CSS; verificado en producción por contenido, no con clic real.
+Pedido de JC (mismo día en Autos y la consola de Asistencia Viajero). `.send-r .btn-wa` del bloque LÍNEA CLARA pasó de `--lc-blue` a `#047857` (hover `#065f46`; 5,48:1 con blanco). Única excepción al acento único azul. NO se tocaron el "📱 WA" de las filas de Mis cotizaciones, el "💬 WhatsApp" del modal de la guía ni `.cta-strip-r .btn-wa` de la cara del cliente: JC no los pidió. Solo CSS; verificado en producción por contenido. ✅ **Smoke de JC OK el 21 sep 2026** (lo vio en su pantalla).
 
 ---
 
