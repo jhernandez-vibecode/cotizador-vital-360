@@ -1277,8 +1277,9 @@
     .send-l .sl-chip.rec .set-rec{color:var(--lc-prod)}
     .send-r{background:transparent;border-left:1px solid var(--lc-line);padding:34px 38px;gap:12px}
     .send-r button{border-radius:999px;min-height:46px;font-size:14px;justify-content:center;text-align:center}
-    .send-r .btn-wa{background:var(--lc-blue);color:#fff}
-    .send-r .btn-wa:hover{background:var(--lc-blue-ink)}
+    /* Enviar por WhatsApp: unico boton verde (JC, 21 sep 2026). #047857 + blanco = 5,48:1 */
+    .send-r .btn-wa{background:#047857;color:#fff}
+    .send-r .btn-wa:hover{background:#065f46}
     .send-r .btn-mail{background:#fff;color:var(--lc-blue);border:1px solid var(--lc-blue)}
     .send-r .btn-mail:hover{background:var(--lc-blue-soft);border-color:var(--lc-blue)}
     .send-r .btn-preview{background:#fff;color:var(--lc-ink-2);border:1px solid var(--lc-line-btn)}
@@ -1512,8 +1513,9 @@
         <p class="sdi-foot-line">Un producto de <strong>SDI · Seguros Digitales</strong></p>
         <p class="sdi-foot-line sub">© 2026 · Propiedad intelectual de <strong>Juan Carlos Hernández Vargas</strong></p>
         <details class="sdi-changelog">
-          <summary>Última actualización: 14 sep 2026 — reenviar la cotización por correo desde Mis cotizaciones</summary>
+          <summary>Última actualización: 21 sep 2026 — el botón "Enviar por WhatsApp" ahora es verde</summary>
           <ul>
+            <li><strong>21 sep 2026</strong> — El botón <strong>"Enviar por WhatsApp"</strong> del paso 3 ahora es verde, para distinguirlo de un vistazo de los demás. Todo lo demás funciona igual.</li>
             <li><strong>14 sep 2026</strong> — En <strong>Mis cotizaciones</strong> cada fila tiene el botón "✉ Correo": abre el mismo correo de la cotización que se manda desde el paso 3, con las opciones y el enlace originales, listo para enviarlo de nuevo al cliente. Si la cotización no tiene correo del cliente, avisa.</li>
             <li><strong>14 sep 2026</strong> — En <strong>Pólizas vigentes</strong> hay un botón "Enviar póliza" / "Reenviar póliza" junto al de la guía, con una columna que dice cuándo salió el correo. Al reenviar, el formulario viene lleno con el N.º de póliza, la fecha, el plan y la moneda que ya capturó; solo revisa y genera. En Mis cotizaciones el botón dorado también dice "Reenviar" cuando el correo ya salió.</li>
             <li><strong>14 sep 2026</strong> — El correo de la cotización presenta las opciones con las mismas fichas que la página del cliente: todas iguales y alineadas en filas completas (alcance, plan, suma por persona, deducible, total del año con IVA y prima + IVA), la opción a valorar con borde azul y estrella. El aporte por asegurado de esa opción va en una tarjeta aparte, debajo. Mismos montos, mismo enlace.</li>
