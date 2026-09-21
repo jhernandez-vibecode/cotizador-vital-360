@@ -582,6 +582,10 @@ Mismo patrón que cotizador-autos:
 6. Netlify deploya automático en 1-2 min.
 7. Si hay duda sobre cláusulas INS, consultar `docs/condiciones-generales.pdf` con `pdftotext`.
 
+## El botón "Enviar por WhatsApp" es verde (21 sep 2026, `8e0df43`) — EN PROD
+
+Pedido de JC (mismo día en Autos y la consola de Asistencia Viajero). `.send-r .btn-wa` del bloque LÍNEA CLARA pasó de `--lc-blue` a `#047857` (hover `#065f46`; 5,48:1 con blanco). Única excepción al acento único azul. NO se tocaron el "📱 WA" de las filas de Mis cotizaciones, el "💬 WhatsApp" del modal de la guía ni `.cta-strip-r .btn-wa` de la cara del cliente: JC no los pidió. Solo CSS; verificado en producción por contenido, no con clic real.
+
 ---
 
 > **Ubicaciones canon (desde el 6 sep 2026, decisión 10-C):** `jhernandez-vibecode/cotizador-vital-360` → `.claude/skills/especialista-cotizador-vital-360/SKILL.md` y `C:\Users\segur\.claude\skills\especialista-cotizador-vital-360\SKILL.md`, byte-idénticas. Se edita en el repo, se commitea y se copia al user-level (o al revés, pero siempre las dos en el mismo día).
