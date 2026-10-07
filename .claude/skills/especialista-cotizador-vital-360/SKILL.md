@@ -543,7 +543,7 @@ Mismo patrón que cotizador-autos:
 
 **Otros pendientes:**
 - 🔴 **Versión 4 del contrato (7 oct 2026): el INS todavía no publica los documentos.** Cuando estén en Asesor INS: (a) reemplazar `docs/condiciones-generales.pdf` por la v4 — lo adjunta solo el correo B y lo enlazan la página del cliente y la guía; ojo, las pólizas que iniciaron antes del 9 nov siguen siendo v3; (b) reemplazar `docs/solicitud-vital-360.pdf` (la v4 trae "Coberturas opcionales: Servicio de Multiasistencia" y cambia "Género" por "Sexo"); (c) agregar los canales de **WhatsApp y correo de Multiasistencia** que vienen en el pie de las CG v4. Hasta entonces solo se publica el 800-800-8001.
-- **Smoke de JC del Plan de Asistencia Mascota (`e65d2f8`) — pendiente:** cotizar con la casilla y abrir el enlace en el teléfono; mandar un correo de póliza vigente con la casilla de "la póliza incluye" y abrir la guía.
+- ✅ ~~Smoke de JC del Plan de Asistencia Mascota (`e65d2f8`)~~ — **JC reportó la prueba hecha el 7 oct 2026** y selló la jornada. No volver a pedirlo.
 - ✅ ~~Línea clara en `guia-reclamos.html`~~ — hecho y en producción el 10 sep (`aff5459`). Con esto no queda nada de la cara vieja.
 - ✅ ~~La B prometía "(adjunto en este correo)" sin adjuntar nada~~ — resuelto el 10 sep (`88a6889`): los 3 formularios del INS se adjuntan solos.
 - ✅ ~~Disclaimer del IVA~~ — corregido el 10 sep (`54ee093`): "Los montos mostrados ya incluyen el impuesto al valor agregado (IVA 2 %…), calculado sobre la prima".
@@ -609,7 +609,7 @@ Mismo patrón que cotizador-autos:
 - **"Deducible anual acumulable"** en Características del producto (definición nueva de la Cláusula I). Con ella son 8 ítems (rejilla par).
 - La redacción "persona asegurada" de la v4 es del contrato: **NO** se aplicó a la cara del cotizador (propuesto en el mockup y aprobado).
 
-**Verificado en localhost (no repetir):** smoke tests 0 fallos con los nuevos (₡8.136, 11 servicios, fases del aviso, `esVersion4`, `versionSugese`) · casilla con un clic = un cambio, persiste en el borrador · vista cliente con/sin la marca, en CRC y USD, 375 px sin desborde · correo A con/sin ficha, `?c=` largo intacto y decodificable con `mascota` (regla #11) · correo B v3/v4, con/sin mascota, número 4 o 5 según ámbito · guía con `masc`+`ini` v4, sin `masc`, y modo demo (v3, sin escenario 7) verificados con `getComputedStyle`. **No se probó el envío real por Gmail.**
+**Verificado en localhost (no repetir):** smoke tests 0 fallos con los nuevos (₡8.136, 11 servicios, fases del aviso, `esVersion4`, `versionSugese`) · casilla con un clic = un cambio, persiste en el borrador · vista cliente con/sin la marca, en CRC y USD, 375 px sin desborde · correo A con/sin ficha, `?c=` largo intacto y decodificable con `mascota` (regla #11) · correo B v3/v4, con/sin mascota, número 4 o 5 según ámbito · guía con `masc`+`ini` v4, sin `masc`, y modo demo (v3, sin escenario 7) verificados con `getComputedStyle`. Verificado también en producción el 7 oct (página del cliente con la marca, guía con `masc`+`ini`). ✅ **Smoke de JC hecho el 7 oct 2026** — no volver a pedirlo.
 
 ## El botón "Enviar por WhatsApp" es verde (21 sep 2026, `8e0df43`) — EN PROD
 
