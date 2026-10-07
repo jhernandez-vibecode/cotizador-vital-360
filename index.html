@@ -1442,6 +1442,56 @@
     .masthead-agente::before,.hero-top::before{content:"";position:absolute;left:0;right:0;top:-4px;height:4px;background:var(--lc-filete)}
     .lc-solo{position:relative;overflow:hidden}
     .lc-solo::before{content:"";position:absolute;left:0;right:0;top:0;height:4px;background:var(--lc-filete)}
+
+    /* ---------- Plan de Asistencia Mascota (7 oct 2026, mockup aprobado por JC) ----------
+       Cobertura OPCIONAL: otra superficie y otra señal que "Servicios sin costo"
+       (sin índices de incluido, con precio propio y rótulo "Opcional"). */
+    .ofrecer-masc{display:flex;gap:12px;align-items:flex-start;border:1px solid var(--lc-line-btn);
+      border-radius:var(--lc-r-md);padding:13px 16px;margin-top:14px;cursor:pointer;max-width:620px;background:#fff}
+    .ofrecer-masc input{width:20px;height:20px;margin:2px 0 0;accent-color:var(--lc-blue);flex-shrink:0;cursor:pointer}
+    .ofrecer-masc .om-t{display:block;font-weight:600;font-size:14px;color:var(--lc-ink)}
+    .ofrecer-masc .om-d{display:block;font-size:12.5px;color:var(--lc-ink-2);line-height:1.5;margin-top:2px}
+    .ofrecer-masc:has(input:checked){border-color:var(--lc-blue);box-shadow:inset 0 0 0 1px var(--lc-blue)}
+    .ofrecer-masc:focus-within{outline:2px solid var(--lc-blue);outline-offset:2px}
+
+    .masc{background:#fff;border:1px solid var(--lc-line);border-radius:var(--lc-r-lg);margin-bottom:22px;overflow:hidden}
+    .masc-h{display:grid;grid-template-columns:1.35fr 1fr;gap:28px;padding:30px 34px 24px;border-bottom:1px solid var(--lc-line-soft)}
+    .masc-h > div{min-width:0}
+    .masc-pill{display:inline-flex;align-items:center;border:1px solid var(--lc-line-btn);color:var(--lc-ink-2);
+      border-radius:999px;padding:3px 11px;font-size:12px;font-weight:600}
+    .masc-h h3{font-family:var(--font-display);font-size:26px;font-weight:500;letter-spacing:-.025em;margin:12px 0 6px;color:var(--lc-ink);text-wrap:balance}
+    .masc-h .sub{font-size:14px;color:var(--lc-ink-2);line-height:1.6;max-width:56ch}
+    .masc-rule{width:28px;height:3px;background:var(--lc-prod);border-radius:2px;margin-top:14px}
+    .masc-price{border-left:1px solid var(--lc-line-soft);padding-left:26px;align-self:start}
+    .masc-price .k{font-size:12.5px;color:var(--lc-ink-3)}
+    .masc-price .big{font-family:var(--font-big);font-size:40px;font-weight:500;letter-spacing:-.02em;line-height:1.1;margin-top:2px;
+      color:var(--lc-ink);font-variant-numeric:lining-nums tabular-nums}
+    /* como .v7-rec-tot .eq: palabras en la letra de texto, cifras en mono */
+    .masc-price .eq{font-size:12.5px;color:var(--lc-ink-3);margin-top:4px}
+    .masc-price .eq .m{font-family:var(--font-mono);font-size:12px}
+    .masc-price .nt{font-size:12.5px;color:var(--lc-ink-2);line-height:1.5;margin-top:10px}
+    .masc-fecha{display:flex;gap:10px;align-items:flex-start;background:var(--lc-band);padding:12px 34px;font-size:13.5px;color:var(--lc-ink-2)}
+    .masc-fecha .dot{width:8px;height:8px;border-radius:50%;background:var(--lc-warn-tx);margin-top:7px;flex-shrink:0}
+    .masc-fecha b{color:var(--lc-ink);font-weight:600}
+    .masc-b{padding:22px 34px 8px;display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+    .masc-grp{min-width:0}
+    .masc-grp h4{font-size:13px;font-weight:600;margin:0 0 4px;color:var(--lc-ink);font-family:var(--font-body)}
+    .masc-grp .cols{display:flex;justify-content:space-between;gap:8px;font-size:11px;color:var(--lc-ink-3);border-bottom:1px solid var(--lc-line);padding-bottom:6px}
+    .masc-sv{display:flex;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid var(--lc-line-soft);font-size:13px}
+    .masc-sv .nm{color:var(--lc-ink-2);min-width:0}
+    .masc-sv .v{font-family:var(--font-mono);font-size:12px;color:var(--lc-ink);white-space:nowrap;text-align:right;font-variant-numeric:tabular-nums}
+    .masc-sv .v i{font-style:normal;color:var(--lc-ink-3)}
+    .masc-f{padding:16px 34px 26px;display:grid;grid-template-columns:1fr 1fr;gap:24px;font-size:13px;color:var(--lc-ink-2);line-height:1.55}
+    .masc-f > div{min-width:0}
+    .masc-f h5{margin:0 0 4px;font-size:12.5px;font-weight:600;color:var(--lc-ink);font-family:var(--font-body)}
+    .masc-f .tel{font-family:var(--font-mono);font-weight:600;color:var(--lc-ink);white-space:nowrap}
+    @media (max-width:760px){
+      .masc-h,.masc-f{grid-template-columns:1fr}
+      .masc-price{border-left:0;padding-left:0;border-top:1px solid var(--lc-line-soft);padding-top:16px}
+      .masc-b{grid-template-columns:1fr;gap:18px}
+      .masc-h,.masc-b,.masc-f,.masc-fecha{padding-left:20px;padding-right:20px}
+      .masc-h h3{font-size:23px}
+    }
   </style>
 </head>
 <body>
@@ -1513,8 +1563,10 @@
         <p class="sdi-foot-line">Un producto de <strong>SDI · Seguros Digitales</strong></p>
         <p class="sdi-foot-line sub">© 2026 · Propiedad intelectual de <strong>Juan Carlos Hernández Vargas</strong></p>
         <details class="sdi-changelog">
-          <summary>Última actualización: 21 sep 2026 — el botón "Enviar por WhatsApp" ahora es verde</summary>
+          <summary>Última actualización: 7 oct 2026 — Plan de Asistencia Mascota del INS</summary>
           <ul>
+            <li><strong>7 oct 2026</strong> — Nuevo <strong>Plan de Asistencia Mascota</strong>, la cobertura opcional del INS para Vital 360 (versión 4). En el paso 3, la casilla "Ofrecer el Plan de Asistencia Mascota" agrega a la página del cliente una sección aparte con sus 11 servicios, el precio (₡7.200 + IVA 13 % = ₡8.136 al año, también en cotizaciones en dólares) y el aviso de que se emite desde el 9 nov 2026; el correo de la cotización suma una ficha corta. No se suma al total de ningún plan. Al capturar la póliza hay una casilla para indicar si el cliente la contrató: entonces el correo de póliza vigente y la guía explican cómo pedirla (800-800-8001).</li>
+            <li><strong>7 oct 2026</strong> — Cambios de la versión 4 del contrato: Medicina Virtual se pide por la APP INS Móvil o la página medicinavirtual.ins-cr.com, los 365 días de 6:00 a.m. a 10:00 p.m. (antes se decía "24/7", que no es el horario del INS). En pólizas que inician desde el 9 nov 2026, el correo y la guía ya no piden la radiografía posterior en odontología por accidente y aceptan tiquete electrónico; las anteriores mantienen los requisitos de antes. En "Características del producto" se explica que el deducible anual se acumula.</li>
             <li><strong>21 sep 2026</strong> — El botón <strong>"Enviar por WhatsApp"</strong> del paso 3 ahora es verde, para distinguirlo de un vistazo de los demás. Todo lo demás funciona igual.</li>
             <li><strong>14 sep 2026</strong> — En <strong>Mis cotizaciones</strong> cada fila tiene el botón "✉ Correo": abre el mismo correo de la cotización que se manda desde el paso 3, con las opciones y el enlace originales, listo para enviarlo de nuevo al cliente. Si la cotización no tiene correo del cliente, avisa.</li>
             <li><strong>14 sep 2026</strong> — En <strong>Pólizas vigentes</strong> hay un botón "Enviar póliza" / "Reenviar póliza" junto al de la guía, con una columna que dice cuándo salió el correo. Al reenviar, el formulario viene lleno con el N.º de póliza, la fecha, el plan y la moneda que ya capturó; solo revisa y genera. En Mis cotizaciones el botón dorado también dice "Reenviar" cuando el correo ya salió.</li>
@@ -1682,7 +1734,7 @@
       { id: "vih_sida",              label: "VIH / SIDA",                           desc: "Tratamiento de VIH/SIDA y complicaciones. Es monto asegurado vitalicio (de por vida), no anual: se reduce con cada reclamo." },
       { id: "terapias",              label: "Terapias",                             desc: "Terapias de rehabilitación física, ocupacional o del lenguaje, prescritas tras accidente o enfermedad cubierta." },
       { id: "preexistencias",        label: "Preexistencias declaradas",            desc: "Enfermedades anteriores al inicio de póliza que fueron declaradas y aceptadas por el INS. Período de espera 12 meses." },
-      { id: "medicina_virtual",      label: "Medicina virtual",       included:true, desc: "Consultas médicas por video, 24/7, sin costo ni deducible. Incluido en todos los planes." },
+      { id: "medicina_virtual",      label: "Medicina virtual",       included:true, desc: "Consultas médicas por video, los 365 días de 6:00 a.m. a 10:00 p.m., sin costo ni deducible. Incluido en todos los planes." },
       { id: "transporte_evacuacion", label: "Transporte por evacuación",            desc: "Traslado terrestre o aéreo a un centro médico apropiado cuando la condición del paciente lo requiera, con aprobación previa." },
       { id: "emergencias_medicas",   label: "Emergencias médicas",                  desc: "Atención de urgencias en sala de emergencias. Debe notificarse al INS dentro de 48 hrs para que opere la cobertura normal." }
     ];
@@ -1814,7 +1866,11 @@
     const INS_CONTACTOS = {
       reembolso_email:        "clientescgsp@grupoins.com",   // Centro de Gestión de Seguros Personales
       autorizaciones_email:   "autorizacionesins@grupoins.com",
-      medicina_virtual_email: "medicinavirtual@grupoins.com",
+      // Condiciones Generales v4 (Cláusula VI) y docs/medicina-virtual-360.pdf:
+      // se entra por la APP INS Móvil o por esta página. El correo
+      // medicinavirtual@grupoins.com de la v3 ya no figura (7 oct 2026).
+      medicina_virtual_web:   "medicinavirtual.ins-cr.com",
+      medicina_virtual_horario: "los 365 días, de 6:00 a.m. a 10:00 p.m.",  // horario del PDF del INS
       internacional_email:    "insinternacional@grupoins.com",
       consultas_email:        "contactenos@grupoins.com",
       tele_ins:               "800-8353467",          // 800-TELEINS
@@ -1828,6 +1884,85 @@
       plazo_reembolso_dias:   60,                     // CCGG Cláusula XXV
       preautorizacion_dias_habiles: 5
     };
+
+    // ---------------------------------------------------------------------
+    // Versión 4 del contrato Vital 360 (aprobación SUGESE 17 set 2026):
+    // rige para EMISIONES desde el 9 nov 2026 y renovaciones desde el 1 dic.
+    // Los requisitos de reclamo que cambiaron (odontología por accidente,
+    // factura o tiquete electrónico) se muestran según la fecha de inicio de
+    // la póliza: si es anterior, sigue el texto de la v3. Pedir de más no le
+    // hace perder un reclamo al cliente; pedir de menos, sí (JC, 7 oct 2026).
+    // ---------------------------------------------------------------------
+    const VITAL_V4_DESDE = "2026-11-09";
+    function esVersion4(iso){
+      const s = String(iso || "").slice(0, 10);
+      return /^\d{4}-\d{2}-\d{2}$/.test(s) && s >= VITAL_V4_DESDE;
+    }
+    function versionSugese(iso){ return esVersion4(iso) ? "V4" : "V3"; }
+    // Fecha LOCAL de hoy en YYYY-MM-DD (toISOString daría la fecha de UTC).
+    function hoyISO(){
+      const d = new Date();
+      return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+    }
+
+    // ---------------------------------------------------------------------
+    // Plan de Asistencia Mascota · cobertura OPCIONAL del INS para Vital 360
+    // (Servicios de Multiasistencia, Cláusula IX de las Condiciones Generales
+    // v4). Fuente: "Resumen Plan Mascota" del INS (docs/resumen-plan-mascota.pdf)
+    // y la circular "Implementación de la Versión 4.0". Decisiones de JC (7 oct
+    // 2026, mockup aprobado):
+    //  · La ofrece el agente con una casilla; sin ella el cliente no la ve.
+    //  · Va APARTE del total del plan: totalesPlan no la toca. Su IVA es 13 %
+    //    (servicio de asistencia), no el 2 % de la póliza.
+    //  · El INS solo publica la prima en COLONES y se muestra igual en las
+    //    cotizaciones en dólares, con una nota.
+    //  · El recargo por fraccionamiento existe ("no incluye recargo por
+    //    fraccionamiento") pero el INS no publicó el porcentaje: se menciona,
+    //    no se calcula.
+    //  · El aviso de fecha se apaga solo por código (ver faseMascota). Que
+    //    desaparezca después del 1 dic 2026 es el diseño funcionando.
+    // ---------------------------------------------------------------------
+    const ASIST_MASCOTA = {
+      primaCRC: 7200,
+      ivaPct: 0.13,
+      desdeEmision: "2026-11-09",
+      desdeRenovacion: "2026-12-01",
+      telefono: "800-800-8001",
+      pdf: "docs/resumen-plan-mascota.pdf",
+      descripcion: "Atención veterinaria de urgencia, cuido cotidiano y apoyo en la búsqueda de la mascota, para animales de compañía que conviven en el hogar.",
+      aplica: "Animales de compañía que conviven permanentemente en el hogar, bajo el cuidado y responsabilidad de la persona asegurada, y que no estén destinados a fines comerciales o productivos.",
+      // [servicio, eventos por año, límite por evento en colones] — transcrito del PDF
+      grupos: [
+        { titulo: "Atención veterinaria", servicios: [
+          ["Consulta veterinaria de urgencia", 1, 25000],
+          ["Traslado en emergencia", 3, 50000],
+          ["Vacunación y desparasitación", 1, 20000],
+          ["Cremación de mascota", 3, 50000]
+        ]},
+        { titulo: "Cuido cotidiano", servicios: [
+          ["Grooming a domicilio o en centro", 1, 15000],
+          ["Paseo de mascotas domésticas", 3, 10000],
+          ["Hotel para mascotas", 3, 10000],
+          ["Alojamiento por hospitalización del titular", 3, 10000]
+        ]},
+        { titulo: "Búsqueda si se pierde", servicios: [
+          ["Puja en redes sociales por pérdida", 3, 25000],
+          ["Impresión de material POP para la búsqueda", 3, 25000],
+          ["Volanteo en la zona cercana al domicilio", 1, 25000]
+        ]}
+      ]
+    };
+    function totalesMascota(){
+      const prima = ASIST_MASCOTA.primaCRC;
+      const iva = Math.round(prima * ASIST_MASCOTA.ivaPct);
+      return { prima, iva, total: prima + iva };
+    }
+    // "antes" = aún no se emite · "medio" = ya se emite, aún no en renovaciones · "" = sin aviso
+    function faseMascota(hoy){
+      if(hoy < ASIST_MASCOTA.desdeEmision) return "antes";
+      if(hoy < ASIST_MASCOTA.desdeRenovacion) return "medio";
+      return "";
+    }
 
     // ID de Google OAuth Client (compartido con Cotizador Autos SDI · proyecto Google Cloud "Cotizador Autos SDI")
     const GOOGLE_CLIENT_ID = "255791314248-apgnrs0tiii72ogau5dpsjm2eie6d2hu.apps.googleusercontent.com";
@@ -2209,7 +2344,8 @@
       ],
       moneda: "CRC",
       planesSeleccionados: [],   // ids · hasta los 7
-      planRecomendado: null      // id de uno de los 3
+      planRecomendado: null,     // id de uno de los 3
+      ofrecerMascota: false      // casilla del paso 3 · Plan de Asistencia Mascota (7 oct 2026)
     };
 
     let state = JSON.parse(JSON.stringify(ESTADO_INICIAL)); // deep clone
@@ -2729,6 +2865,10 @@
           comparativaExpandida = !comparativaExpandida;
           renderPaso2();
         }
+        if(e.target.dataset.action === 'toggle-mascota'){
+          state.ofrecerMascota = !!e.target.checked;
+          saveDraft();
+        }
         if(e.target.dataset.action === 'set-rec'){
           state.planRecomendado = e.target.dataset.plan;
           saveDraft();
@@ -2779,6 +2919,11 @@
           <div class="h"><span class="num3">3</span>Enviar al cliente</div>
           <div class="t">Vista cliente con ${sel.length} plan${sel.length>1?'es':''} ${state.planRecomendado?"+ uno marcado como recomendado":""}</div>
           <div class="sel-list">${chips}</div>
+          <label class="ofrecer-masc" for="chk-mascota">
+            <input type="checkbox" id="chk-mascota" data-action="toggle-mascota" ${state.ofrecerMascota ? "checked" : ""}>
+            <span><span class="om-t">Ofrecer el Plan de Asistencia Mascota</span>
+            <span class="om-d">Opcional del INS · ${fmtMoneda(totalesMascota().total, "CRC")} al año con IVA · el cliente lo ve aparte, no se suma al total de los planes.</span></span>
+          </label>
           <p>El cliente recibirá un link con solo estos planes, con la posibilidad de alternar moneda. La cotización mantiene vigencia 30 días naturales.</p>
         </div>
         <div class="send-r">
@@ -2806,6 +2951,9 @@
         monedaInicial: state.moneda,
         planes: state.planesSeleccionados.slice(),
         planRecomendado: state.planRecomendado,
+        // Solo viaja si el agente la ofreció: los enlaces viejos no la traen y
+        // el cliente no ve la sección.
+        ...(state.ofrecerMascota ? { mascota: 1 } : {}),
         agente: agenteActual
       };
     }
@@ -3186,6 +3334,7 @@ ${_estadoCorreoLC(`Cotizaci&oacute;n vigente ${_escEmail(payload.vigenciaDias)} 
                 </tr>
               </table>
               ${nP > 1 ? `<p style="margin:12px 0 0;font-size:11.5px;color:#6B7681;line-height:1.6;">En la cotizaci&oacute;n completa ver&aacute; por qu&eacute; vale la pena valorar ${_escEmail(planRec.nombre)}, el detalle por persona de cada plan y el pago en 2 o 4 cuotas.</p>` : ""}
+              ${payload.mascota ? _fichaMascotaCorreo(payload.fecha) : ""}
             </td>
           </tr>
           <tr>
@@ -3218,7 +3367,7 @@ ${_botonCorreoLC(link, "Ver mi cotizaci&oacute;n completa &rarr;")}
             </td>
           </tr>
 
-          ${_pieCorreoLC(a, "Cotizaci&oacute;n informativa basada en tarifas oficiales del INS vigentes a la fecha. Vigencia " + _escEmail(payload.vigenciaDias) + " d&iacute;as. Producto Vital 360 registrado bajo norma SUGESE P20-76-A01-1097 V3.")}
+          ${_pieCorreoLC(a, "Cotizaci&oacute;n informativa basada en tarifas oficiales del INS vigentes a la fecha. Vigencia " + _escEmail(payload.vigenciaDias) + " d&iacute;as. Producto Vital 360 registrado bajo norma SUGESE P20-76-A01-1097 " + versionSugese(payload.fecha) + ".")}
 
         </table>
       </td>
@@ -3226,6 +3375,26 @@ ${_botonCorreoLC(link, "Ver mi cotizaci&oacute;n completa &rarr;")}
   </table>
 </body>
 </html>`;
+    }
+
+    // Ficha del Plan de Asistencia Mascota en el correo de la cotización (7 oct
+    // 2026). Solo si el agente la ofreció. Aparte de las opciones: su monto no
+    // se suma al de ningún plan. El aviso de fecha sale solo si el correo se
+    // arma antes de que el INS empiece a emitirla.
+    function _fichaMascotaCorreo(fechaCot){
+      const m = totalesMascota();
+      const antes = String(fechaCot || hoyISO()).slice(0, 10) < ASIST_MASCOTA.desdeEmision;
+      return `<table width="100%" cellpadding="0" cellspacing="0" border="0" role="presentation" style="background:#ffffff;border:1px solid #DADCE0;border-radius:20px;margin:14px 0 0;">
+                <tr>
+                  <td style="padding:16px 20px 16px;">
+                    <p style="margin:0;font-size:12px;color:#6B7681;">Opcional del INS &middot; se contrata aparte</p>
+                    <p style="margin:3px 0 6px;font-size:17px;font-weight:bold;color:#1B1F23;letter-spacing:-0.01em;">Plan de Asistencia Mascota</p>
+                    <p style="margin:0;font-size:13px;color:#5A6570;line-height:1.6;">Atenci&oacute;n veterinaria de urgencia, cuido cotidiano y apoyo en la b&uacute;squeda de la mascota.</p>
+                    <p style="margin:10px 0 0;font-size:12.5px;color:#5A6570;"><span style="font-family:${_LC_M};font-size:15px;font-weight:bold;color:#1B1F23;">${_escEmail(fmtMoneda(m.total, "CRC"))}</span> al a&ntilde;o (prima ${_escEmail(fmtMoneda(m.prima, "CRC"))} + IVA ${Math.round(ASIST_MASCOTA.ivaPct * 100)} %)</p>
+                    <p style="margin:6px 0 0;font-size:11.5px;color:#6B7681;line-height:1.6;">No est&aacute; sumada al total de las opciones.${antes ? " Disponible para p&oacute;lizas que se emitan desde el " + _fechaLargaEmail(ASIST_MASCOTA.desdeEmision) + "." : ""} El detalle de los servicios est&aacute; en su cotizaci&oacute;n.</p>
+                  </td>
+                </tr>
+              </table>`;
     }
 
     function _escEmail(s){
@@ -3343,7 +3512,7 @@ ${_botonCorreoLC(link, "Ver mi cotizaci&oacute;n completa &rarr;")}
               <p style="margin:3px 0 0;font-size:12.5px;color:#6B7681;">Agente autorizado INS &middot; WhatsApp ${_escEmail(a.whatsapp)}</p>
             </td>
           </tr>
-          ${_pieCorreoLC(a, "La guía es de carácter informativo. Las Condiciones Generales y Particulares de su póliza son el documento vinculante. Producto Vital 360 registrado bajo norma SUGESE P20-76-A01-1097 V3.")}
+          ${_pieCorreoLC(a, "La guía es de carácter informativo. Las Condiciones Generales y Particulares de su póliza son el documento vinculante. Producto Vital 360 registrado bajo norma SUGESE P20-76-A01-1097 " + versionSugese(pol.fecha) + ".")}
 
         </table>
       </td>
@@ -3380,6 +3549,10 @@ ${_botonCorreoLC(link, "Ver mi cotizaci&oacute;n completa &rarr;")}
       const ambitoPlan = ambitos(planId);
       // Modalidad 4 (internacional) solo aplica si el ámbito lo permite.
       const aplicaInternacional = ambitoPlan === "regional" || ambitoPlan === "internacional";
+      // Requisitos de reclamo según la versión del contrato (ver VITAL_V4_DESDE).
+      const v4 = esVersion4(polizaData.fechaInicio);
+      // Plan de Asistencia Mascota: solo si el agente marcó que la póliza la incluye.
+      const conMascota = !!polizaData.mascota;
 
       const M = _LC_M;
       const T = "font-size:13.5px;color:#5A6570;line-height:1.65;";   // texto de cuerpo
@@ -3410,8 +3583,9 @@ ${_botonCorreoLC(link, "Ver mi cotizaci&oacute;n completa &rarr;")}
       const cuerpoMedicinaVirtual = `
         <p style="margin:0 0 10px;${T}">Para consultas médicas generales, sin emergencia. <strong style="color:#1B1F23;">Sin costo, sin deducible, sin coaseguro</strong>.</p>
         <table cellpadding="0" cellspacing="0" border="0" role="presentation" style="font-size:13px;line-height:1.75;">
-          <tr><td style="${K}">App móvil</td><td style="${V}">App INS 24/7</td></tr>
-          <tr><td style="${K}">Email</td><td style="${V}">${INS_CONTACTOS.medicina_virtual_email}</td></tr>
+          <tr><td style="${K}">App móvil</td><td style="${V}">APP INS Móvil</td></tr>
+          <tr><td style="${K}">Página</td><td style="${V}">${INS_CONTACTOS.medicina_virtual_web}</td></tr>
+          <tr><td style="${K}">Horario</td><td style="color:#1B1F23;">${INS_CONTACTOS.medicina_virtual_horario}</td></tr>
         </table>
       `;
 
@@ -3437,7 +3611,9 @@ ${_botonCorreoLC(link, "Ver mi cotizaci&oacute;n completa &rarr;")}
         <p style="margin:0 0 4px;${S}">Documentos requeridos</p>
         <ul style="margin:0 0 12px;padding:0 0 0 20px;font-size:13px;color:#5A6570;line-height:1.7;">
           <li style="padding:1px 0;">Formulario <strong style="color:#1B1F23;">Solicitud de Beneficios</strong> debidamente cumplimentado y firmado <em>(adjunto en este correo)</em>.</li>
-          <li style="padding:1px 0;">Factura electrónica cancelada (en CR autorizada por Hacienda · archivo XML).</li>
+          <li style="padding:1px 0;">${v4
+            ? "Factura electrónica o tiquete electrónico con su documentación completa (en CR, según lo definido por Hacienda, con los archivos XML)."
+            : "Factura electrónica cancelada (en CR autorizada por Hacienda · archivo XML)."}</li>
           <li style="padding:1px 0;">Prescripciones y recetas médicas del médico tratante.</li>
           <li style="padding:1px 0;">Resultados de exámenes asociados al reclamo.</li>
           <li style="padding:1px 0;">Formulario <strong style="color:#1B1F23;">Autorización para Consulta de Expedientes</strong> firmado por el asegurado <em>(adjunto en este correo)</em>.</li>
@@ -3459,6 +3635,17 @@ ${_botonCorreoLC(link, "Ver mi cotizaci&oacute;n completa &rarr;")}
       ` : "";
 
       const numMedVir = 1, numHosp = 2, numAmb = 3, numInt = 4;
+      const numMascota = aplicaInternacional ? 5 : 4;
+
+      const cuerpoMascota = conMascota ? `
+        <p style="margin:0 0 10px;${T}">Llame al <strong style="color:#1B1F23;">${ASIST_MASCOTA.telefono}</strong>, las 24 horas, los 365 días del año. El INS coordina el envío del proveedor según la disponibilidad y la zona de atención.</p>
+        <ul style="margin:0 0 10px;padding:0 0 0 20px;${T}">
+          <li style="padding:2px 0;">Consulta veterinaria de urgencia, traslado en emergencia, vacunación y desparasitación, cremación.</li>
+          <li style="padding:2px 0;">Grooming, paseo, hotel para mascotas y alojamiento por hospitalización del titular.</li>
+          <li style="padding:2px 0;">Apoyo en la búsqueda: puja en redes sociales, material impreso y volanteo.</li>
+        </ul>
+        <p style="margin:0;font-size:12.5px;color:#6B7681;line-height:1.6;">Eventos por año y límites, en sus Condiciones Particulares.</p>
+      ` : "";
 
       const cajaNum = { bg:"#EEF4F9", tit:"#6B7681", k:"#6B7681", v:"#1B1F23", sep:"#DADCE0" };
       const numVal = `font-family:${M};color:${cajaNum.v};font-weight:bold;`;
@@ -3540,14 +3727,15 @@ ${_botonCorreoLC(link, "Ver mi cotizaci&oacute;n completa &rarr;")}
             <td style="padding:34px 30px 18px;">
               ${_reglaCorreoLC()}
               <p style="margin:0 0 8px;font-size:21px;font-weight:bold;color:#1B1F23;letter-spacing:-0.02em;">Guía rápida de uso</p>
-              <p style="margin:0;font-size:14.5px;color:#5A6570;line-height:1.7;">Hay <strong style="color:#1B1F23;">${aplicaInternacional ? 4 : 3} modalidades</strong> según el tipo de atención. Identifique la suya y siga los pasos del bloque correspondiente.</p>
+              <p style="margin:0;font-size:14.5px;color:#5A6570;line-height:1.7;">Hay <strong style="color:#1B1F23;">${aplicaInternacional ? 4 : 3} modalidades</strong> según el tipo de atención. Identifique la suya y siga los pasos del bloque correspondiente.${conMascota ? " Al final, cómo pedir la Asistencia Mascota que contrató." : ""}</p>
             </td>
           </tr>
 
-          ${modalidad({ num: numMedVir, subtitulo: "Sin costo · 24/7",     titulo: "Medicina Virtual 360",          cuerpo: cuerpoMedicinaVirtual })}
+          ${modalidad({ num: numMedVir, subtitulo: "Sin costo · 365 días", titulo: "Medicina Virtual 360",          cuerpo: cuerpoMedicinaVirtual })}
           ${modalidad({ num: numHosp,   subtitulo: "Pago directo del INS", titulo: "Hospitalización o cirugía",     cuerpo: cuerpoHospitalizacion })}
           ${modalidad({ num: numAmb,    subtitulo: "Reembolso",            titulo: "Ambulatorio y urgencias en CR", cuerpo: cuerpoReembolso })}
           ${aplicaInternacional ? modalidad({ num: numInt, subtitulo: "Asistencia al Viajero primero", titulo: "Emergencia fuera del país", cuerpo: cuerpoInternacional }) : ""}
+          ${conMascota ? modalidad({ num: numMascota, subtitulo: "Cobertura opcional contratada", titulo: "Asistencia Mascota", cuerpo: cuerpoMascota }) : ""}
 
           <!-- Documentos adicionales según el caso -->
           <tr>
@@ -3555,7 +3743,9 @@ ${_botonCorreoLC(link, "Ver mi cotizaci&oacute;n completa &rarr;")}
               ${_reglaCorreoLC()}
               <p style="margin:0 0 12px;font-size:17px;font-weight:bold;color:#1B1F23;letter-spacing:-0.02em;">Documentos adicionales según el caso</p>
               <table width="100%" cellpadding="0" cellspacing="0" border="0" role="presentation" style="font-size:13.5px;line-height:1.65;color:#5A6570;">
-                <tr><td style="padding:10px 0;border-top:1px solid #EDEFF2;border-bottom:1px solid #EDEFF2;"><strong style="color:#1B1F23;">Odontología por accidente:</strong> radiografía previa con fractura visible · ficha odontológica completa · radiografía posterior al tratamiento.</td></tr>
+                <tr><td style="padding:10px 0;border-top:1px solid #EDEFF2;border-bottom:1px solid #EDEFF2;"><strong style="color:#1B1F23;">Odontología por accidente:</strong> ${v4
+                  ? "radiografía previa al tratamiento (si hubo fractura, que la muestre) · ficha odontológica completa, cuando corresponda."
+                  : "radiografía previa con fractura visible · ficha odontológica completa · radiografía posterior al tratamiento."}</td></tr>
                 <tr><td style="padding:10px 0;border-bottom:1px solid #EDEFF2;"><strong style="color:#1B1F23;">Fallecimiento:</strong> carta del beneficiario · certificado oficial de defunción · IDs · si fue accidente, expediente judicial con alcoholemia/tóxicos · Autorización Consulta Expedientes.</td></tr>
               </table>
             </td>
@@ -3606,7 +3796,7 @@ ${_botonCorreoLC(link, "Ver mi cotizaci&oacute;n completa &rarr;")}
               <p style="margin:3px 0 0;font-size:12.5px;color:#6B7681;">WhatsApp ${_escEmail(a.whatsapp)} &middot; Lic. SUGESE ${_escEmail(a.licencia || '08-1318')}</p>
             </td>
           </tr>
-          ${_pieCorreoLC(a, "Esta comunicación es de carácter informativo y se basa en las Condiciones Generales del seguro Vital 360 del INS (registro SUGESE P20-76-A01-1097 V3). La operación de las coberturas se rige por dichas condiciones generales y por las particulares de su póliza.")}
+          ${_pieCorreoLC(a, "Esta comunicación es de carácter informativo y se basa en las Condiciones Generales del seguro Vital 360 del INS (registro SUGESE P20-76-A01-1097 " + versionSugese(polizaData.fechaInicio) + "). La operación de las coberturas se rige por dichas condiciones generales y por las particulares de su póliza.")}
 
         </table>
       </td>
@@ -3654,6 +3844,17 @@ ${_botonCorreoLC(link, "Ver mi cotizaci&oacute;n completa &rarr;")}
     // comprado un plan distinto al cotizado originalmente.
     // prefill = polizaData ya guardada (reenvío, 14 sep 2026): el agente no vuelve
     // a digitar N.º, fecha, plan ni moneda; solo revisa y genera el correo.
+    // Casilla "la póliza incluye el Plan de Asistencia Mascota" (7 oct 2026).
+    // Arranca DESMARCADA salvo que ya se haya guardado: el correo y la guía no
+    // pueden explicar una cobertura que el cliente no contrató.
+    function _casillaMascotaPoliza(id, marcada){
+      return `<label class="ofrecer-masc" for="${id}" style="margin:4px 0 14px;">
+              <input type="checkbox" id="${id}" ${marcada ? "checked" : ""}>
+              <span><span class="om-t">La póliza incluye el Plan de Asistencia Mascota</span>
+              <span class="om-d">Agrega al correo y a la guía cómo pedir los servicios (${ASIST_MASCOTA.telefono}).</span></span>
+            </label>`;
+    }
+
     function openPolizaCaptureModal({ cliEmail, payloadOverride, registroId, prefill } = {}){
       const usaOverride = !!payloadOverride;
       const reenvio = !!(prefill && prefill.numero);
@@ -3698,6 +3899,7 @@ ${_botonCorreoLC(link, "Ver mi cotizaci&oacute;n completa &rarr;")}
                 <option value="USD" ${monedaDefault==='USD'?'selected':''}>Dólares</option>
               </select>
             </div>
+            ${_casillaMascotaPoliza("pm-mascota", !!(prefill && prefill.mascota))}
             <div class="actions">
               <button class="btn btn-secondary" data-action="cancel-poliza-modal">Cancelar</button>
               <button class="btn btn-primary" data-action="generar-poliza-email">Generar correo →</button>
@@ -3717,6 +3919,7 @@ ${_botonCorreoLC(link, "Ver mi cotizaci&oacute;n completa &rarr;")}
           const fecha  = document.getElementById('pm-fecha').value;
           const planId = document.getElementById('pm-plan').value;
           const moneda = document.getElementById('pm-moneda').value;
+          const mascota = document.getElementById('pm-mascota').checked;
           if(!numero || !fecha){
             alert('N.º de póliza y fecha son requeridos.');
             return;
@@ -3727,7 +3930,7 @@ ${_botonCorreoLC(link, "Ver mi cotizaci&oacute;n completa &rarr;")}
           base.planes = [planId];
           base.planRecomendado = planId;
           base.monedaInicial = moneda;
-          const polizaData = { numero, fechaInicio: fecha, planId, moneda };
+          const polizaData = { numero, fechaInicio: fecha, planId, moneda, ...(mascota ? { mascota: true } : {}) };
           // Persistir los datos de la póliza en el historial para que la pestaña
           // "Pólizas vigentes" los refleje (N.º póliza + emisión + plan emitido).
           if(registroId) guardarDatosPoliza(registroId, polizaData);
@@ -4494,6 +4697,7 @@ ${_botonCorreoLC(link, "Ver mi cotizaci&oacute;n completa &rarr;")}
       state.moneda            = h.payload.monedaInicial || "CRC";
       state.planesSeleccionados = h.payload.planes.slice();
       state.planRecomendado   = h.payload.planRecomendado;
+      state.ofrecerMascota    = !!h.payload.mascota;
       saveDraft();
       cambiarTab("cotizador");
       renderAgente();
@@ -4685,6 +4889,7 @@ ${_botonCorreoLC(link, "Ver mi cotizaci&oacute;n completa &rarr;")}
               <input id="gm-linkcp" placeholder="https://drive.google.com/file/d/..." value="${escapeAttr(linkCPDefault)}">
               <small style="font-size:11px;color:var(--ink-3);line-height:1.5;margin-top:4px;display:block;">Suba el PDF que envía el INS a Google Drive, genere un link de solo lectura y péguelo aquí. La tarjeta "Condiciones Particulares" de la guía quedará descargable para el cliente.</small>
             </div>
+            ${_casillaMascotaPoliza("gm-mascota", !!pol.mascota)}
             <div class="row"><label>Link que recibirá el cliente</label>
               <textarea id="gm-preview" readonly style="width:100%;min-height:62px;padding:9px 11px;border:1px solid var(--line);border-radius:4px;font-family:var(--font-mono);font-size:11px;color:var(--ins-teal-deep);background:var(--cream);resize:vertical;line-height:1.5;"></textarea>
             </div>
@@ -4722,6 +4927,11 @@ ${_botonCorreoLC(link, "Ver mi cotizaci&oacute;n completa &rarr;")}
           vigencia: vigenciaTexto(fecha),
           suma: sumaTxt,
           linkCP: linkCP || "",
+          // ini: fecha de inicio ISO → la guía muestra los requisitos de la
+          // versión del contrato que corresponde (v4 desde el 9 nov 2026).
+          ini: fecha,
+          // masc: la guía muestra el escenario de la Asistencia Mascota.
+          ...($('gm-mascota') && $('gm-mascota').checked ? { masc: 1 } : {}),
           agente: {
             nombre: a.nombre || "Agente INS",
             lic: "Licencia SUGESE " + (a.licencia || "08-1318") + " · Seguros Digitales SDI",
@@ -4736,7 +4946,7 @@ ${_botonCorreoLC(link, "Ver mi cotizaci&oacute;n completa &rarr;")}
         $('gm-preview').value = link || "(complete el N.º de póliza y la fecha para generar el link)";
         return link;
       }
-      ['gm-numero','gm-fecha','gm-plan','gm-moneda','gm-linkcp'].forEach(id => {
+      ['gm-numero','gm-fecha','gm-plan','gm-moneda','gm-linkcp','gm-mascota'].forEach(id => {
         const el = $(id);
         if(el){ el.addEventListener('input', refrescarPreview); el.addEventListener('change', refrescarPreview); }
       });
@@ -4747,7 +4957,8 @@ ${_botonCorreoLC(link, "Ver mi cotizaci&oacute;n completa &rarr;")}
           numero: val('gm-numero'),
           fechaInicio: val('gm-fecha'),
           planId: val('gm-plan'),
-          moneda: val('gm-moneda')
+          moneda: val('gm-moneda'),
+          ...($('gm-mascota') && $('gm-mascota').checked ? { mascota: true } : {})
         };
         guardarDatosGuia(h.id, polizaData, linkCP);
       }
@@ -4984,9 +5195,10 @@ ${_botonCorreoLC(link, "Ver mi cotizaci&oacute;n completa &rarr;")}
             guiasPorNombre.set(_normNombre(g.nombre), {
               polizaData: {
                 numero:      g.poliza,
-                fechaInicio: _parseVigenciaInicio(g.vigencia),
+                fechaInicio: /^\d{4}-\d{2}-\d{2}$/.test(g.ini || "") ? g.ini : _parseVigenciaInicio(g.vigencia),
                 planId:      planObj ? planObj.id : null,
-                moneda:      /^\s*USD/i.test(g.suma || "") ? 'USD' : 'CRC'
+                moneda:      /^\s*USD/i.test(g.suma || "") ? 'USD' : 'CRC',
+                ...(g.masc ? { mascota: true } : {})
               },
               linkCP: g.linkCP || "",
               at: fechaCorreo
@@ -5537,6 +5749,7 @@ ${_botonCorreoLC(link, "Ver mi cotizaci&oacute;n completa &rarr;")}
         '<div class="lc-band-wrap"><div class="lc-sec">' +
         renderClienteCaracteristicas() +
         renderClienteServicios() +
+        renderClienteMascota() +
         renderClienteDocs() +
         renderClienteEspera() +
         renderClienteMaterialInformativo() +
@@ -5598,6 +5811,8 @@ ${_botonCorreoLC(link, "Ver mi cotizaci&oacute;n completa &rarr;")}
         { icon:"18", t:"Asegurado titular",                   d:"Desde los 18 años, con su cónyuge o conviviente, hijos y otros dependientes aceptados por el INS." },
         { icon:"25", t:"Hijos dependientes",                  d:"Hasta los 25 años cumplidos. Después puede continuar con póliza individual con los mismos beneficios, sin nuevo período de espera." },
         { icon:"H",  t:"Habitación cubierta",                 d:"Hospitalización en habitación individual, normal o bipersonal según el centro médico." },
+        // Definición "Acumulación de deducible anual" de las Condiciones Generales v4 (Cláusula I).
+        { icon:"D",  t:"Deducible anual acumulable",          d:"Lo que usted paga por deducible en cada gasto cubierto se acumula durante el año de vigencia de la póliza, hasta completar el deducible anual de su plan." },
         { icon:"%",  t:"Coaseguro " + Math.round(COASEGURO_PCT*100) + " %", d:"Una vez agotado el deducible anual, usted aporta el " + Math.round(COASEGURO_PCT*100) + " % del costo cubierto y el INS el resto. Su aporte por coaseguro tiene un tope anual: el stop loss del plan, indicado en la tabla detallada." },
         { icon:"$",  t:"Mecánica de pago",                    d:pagoTxt },
         { icon:"60", t:"Vigencia y forma de pago",            d:"Póliza anual prorrogable. Puede pagar anual (sin recargo), semestral o trimestralmente." }
@@ -5628,10 +5843,58 @@ ${_botonCorreoLC(link, "Ver mi cotizaci&oacute;n completa &rarr;")}
             <div class="sub">Independientemente del plan que elija, su póliza Vital 360 incluye estos beneficios complementarios.</div>
           </div>
           <div class="included-grid">
-            <div class="inc-item"><div class="ico">+</div><div><div class="t">Medicina virtual 360</div><div class="d">Consultas médicas por video, sin costo, las 24 horas.</div></div></div>
+            <div class="inc-item"><div class="ico">+</div><div><div class="t">Medicina virtual 360</div><div class="d">Consultas médicas por video, sin costo, ${INS_CONTACTOS.medicina_virtual_horario}</div></div></div>
             <div class="inc-item"><div class="ico">a</div><div><div class="t">Asistencia al viajero 360</div><div class="d">Hasta US$10.000 por viaje en planes Regional e Internacional.</div></div></div>
             <div class="inc-item"><div class="ico">d</div><div><div class="t">Cobertura dental</div><div class="d">Por accidente y/o emergencia en todos los planes.</div></div></div>
             <div class="inc-item"><div class="ico">r</div><div><div class="t">Red médica INS</div><div class="d">Acceso a hospitales y especialistas en toda Costa Rica.</div></div></div>
+          </div>
+        </section>
+      `;
+    }
+
+    // Plan de Asistencia Mascota · cobertura OPCIONAL del INS (7 oct 2026).
+    // Solo si el agente marcó la casilla. Va aparte de "Servicios sin costo"
+    // a propósito: no la trae la póliza, se contrata y se paga aparte. Se
+    // atribuye siempre al INS y se dice "si la agrega", nunca "incluye".
+    function renderClienteMascota(){
+      const p = cli.payload;
+      if(!p.mascota) return "";
+      const m = totalesMascota();
+      const crc = v => fmtMoneda(v, "CRC");
+      const fase = faseMascota(hoyISO());
+      const fEmi = _fechaLargaEmail(ASIST_MASCOTA.desdeEmision);
+      const fRen = _fechaLargaEmail(ASIST_MASCOTA.desdeRenovacion);
+      const aviso = fase === "antes"
+        ? `Disponible para pólizas que se emitan <b>desde el ${fEmi}</b>. En renovaciones, <b>desde el ${fRen}</b>.`
+        : fase === "medio" ? `En renovaciones, disponible <b>desde el ${fRen}</b>.` : "";
+      const grupos = ASIST_MASCOTA.grupos.map(g => `
+        <div class="masc-grp">
+          <h4>${escapeHtml(g.titulo)}</h4>
+          <div class="cols"><span>Servicio</span><span>Eventos por año · límite</span></div>
+          ${g.servicios.map(sv => `<div class="masc-sv"><span class="nm">${escapeHtml(sv[0])}</span><span class="v">${sv[1]} <i>·</i> ${crc(sv[2])}</span></div>`).join("")}
+        </div>`).join("");
+      return `
+        <section class="masc" id="lc-mascota" aria-labelledby="masc-t">
+          <div class="masc-h">
+            <div>
+              <span class="masc-pill">Opcional · se contrata aparte</span>
+              <h3 id="masc-t">Plan de Asistencia Mascota</h3>
+              <div class="sub">Cobertura opcional del INS para Vital 360 (Servicios de Multiasistencia). ${escapeHtml(ASIST_MASCOTA.descripcion)}</div>
+              <div class="masc-rule"></div>
+            </div>
+            <div class="masc-price">
+              <div class="k">Si la agrega a su póliza</div>
+              <div class="big">${crc(m.total)}</div>
+              <div class="eq">al año · prima <span class="m">${crc(m.prima)}</span> + IVA ${Math.round(ASIST_MASCOTA.ivaPct * 100)} % <span class="m">${crc(m.iva)}</span></div>
+              ${cli.moneda === "USD" ? `<div class="nt">El INS publica este monto en colones.</div>` : ""}
+              <div class="nt">No está sumada en los totales de arriba. Si paga en forma semestral o trimestral, el INS le aplica el recargo por fraccionamiento.</div>
+            </div>
+          </div>
+          ${aviso ? `<div class="masc-fecha"><span class="dot" aria-hidden="true"></span><span>${aviso}</span></div>` : ""}
+          <div class="masc-b">${grupos}</div>
+          <div class="masc-f">
+            <div><h5>A quién aplica</h5><p>${escapeHtml(ASIST_MASCOTA.aplica)}</p></div>
+            <div><h5>Cómo se usa</h5><p>Llamando al <span class="tel">${ASIST_MASCOTA.telefono}</span>, las 24 horas, los 365 días del año. Los servicios, límites y exclusiones se detallan en las Condiciones Particulares de la póliza.</p></div>
           </div>
         </section>
       `;
@@ -5718,9 +5981,12 @@ ${_botonCorreoLC(link, "Ver mi cotizaci&oacute;n completa &rarr;")}
 
       const materiales = [
         { id:"cg", nombre:"Condiciones generales del seguro", desc:"Cláusulas oficiales del contrato, definiciones, exclusiones y procedimiento de reclamos.", archivo:"docs/condiciones-generales.pdf" },
-        { id:"mv", nombre:"Medicina virtual 360", desc:"Cómo funciona la consulta médica por video, 24/7, incluida en todos los planes.", archivo:"docs/medicina-virtual-360.pdf" },
+        { id:"mv", nombre:"Medicina virtual 360", desc:"Cómo funciona la consulta médica por video, " + INS_CONTACTOS.medicina_virtual_horario.replace(/\.$/, "") + ", incluida en todos los planes.", archivo:"docs/medicina-virtual-360.pdf" },
         { id:"cd", nombre:"Cobertura dental 360", desc:"Detalle de la atención dental por accidente y emergencia.", archivo:"docs/cobertura-dental-360.pdf" }
       ];
+      if(p.mascota){
+        materiales.push({ id:"am", nombre:"Plan de Asistencia Mascota", desc:"Resumen del INS: servicios, eventos por año y límite por evento. Cobertura opcional, se contrata aparte.", archivo:ASIST_MASCOTA.pdf });
+      }
       if(incluyeViajero){
         materiales.push({ id:"av", nombre:"Asistencia al viajero 360", desc:"Servicios disponibles al viajar fuera de Costa Rica (planes Regional e Internacional).", archivo:"docs/asistencia-viajero-360.pdf" });
       }
@@ -5816,7 +6082,7 @@ ${_botonCorreoLC(link, "Ver mi cotizaci&oacute;n completa &rarr;")}
       const a = cli.payload.agente;
       return `
         <section class="fine">
-          <strong>Información importante.</strong> Esta cotización es de carácter informativo y se basa en las tarifas oficiales del Instituto Nacional de Seguros vigentes a la fecha indicada. Mantiene vigencia por ${escapeHtml(cli.payload.vigenciaDias)} días naturales. Los montos mostrados <strong>ya incluyen el impuesto al valor agregado (IVA 2 %, tarifa especial para seguros de personas, Ley 9635 de Costa Rica)</strong>, calculado sobre la prima; en cada plan se detallan por separado la prima y el IVA. La aceptación final del riesgo y la emisión de la póliza corresponden al INS conforme a la Ley Reguladora del Contrato de Seguros y al producto registrado bajo norma SUGESE P20-76-A01-1097 V3.
+          <strong>Información importante.</strong> Esta cotización es de carácter informativo y se basa en las tarifas oficiales del Instituto Nacional de Seguros vigentes a la fecha indicada. Mantiene vigencia por ${escapeHtml(cli.payload.vigenciaDias)} días naturales. Los montos mostrados <strong>ya incluyen el impuesto al valor agregado (IVA 2 %, tarifa especial para seguros de personas, Ley 9635 de Costa Rica)</strong>, calculado sobre la prima; en cada plan se detallan por separado la prima y el IVA. La aceptación final del riesgo y la emisión de la póliza corresponden al INS conforme a la Ley Reguladora del Contrato de Seguros y al producto registrado bajo norma SUGESE P20-76-A01-1097 ${versionSugese(cli.payload.fecha)}.
         </section>
         <footer class="sdi-foot">
           <div class="sdi-mark">
@@ -6334,6 +6600,16 @@ ${_botonCorreoLC(link, "Ver mi cotizaci&oacute;n completa &rarr;")}
       console.assert(getCobertura("pro1","gastos_medicos","CRC") === 27500000, '[smoke] cobertura pro1 gastos CRC');
       console.assert(getCobertura("esencial1","maternidad","CRC") === "NA", '[smoke] cobertura esencial1 maternidad = NA');
       console.assert(COBERTURAS_DEFS.length === 28, '[smoke] 28 coberturas definidas');
+
+      // Plan de Asistencia Mascota (7 oct 2026) · fuente: Resumen Plan Mascota del INS
+      const tm = totalesMascota();
+      console.assert(tm.prima === 7200 && tm.iva === 936 && tm.total === 8136, '[smoke] mascota ₡7.200 + IVA 13 % ₡936 = ₡8.136');
+      console.assert(ASIST_MASCOTA.grupos.reduce((n, g) => n + g.servicios.length, 0) === 11, '[smoke] mascota: 11 servicios');
+      console.assert(faseMascota("2026-11-08") === "antes" && faseMascota("2026-11-09") === "medio"
+        && faseMascota("2026-11-30") === "medio" && faseMascota("2026-12-01") === "", '[smoke] mascota: aviso de fecha');
+      // Versión 4 del contrato por fecha de inicio de la póliza
+      console.assert(!esVersion4("2026-11-08") && esVersion4("2026-11-09") && !esVersion4("") && !esVersion4("15 nov 2026"), '[smoke] esVersion4');
+      console.assert(versionSugese("2026-10-07") === "V3" && versionSugese("2027-01-15") === "V4", '[smoke] versionSugese');
 
       console.log('[vital360] smoke tests OK · ' + TARIFAS_VERSION);
     }

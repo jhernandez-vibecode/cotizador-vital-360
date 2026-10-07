@@ -765,6 +765,14 @@
       .agent-cta{width:100%;justify-content:center}
       .footer{padding:26px 18px;border-radius:26px}
     }
+
+    /* Plan de Asistencia Mascota y textos por versión del contrato (7 oct 2026).
+       [hidden] explícito: .scenario-card y .contact-row traen display propio
+       y le ganarían al [hidden] del navegador (trampa del 20 jul). */
+    .scenario-card[hidden],.contact-row[hidden],[data-ver][hidden]{display:none!important}
+    .int-phones td.lim{font-family:var(--f-mono);white-space:nowrap;text-align:right;color:var(--lc-ink)}
+    .int-phones th.lim{text-align:right}
+    .int-phones td.grp{background:var(--lc-band);color:var(--lc-ink-2);font-size:12px;font-weight:600}
   </style>
 </head>
 <body>
@@ -847,7 +855,7 @@
             <div class="step-num">1</div>
             <div class="step-content">
               <strong>Descargue la App INS Móvil</strong>
-              <p>Disponible en App Store y Google Play. Busque "INS Móvil" (desarrollador: Grupo INS).</p>
+              <p>Disponible en App Store y Google Play. Busque "INS Móvil" (desarrollador: Grupo INS). También puede entrar desde la página <strong>medicinavirtual.ins-cr.com</strong>.</p>
             </div>
           </div>
           <div class="step">
@@ -893,7 +901,8 @@
             <div class="step-num">1</div>
             <div class="step-content">
               <strong>Guarde todos los comprobantes</strong>
-              <p>Facturas electrónicas canceladas (con archivo XML), recetas, resultados de exámenes y orden médica. <strong>Sin factura electrónica no hay reembolso.</strong></p>
+              <p data-ver="3">Facturas electrónicas canceladas (con archivo XML), recetas, resultados de exámenes y orden médica. <strong>Sin factura electrónica no hay reembolso.</strong></p>
+              <p data-ver="4" hidden>Factura electrónica o tiquete electrónico con su documentación completa (con archivo XML), recetas, resultados de exámenes y orden médica. <strong>Sin factura o tiquete electrónico no hay reembolso.</strong></p>
             </div>
           </div>
           <div class="step">
@@ -1122,7 +1131,8 @@
             <div class="step-num">2</div>
             <div class="step-content">
               <strong>Complete el expediente dental completo</strong>
-              <p>Solicitud de Beneficios + ficha odontológica completa + radiografía previa al tratamiento + radiografía posterior al tratamiento + facturas electrónicas.</p>
+              <p data-ver="3">Solicitud de Beneficios + ficha odontológica completa + radiografía previa al tratamiento + radiografía posterior al tratamiento + facturas electrónicas.</p>
+              <p data-ver="4" hidden>Solicitud de Beneficios + radiografía previa al tratamiento + ficha odontológica completa, cuando corresponda + factura o tiquete electrónico.</p>
               <div class="step-docs">
                 <a href="docs/solicitud-beneficios.pdf" class="doc-pill" download><span class="doc-pill-icon">📋</span> Solicitud de Beneficios</a>
                 <a href="docs/cobertura-dental-360.pdf" class="doc-pill" download><span class="doc-pill-icon">🦷</span> Guía Cobertura Dental</a>
@@ -1138,6 +1148,76 @@
         </div>
         <div class="cta-row">
           <a href="mailto:clientescgsp@grupoins.com" class="cta-btn cta-teal">Reclamo al INS</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 7. ASISTENCIA MASCOTA · cobertura opcional, solo si la póliza la incluye (?p= con masc) -->
+    <div class="scenario-card" id="sc7" hidden>
+      <button class="scenario-trigger" onclick="toggle('sc7')">
+        <div class="scenario-icon">🐾</div>
+        <div class="scenario-text">
+          <div class="scenario-name">Asistencia Mascota</div>
+          <div class="scenario-sub">Cobertura opcional contratada · se pide por teléfono</div>
+        </div>
+        <span class="scenario-arrow">›</span>
+      </button>
+      <div class="scenario-body">
+        <div class="alert alert-info">
+          <span class="alert-icon">ℹ️</span>
+          <span>Aplica para animales de compañía que conviven permanentemente en el hogar, bajo el cuidado y responsabilidad de la persona asegurada, y que no estén destinados a fines comerciales o productivos.</span>
+        </div>
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-content">
+              <strong>Llame al 800-800-8001</strong>
+              <p>Atiende las 24 horas, los 365 días del año.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-content">
+              <strong>Diga qué servicio necesita</strong>
+              <p>El INS coordina el envío del proveedor según la disponibilidad y la zona de atención.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-content">
+              <strong>Revise sus límites</strong>
+              <p>Cada servicio tiene una cantidad de eventos por año y un límite por evento. Los servicios, límites y exclusiones se detallan en sus Condiciones Particulares.</p>
+              <div class="step-docs">
+                <a href="docs/resumen-plan-mascota.pdf" class="doc-pill" download><span class="doc-pill-icon">🐾</span> Resumen Plan Mascota</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="phone-block">
+          <div class="ph-label">Servicios del plan</div>
+          <table class="int-phones">
+            <thead><tr><th>Servicio</th><th class="lim">Eventos por año · límite</th></tr></thead>
+            <tbody>
+              <tr><td class="grp" colspan="2">Atención veterinaria</td></tr>
+              <tr><td>Consulta veterinaria de urgencia</td><td class="lim">1 · ₡25.000</td></tr>
+              <tr><td>Traslado en emergencia</td><td class="lim">3 · ₡50.000</td></tr>
+              <tr><td>Vacunación y desparasitación</td><td class="lim">1 · ₡20.000</td></tr>
+              <tr><td>Cremación de mascota</td><td class="lim">3 · ₡50.000</td></tr>
+              <tr><td class="grp" colspan="2">Cuido cotidiano</td></tr>
+              <tr><td>Grooming a domicilio o en centro</td><td class="lim">1 · ₡15.000</td></tr>
+              <tr><td>Paseo de mascotas domésticas</td><td class="lim">3 · ₡10.000</td></tr>
+              <tr><td>Hotel para mascotas</td><td class="lim">3 · ₡10.000</td></tr>
+              <tr><td>Alojamiento por hospitalización del titular</td><td class="lim">3 · ₡10.000</td></tr>
+              <tr><td class="grp" colspan="2">Búsqueda si se pierde</td></tr>
+              <tr><td>Puja en redes sociales por pérdida</td><td class="lim">3 · ₡25.000</td></tr>
+              <tr><td>Impresión de material POP para la búsqueda</td><td class="lim">3 · ₡25.000</td></tr>
+              <tr><td>Volanteo en la zona cercana al domicilio</td><td class="lim">1 · ₡25.000</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="cta-row">
+          <a href="tel:8008008001" class="cta-btn cta-teal">Llamar al 800-800-8001</a>
         </div>
       </div>
     </div>
@@ -1214,6 +1294,16 @@
   <div class="section-label" id="contactos">Contactos clave INS</div>
   <div class="contacts-list">
 
+    <div class="contact-row" id="contacto-mascota" hidden>
+      <div class="contact-icon">🐾</div>
+      <div class="contact-info">
+        <div class="contact-label">Asistencia Mascota</div>
+        <div class="contact-value">800-800-8001</div>
+        <div class="contact-desc">24 horas, 365 días · Servicios de Multiasistencia</div>
+      </div>
+      <a href="tel:8008008001" class="contact-cta cc-teal">Llamar</a>
+    </div>
+
     <div class="contact-row">
       <div class="contact-icon">📞</div>
       <div class="contact-info">
@@ -1288,7 +1378,7 @@
   <!-- ══ FOOTER ══════════════════════════════════════════════ -->
   <div class="footer">
     <span class="lc-sdi" role="img" aria-label="Seguros Digitales SDI"></span>
-    <p>Este seguro está regulado por <strong>SUGESE</strong> bajo norma P20-76-A01-1097 V3.<br>
+    <p>Este seguro está regulado por <strong>SUGESE</strong> bajo norma P20-76-A01-1097 <span id="g-version">V3</span>.<br>
     Para quejas ante SUGESE: <a href="tel:22431074">2243-1074</a> · Para apelaciones: Contraloría de Servicios INS</p>
     <p>La guía es de carácter informativo. Las Condiciones Generales y Particulares de su póliza son el documento vinculante.</p>
     <p class="lc-ip">Un producto de <strong>SDI · Seguros Digitales</strong><br>
@@ -1354,6 +1444,21 @@
     set('g-poliza',    d.poliza);
     set('g-vigencia',  d.vigencia);
     set('g-suma',      d.suma);
+
+    // Versión 4 del contrato (pólizas que inician desde el 9 nov 2026): cambian
+    // los requisitos de odontología por accidente y se acepta tiquete
+    // electrónico. Sin fecha de inicio (enlaces viejos) queda el texto de la v3.
+    const ini = String(d.ini || "");
+    if(/^\d{4}-\d{2}-\d{2}$/.test(ini) && ini >= "2026-11-09"){
+      document.querySelectorAll('[data-ver="3"]').forEach(el => { el.hidden = true; });
+      document.querySelectorAll('[data-ver="4"]').forEach(el => { el.hidden = false; });
+      set('g-version', 'V4');
+    }
+
+    // Plan de Asistencia Mascota: solo si el agente marcó que la póliza la incluye.
+    if(d.masc){
+      ['sc7', 'contacto-mascota'].forEach(id => { const el = document.getElementById(id); if(el) el.hidden = false; });
+    }
 
     if(d.agente){
       set('g-agente-nombre', d.agente.nombre);
