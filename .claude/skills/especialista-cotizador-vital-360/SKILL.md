@@ -543,6 +543,7 @@ Mismo patrón que cotizador-autos:
 
 **Otros pendientes:**
 - 🔴 **Versión 4 del contrato (7 oct 2026): el INS todavía no publica los documentos.** Cuando estén en Asesor INS: (a) reemplazar `docs/condiciones-generales.pdf` por la v4 — lo adjunta solo el correo B y lo enlazan la página del cliente y la guía; ojo, las pólizas que iniciaron antes del 9 nov siguen siendo v3; (b) reemplazar `docs/solicitud-vital-360.pdf` (la v4 trae "Coberturas opcionales: Servicio de Multiasistencia" y cambia "Género" por "Sexo"); (c) agregar los canales de **WhatsApp y correo de Multiasistencia** que vienen en el pie de las CG v4. Hasta entonces solo se publica el 800-800-8001.
+- **Recordatorios en el Google Calendar de JC** (creados el 7 oct 2026, con aviso y correo el día antes): **9 nov 2026** emisiones v4 (id `o8vec0okuqgsrghvk03qkdnneg`) y **1 dic 2026** renovaciones v4 (id `du4i4cbgiggknu0i21hvcsk7po`). Cada uno trae la lista del día; si cambia la fecha del INS, moverlos con `update_event`.
 - ✅ ~~Smoke de JC del Plan de Asistencia Mascota (`e65d2f8`)~~ — **JC reportó la prueba hecha el 7 oct 2026** y selló la jornada. No volver a pedirlo.
 - ✅ ~~Línea clara en `guia-reclamos.html`~~ — hecho y en producción el 10 sep (`aff5459`). Con esto no queda nada de la cara vieja.
 - ✅ ~~La B prometía "(adjunto en este correo)" sin adjuntar nada~~ — resuelto el 10 sep (`88a6889`): los 3 formularios del INS se adjuntan solos.
