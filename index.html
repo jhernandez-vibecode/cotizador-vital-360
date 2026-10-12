@@ -1413,6 +1413,29 @@
       .lc-solo{margin:40px 18px;padding:32px 24px}
       .tabs-prod{display:none}
       .masthead-inner,.tabs-agente,.page-agente,.foot-agente{padding-left:18px;padding-right:18px}
+      /* consola del agente a 375 px (12 oct 2026): la pagina media 875 px de ancho
+         (1.210 con una cotizacion armada) por las pestanas, las 7 tarjetas en una
+         fila y la banda de envio. Solo movil: a 1280 no cambia nada. */
+      .tabs-agente{overflow-x:auto;overflow-y:hidden;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+      .tabs-agente::-webkit-scrollbar{display:none}
+      .tabs-agente .tab-btn,.tabs-agente .tab-new{flex-shrink:0;white-space:nowrap;margin-bottom:0}
+      .tabs-agente .tab-new{margin-left:8px}
+      .set-nudge{flex-wrap:wrap;padding-left:18px;padding-right:18px}
+      .set-nudge > span{flex:1 1 100%}
+      .set-nudge .go{margin-left:0}
+      .ib-h{padding:14px 18px}
+      .ib-body{grid-template-columns:1fr;padding:18px}
+      .tit-info{overflow-wrap:anywhere}
+      .scanner-h{flex-wrap:wrap;gap:10px}
+      .scanner-h .selector{flex-wrap:wrap}
+      .plans7{grid-template-columns:repeat(auto-fill,minmax(min(100%,210px),1fr))}
+      .cmp-table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+      .cmp-table-h{flex-wrap:wrap;gap:6px 12px;padding:14px 18px}
+      .send-band{grid-template-columns:1fr}
+      .send-l{padding:26px 22px}
+      .send-r{border-left:0;border-top:1px solid var(--lc-line);padding:22px}
+      .hist-backup .hb-btns{flex-shrink:1;min-width:0}
+      .hist-table{display:block;overflow-x:auto;-webkit-overflow-scrolling:touch}
     }
     @media (min-width:760px){
       .v7-rec-nm{font-size:38px}
@@ -1563,8 +1586,9 @@
         <p class="sdi-foot-line">Un producto de <strong>SDI Seguros Digitales INS</strong></p>
         <p class="sdi-foot-line sub">© 2026 · Propiedad intelectual de <strong>Juan Carlos Hernández Vargas</strong></p>
         <details class="sdi-changelog">
-          <summary>Última actualización: 12 oct 2026 — la plataforma pasa a llamarse SDI Seguros Digitales INS</summary>
+          <summary>Última actualización: 12 oct 2026 — la consola ya cabe en la pantalla del celular</summary>
           <ul>
+            <li><strong>12 oct 2026</strong> — En el celular la consola ya cabe en la pantalla: las pestañas y las tablas se deslizan de lado con el dedo, los 7 planes van uno debajo del otro y los botones de envío quedan uno sobre otro. En la computadora se ve igual que antes.</li>
             <li><strong>12 oct 2026</strong> — La plataforma pasa a llamarse <strong>SDI Seguros Digitales INS</strong>: el nombre nuevo va en la pestaña del navegador, en la pantalla de acceso, en los pies de la consola, de la página del cliente y de la guía de reclamos, y en los tres correos. El logo SDI no cambia.</li>
             <li><strong>7 oct 2026</strong> — Nuevo <strong>Plan de Asistencia Mascota</strong>, la cobertura opcional del INS para Vital 360 (versión 4). En el paso 3, la casilla "Ofrecer el Plan de Asistencia Mascota" agrega a la página del cliente una sección aparte con sus 11 servicios, el precio (₡7.200 + IVA 13 % = ₡8.136 al año, también en cotizaciones en dólares) y el aviso de que se emite desde el 9 nov 2026; el correo de la cotización suma una ficha corta. No se suma al total de ningún plan. Al capturar la póliza hay una casilla para indicar si el cliente la contrató: entonces el correo de póliza vigente y la guía explican cómo pedirla (800-800-8001).</li>
             <li><strong>7 oct 2026</strong> — Cambios de la versión 4 del contrato: Medicina Virtual se pide por la APP INS Móvil o la página medicinavirtual.ins-cr.com, los 365 días de 6:00 a.m. a 10:00 p.m. (antes se decía "24/7", que no es el horario del INS). En pólizas que inician desde el 9 nov 2026, el correo y la guía ya no piden la radiografía posterior en odontología por accidente y aceptan tiquete electrónico; las anteriores mantienen los requisitos de antes. En "Características del producto" se explica que el deducible anual se acumula.</li>
