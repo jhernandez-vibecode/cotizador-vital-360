@@ -1250,6 +1250,13 @@
     .p7 .prima-box .per{font-style:normal;color:var(--lc-ink-3)}
     .p7 .nodata{font-family:var(--font-body);font-style:normal;color:var(--lc-ink-3)}
     .cmp-table-wrap{border:1px solid var(--lc-line);border-radius:var(--lc-r-lg);margin-top:22px}
+    /* Tableta y laptop (12 oct 2026): de 761 a 1260 px las 7 tarjetas no cabían en una fila y la página
+       se ensanchaba a 1224; ahí se acomodan solas (mín. 170 px). La comparativa medía 1227 dentro de un
+       marco de 1216 a 1280 y se recortaba la columna Deluxe: celdas un poco más angostas hasta 1366 y,
+       si igual no cabe, se desliza de lado en vez de recortarse. */
+    .cmp-table-wrap{overflow-x:auto;overflow-y:hidden}
+    @media (min-width:761px) and (max-width:1260px){.plans7{grid-template-columns:repeat(auto-fill,minmax(170px,1fr))}}
+    @media (max-width:1366px){.cmp-table-wrap .cmp-table thead th,.cmp-table-wrap .cmp-table tbody td{padding-left:7px;padding-right:7px}}
     .cmp-table-h{background:#fff;border-bottom:1px solid var(--lc-line-soft);padding:18px 24px}
     .cmp-table-h .t{font-size:14px}
     .cmp-table-h .toggle-expand{color:var(--lc-blue);text-decoration:none;font-weight:600}
@@ -1588,7 +1595,7 @@
         <details class="sdi-changelog">
           <summary>Última actualización: 12 oct 2026 — la consola ya cabe en la pantalla del celular</summary>
           <ul>
-            <li><strong>12 oct 2026</strong> — En el celular la consola ya cabe en la pantalla: las pestañas y las tablas se deslizan de lado con el dedo, los 7 planes van uno debajo del otro y los botones de envío quedan uno sobre otro. En la computadora se ve igual que antes.</li>
+            <li><strong>12 oct 2026</strong> — En el celular la consola ya cabe en la pantalla: las pestañas y las tablas se deslizan de lado con el dedo, los 7 planes van uno debajo del otro y los botones de envío quedan uno sobre otro. En la tableta o en una laptop angosta los 7 planes se acomodan en dos filas, y la comparativa detallada ya muestra completa la columna Deluxe.</li>
             <li><strong>12 oct 2026</strong> — La plataforma pasa a llamarse <strong>SDI Seguros Digitales INS</strong>: el nombre nuevo va en la pestaña del navegador, en la pantalla de acceso, en los pies de la consola, de la página del cliente y de la guía de reclamos, y en los tres correos. El logo SDI no cambia.</li>
             <li><strong>7 oct 2026</strong> — Nuevo <strong>Plan de Asistencia Mascota</strong>, la cobertura opcional del INS para Vital 360 (versión 4). En el paso 3, la casilla "Ofrecer el Plan de Asistencia Mascota" agrega a la página del cliente una sección aparte con sus 11 servicios, el precio (₡7.200 + IVA 13 % = ₡8.136 al año, también en cotizaciones en dólares) y el aviso de que se emite desde el 9 nov 2026; el correo de la cotización suma una ficha corta. No se suma al total de ningún plan. Al capturar la póliza hay una casilla para indicar si el cliente la contrató: entonces el correo de póliza vigente y la guía explican cómo pedirla (800-800-8001).</li>
             <li><strong>7 oct 2026</strong> — Cambios de la versión 4 del contrato: Medicina Virtual se pide por la APP INS Móvil o la página medicinavirtual.ins-cr.com, los 365 días de 6:00 a.m. a 10:00 p.m. (antes se decía "24/7", que no es el horario del INS). En pólizas que inician desde el 9 nov 2026, el correo y la guía ya no piden la radiografía posterior en odontología por accidente y aceptan tiquete electrónico; las anteriores mantienen los requisitos de antes. En "Características del producto" se explica que el deducible anual se acumula.</li>
